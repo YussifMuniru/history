@@ -1,0 +1,5 @@
+RewriteEngine On 
+Options +FollowSymLinksRewriteEngine On
+# Remove .php extension
+RewriteCond %{REQUEST_FILENAME} !-dRewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^\.]+)$ $1.php [NC,L]

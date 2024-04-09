@@ -1,0 +1,8 @@
+{
+    "require": {
+        "predis/predis": "^2.1",
+        "flightphp/core": "^3.5"
+    }
+  
+
+}
