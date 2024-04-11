@@ -14,7 +14,7 @@ function extra_no_head_tail_no(array $drawNumbers): array
 {
 
     $historyArray = [];
-
+    $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $draw_obj) {
         $item = $draw_obj['draw_number'];
         $draw_period = $draw_obj['period'];
@@ -551,7 +551,7 @@ function chart_ball_no(array $drawNumbers): array
     $counts = array_fill_keys(array_keys($zodiacs), 1);
 
 
-    $drawNumbers = array_reverse($drawNumbers);
+
     foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
         $draw_period = $item['period'];
@@ -585,7 +585,7 @@ function chart_ball_no(array $drawNumbers): array
             $historyArray[] = ["draw_period" => $draw_period, "Ball_1" => '', "Ball_2" => '', "Ball_3" => '', "Ball_4" => '', "Ball_5" => '', "Ball_6" => '', "Extra_Ball" => '', 'zodiac' => ''];
         }
     }
-    return array_reverse($historyArray);
+    return $historyArray;
 }
 
 // Odd_Even Big_Small
