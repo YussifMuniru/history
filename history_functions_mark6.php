@@ -13,7 +13,7 @@ set_error_handler(function($severity, $message, $file, $line) {
 function extra_no_head_tail_no(Array $drawNumbers) : Array{
    
     $historyArray = [];
-
+     $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $draw_obj) {
          $item = $draw_obj['draw_number'];
          $draw_period = $draw_obj['period'];
@@ -568,7 +568,7 @@ function board_game_mk6( Array $draw_numbers){
     $counts = array_fill_keys(array_keys($zodiacs), 1);
 
 
-
+   $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
         $draw_period = $item['period'];
@@ -607,7 +607,7 @@ function board_game_mk6( Array $draw_numbers){
         
     
     }
-    return $historyArray;
+    return array_reverse($historyArray);
 
  }
 

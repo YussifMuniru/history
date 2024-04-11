@@ -1162,7 +1162,6 @@ function render(Array $drawNumber) : Array{
         'threecards'                 =>    threeCardsHistory($drawNumber,"threecardsfirst3"),
         'bulls'                      =>    calculateBullHistory($drawNumber),
         'bulls_chart'                =>    calculateBullChartHistory($drawNumber),
-        'integrate'                  =>    integrate($drawNumber)
 
    ];
 
