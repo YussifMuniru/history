@@ -16,6 +16,7 @@ public static function openConnection() : pdo | string {
         self::$pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         return self::$pdo;
     } catch (PDOException $th) {
+        echo $th->getMessage();
          return $th->getMessage();
     }
 }
@@ -77,10 +78,6 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         'data' => $result
     ];
 }
-
-
-
-
 
 
 

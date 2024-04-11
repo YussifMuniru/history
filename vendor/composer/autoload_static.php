@@ -11,6 +11,10 @@ class ComposerStaticInitf9e4b9d8823f15a760a4c694c10d7924
     );
 
     public static $prefixLengthsPsr4 = array (
+        'R' => 
+        array (
+            'React\\EventLoop\\' => 16,
+        ),
         'P' => 
         array (
             'Predis\\' => 7,
@@ -18,6 +22,10 @@ class ComposerStaticInitf9e4b9d8823f15a760a4c694c10d7924
     );
 
     public static $prefixDirsPsr4 = array (
+        'React\\EventLoop\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/react/event-loop/src',
+        ),
         'Predis\\' => 
         array (
             0 => __DIR__ . '/..' . '/predis/predis/src',

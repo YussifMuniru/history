@@ -1,5 +1,6 @@
 {
     "require": {
+        "react/event-loop": "1.5",
         "predis/predis": "^2.1",
         "flightphp/core": "^3.5"
     }
