@@ -300,10 +300,8 @@ function calculateBullChartHistory(Array $drawNumbers) : Array{
     $bull_7 = 1;
     $bull_8 = 1;
     $bull_9 = 1;
-    $bullBig = 1;
-    $bullSmall = 1;
-    $bullEven = 1;
-    $bullOdd = 1;
+    $bull_small_big = 1;
+    $bull_even_odd = 1;
 
     $drawNumbers = array_reverse($drawNumbers);
     $historyArray = [];
@@ -335,44 +333,25 @@ function calculateBullChartHistory(Array $drawNumbers) : Array{
             'bull_7' => $bullResult == 'Bull 7' ? 'Bull 7' : $bull_7,
             'bull_8' => $bullResult == 'Bull 8' ? 'Bull 8' : $bull_8,
             'bull_9' => $bullResult == 'Bull 9' ? 'Bull 9' : $bull_9,
-            'bull_big' => ($is_num && $parsedNumber > 5) || $bullResult === "Bull Bull" ? "Bull Big" : $bullBig,
-            'bull_small' => ($is_num && $parsedNumber <= 5 ) && $parsedNumber > 0 ? "Bull Small" : $bullSmall,
-            'bull_odd' => ($is_num && $parsedNumber % 2 === 1) && $parsedNumber > 0 ? "Bull Odd" : $bullOdd,
-            'bull_even' => ($is_num && $parsedNumber % 2 === 0)  && $parsedNumber > 0 ? "Bull Even" : $bullEven,
+            'bull_big_small' => ($is_num && $parsedNumber > 5) || $bullResult === "Bull Bull" ? "Bull Big" : ( ($is_num && $parsedNumber <= 5 ) && $parsedNumber > 0 ? "Bull Small" : $bull_small_big) ,
+            'bull_odd_even' => ($is_num && $parsedNumber % 2 === 1) && $parsedNumber > 0 ? "Bull Odd" : ( (($is_num && $parsedNumber % 2 === 0)  && $parsedNumber > 0) ? "Bull Even" :  $bull_even_odd),
         ];
         
         // if the bull result is a number and greater than 5 or if it is "Bull Bull"
         if (($parsedNumber > 5) || $bullResult == "Bull Bull") {
             
-            $bullBig = 1;
-
-            $bullSmall += 1;
+            $bull_small_big = 1;
         } else {
-            if ($bullResult === "No Bull") {
-
-                $bullSmall += 1;
-                $bullBig += 1;
-            } else {
-
-                $bullSmall = 1;
-                $bullBig += 1;
-            }
+           $bull_small_big += 1;
+            
         }
 
-        if ($parsedNumber % 2 === 0 && $parsedNumber > 0) {
+        if ((($parsedNumber % 2 === 0) || ($parsedNumber % 2 === 0)) && $parsedNumber > 0) {
 
-            $bullEven = 1;
-            $bullOdd += 1;
+            $bull_even_odd = 1;
+
         } else {
-            if ($bullResult === "No Bull") {
-
-                $bullEven += 1;
-                $bullOdd += 1;
-            } else {
-               
-                $bullOdd = 1;
-                $bullEven += 1;
-            }
+           $bull_even_odd += 1;
         }
 
 
