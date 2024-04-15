@@ -146,7 +146,7 @@ function all2History(Array $drawNumbers,String $typeOfModule) : Array {
         // Assuming sumPattern and spanPattern functions are defined in PHP
         $objectKeyPrefix = str_replace("all2", "", $typeOfModule);
         $startIndex = $typeOfModule === "all2first2" ? 0 : 1;
-        $length = $typeOfModule === "all2first2" ? 3 : 2;
+        $length = $typeOfModule === "all2first2" ? 2 : 3;
 
         $mydata = array(
             "winning" => implode(",",$draw_number), 
@@ -179,7 +179,7 @@ function all3History(Array $drawNumbers) : Array {
         $group6Key =  "group6";
        
         $startingIndex = 0;
-        $endIndex      = 2;
+        $endIndex      = 3;
         
       
         $group3Condition = findPattern([2, 1], $draw_number,$startingIndex,$endIndex) ? "group3" : $group3;
@@ -332,13 +332,11 @@ function render(Array $drawNumber) : Array{
     
    
     $result = [
-                'all3'=> all3History($drawNumber), 
-                'all2'=> ["first2"=> all2History($drawNumber,"all2first2"), "last2"=> all2History($drawNumber,"all2last2")],
-                'fixedplace'=> winning_number($drawNumber), 
-                'anyplace'=>winning_number($drawNumber),
-                'dragonTiger'=> dragonTigerHistory($drawNumber), 
-               
-                'board_game' =>    board_game($drawNumber),
+                'all3'        => all3History($drawNumber), 
+                'all2'        => ["first2"=> all2History($drawNumber,"all2first2"), "last2"=> all2History($drawNumber,"all2last2")],
+                'fixedplace'  => winning_number($drawNumber), 
+                'anyplace'    => winning_number($drawNumber),
+                'dragonTiger' => dragonTigerHistory($drawNumber),
              ];
      return $result;
 

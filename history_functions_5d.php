@@ -1140,10 +1140,6 @@ function two_sides_rapido(Array $draw_numbers) {
 
 function render(Array $drawNumber) : Array{
 
-    
-   
-
-    
     $result = [
         'all5'                       =>    all5History($drawNumber),
         'all4'                       =>    ["first4" => all4History($drawNumber, "all4first4"), "last4" =>  all4History($drawNumber,"all4last4")],
