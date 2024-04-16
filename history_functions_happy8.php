@@ -140,30 +140,36 @@ function b_s_o_e_sum(Array $drawNumbers) : Array{
     $historyArray = [];
     foreach ($drawNumbers as $value) {
        
-        $sum = array_sum($value);
+        $draw_number = $value['draw_number'];
+        $draw_period = $value['period'];
+        $sum = array_sum($draw_number);
 
         $mydata = array(
-            'sum'    =>     $sum ,
+            'winning'      =>     implode(',',$draw_number),
+            'draw_period'  =>     $draw_period,
+            'sum'          =>     $sum ,
             'big_small'    =>     (($sum >= 810) ? "B" : $big) . " ". (($sum < 810 ) ? "S" : $small),
-            'odd_even'    =>     (($sum % 2 === 1)  ? "O" : $odd). " ". (($sum % 2 === 0) ? "E" : $even)
+            'odd_even'     =>     (($sum % 2 === 1)  ? "O" : $odd). " ". (($sum % 2 === 0) ? "E" : $even)
             
           );
         
         array_unshift($historyArray, $mydata);
 
+
+
         $big_small_pattern = explode(" ",$mydata['big_small']);
-        $big_small_pattern = explode(" ",$mydata['odd_even']);
-        $big_pattern = $big_small_pattern[0];
+        $odd_even_pattern = explode(" ",$mydata['odd_even']);
+        $big_pattern   = $big_small_pattern[0];
         $small_pattern = $big_small_pattern[1];
-        $odd_pattern = $big_small_pattern[0];
-        $even_pattern = $big_small_pattern[1];
+        $odd_pattern   = $odd_even_pattern[0];
+        $even_pattern  = $odd_even_pattern[1];
         
         
         // Update counts
-       $big = (intval($big_pattern) === "B")  ? 1 : ($big += 1);
-       $small = (intval($small_pattern) === "S") ? 1 : ($small += 1);
-       $odd = (intval($odd_pattern) === "O") ? 1 : ($odd += 1);
-       $even = (intval($even_pattern) === "E") ? 1 : ($even += 1);
+       $big   = trim($big_pattern)   === "B"  ? 1 : ($big += 1);
+       $small = trim($small_pattern) === "S"  ? 1 : ($small += 1);
+       $odd   = trim($odd_pattern)   === "O"  ? 1 : ($odd += 1);
+       $even  = trim($even_pattern)  === "E"  ? 1 : ($even += 1);
         }
         
         return $historyArray;

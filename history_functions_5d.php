@@ -341,18 +341,13 @@ function calculateBullChartHistory(Array $drawNumbers) : Array{
         if (($parsedNumber > 5) || $bullResult == "Bull Bull") {
             
             $bull_small_big = 1;
-        } else {
-           $bull_small_big += 1;
-            
-        }
+        } 
 
         if ((($parsedNumber % 2 === 0) || ($parsedNumber % 2 === 0)) && $parsedNumber > 0) {
 
             $bull_even_odd = 1;
 
-        } else {
-           $bull_even_odd += 1;
-        }
+        } 
 
 
         $no_bull = ($bullResult === "No Bull") ? 1 : ($no_bull += 1);
