@@ -184,14 +184,14 @@ function two_sides(Array $draw_numbers){
 
 
     foreach($draw_numbers as $value){
-        $sum = array_sum($value);
+       
         $num_odd = 0;
         $num_first = 0;
         $five_elements = "";
 
         $draw_number = $value['draw_number'];
         $draw_period = $value['period'];
-
+         $sum = array_sum($draw_number);
 
         foreach ($draw_number as $val) {
             if(intval($val) < 41) $num_first += 1;
