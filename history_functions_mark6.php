@@ -547,13 +547,27 @@ function board_game_mk6(array $draw_numbers)
 
  function chart_ball_no_zodiac(Array $drawNumbers) : array{
 
-
+    
     $historyArray = [];
 
     $zodiacs = ["rat" => ["04", "16", "28", "40",], "ox" => ["03", "15", "27", "39"], "tiger" => ["02", "14", "26", "38",], "rabbit" => ["01", "13", "25", "37", "49"], "dragon" => ["12", "24", "36", "48",], "snake" => ["11", "23", "35", "47",], "horse" => ["10", "22", "34", "46",], "goat" => ["09", "21", "33", "45"], "monkey" => ["08", "20", "32", "44"], "rooster" => ["07", "19", "31", "43"], "dog" => ["06", "18", "30", "42"], "pig" => ["05", "17", "29", "41"]];
     $counts = array_fill_keys(array_keys($zodiacs), 1);
 
+   $nums_for_layout = [
+    1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+    11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+    16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+    21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+    26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+    31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+    36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+    41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+    46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+   ];
 
+
+     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
 
     foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
@@ -568,6 +582,7 @@ function board_game_mk6(array $draw_numbers)
                     if (in_array($single_draw, $value)) {
 
                         $res[$key]    =   $key;
+                       
                     } else {
                         if (isset($res[$key])) {
                             continue;
@@ -581,7 +596,35 @@ function board_game_mk6(array $draw_numbers)
                         $res["count_" . $key] =  isset($res["count_" . $key])  ? ($res["count_" . $key]  + 1) : 1;
                     }
                 }
+               foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+
+                        $res[$pattern]    =   $single_draw;
+                        foreach($zodiacs as $key => $value){
+                          if (in_array($single_draw, $value)) {
+                                $res["num_layout_{$pattern_key}"]    =   $key;
+                                break;
+                          }
+                            
+                        }
+                        
+                    } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+
+
+            // $res[$pattern]    = $pattern_key === intval($single_draw) ? $single_draw : $counts_nums_for_layout[$pattern_key];
+            // $counts_nums_for_layout[$pattern_key] =  ($res[$pattern] === $single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
             }
+            }
+
+           
 
             $historyArray[] = ["draw_period" => $draw_period, "Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6], "zodiac" => $res];
         } catch (Throwable $th) {
@@ -589,56 +632,6 @@ function board_game_mk6(array $draw_numbers)
         }
     }
 
-    return array_reverse($historyArray);
-
- }
- function chart_no_zodiac(Array $drawNumbers,int $index) : array{
-
-    $historyArray = [];
-    
-    $zodiacs = ["rat" => ["04","16","28","40",], "ox" => ["03","15","27","39"], "tiger" => ["02","14","26","38",], "rabbit" => ["01","13","25","37" , "49"], "dragon" => ["12","24","36","48",], "snake" => [ "11","23","35","47",], "horse" => ["10","22","34","46",], "goat" => ["09","21","33","45"], "monkey" => ["08","20","32","44" ], "rooster" => ["07","19","31","43"], "dog" => ["06","18","30","42"], "pig" => ["05","17","29","41"]];
-    $counts = array_fill_keys(array_keys($zodiacs), 1);
-
-
-   $drawNumbers  = array_reverse($drawNumbers);
-    foreach ($drawNumbers as $item) {
-        $drawNumber  = $item['draw_number'];
-        $draw_period = $item['period'];
-
-        try{
-
-         $res = [];
-       
-         $single_draw = $drawNumber[$index];
-          foreach ($zodiacs as $key => $value) {
-            if(in_array($single_draw,$value)){
-
-            $res[$key]    =   $key ;
-            }else{
-                if(isset($res[$key])){
-                    continue;
-                }else{
-                    $res[$key] = $counts[$key];
-                }
-            }
-           
-            $counts[$key] =  in_array($single_draw,$value) ? 1 : ($counts[$key] + 1);
-            if(in_array($single_draw,$value)){
-                $res["count_".$key] =  isset($res["count_".$key])  ? ($res["count_".$key]  + 1) : 1;
-            }
-             
-            }
-           
-        
-        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"zodiac" => $res];
-
-       }catch(Throwable $th){
-        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => '', "Ball_2" => '', "Ball_3" =>'', "Ball_4" => '', "Ball_5" => '', "Ball_6" => '', "Extra_Ball" => '', 'zodiac' => ''];
-        }
-       
-        
-    
-    }
     return array_reverse($historyArray);
 
  }
@@ -650,6 +643,20 @@ function board_game_mk6(array $draw_numbers)
     $colors = ["red" => ["01","02","07","08","12","13","18","19","23","24","29","30","34","35","40","45","46"], "blue" =>  ["03","04","09","10","14","15","20","25","26","31","36","37","41","42","47","48"], "green" =>  ["05","06","11","16","17","21","22","27","28","32","33","38","39","43","44","49"]];
     $counts = array_fill_keys(array_keys($colors), 1);
 
+    
+    $nums_for_layout = [
+        1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+        11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+        16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+        21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+        26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+        31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+        36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+        41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+        46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+    ];
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
 
    $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
@@ -679,6 +686,134 @@ function board_game_mk6(array $draw_numbers)
             }
              
             }
+
+              foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+
+                        $res[$pattern]    =   $single_draw;
+                        foreach($colors as $key => $value){
+                          if (in_array($single_draw, $value)) {
+                                $res["num_layout_{$pattern_key}"]    =   $key;
+                                break;
+                          }
+                            
+                        }
+                        
+                    } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+
+
+            }
+
+           }
+
+
+
+         
+        
+        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"color" => $res];
+
+       }catch(Throwable $th){
+        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => '', "Ball_2" => '', "Ball_3" =>'', "Ball_4" => '', "Ball_5" => '', "Ball_6" => '', "Extra_Ball" => '', 'color' => ''];
+        }
+       
+        
+    
+    }
+    return array_reverse($historyArray);
+
+ }
+
+ function chart_ball_no_five_elements(Array $drawNumbers) : array{
+
+    $historyArray = [];
+    
+   
+
+    $elements = ["gold" => ["01","02","09","10","23","24","31","32","39","40"], "wood" => ["05","06","13","14","27","28","35","36","43","44"], "water" =>  ["11","12","19","20","33","34","41","42","49"], "fire" =>  ["07","08","15","16","29","30","37","38","45"], "earth" => ["03","04","17","18","25","26","29","30","37","38"]];
+    $counts = array_fill_keys(array_keys($elements), 1);
+
+      $nums_for_layout = [
+    1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+    11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+    16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+    21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+    26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+    31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+    36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+    41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+    46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+   ];
+
+
+     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+   $drawNumbers  = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+         $res = [];
+       
+        foreach ($drawNumber as   $single_draw) {
+          foreach ($elements as $key => $value) {
+            if(in_array($single_draw,$value)){
+
+            $res[$key]    =   $key ;
+            }else{
+                if(isset($res[$key])){
+                    continue;
+                }else{
+                    $res[$key] = $counts[$key];
+                }
+            }
+           
+            $counts[$key] =  in_array($single_draw,$value) ? 1 : ($counts[$key] + 1);
+            if(in_array($single_draw,$value)){
+                $res["count_".$key] =  isset($res["count_".$key])  ? ($res["count_".$key]  + 1) : 1;
+            }
+             
+            }
+
+
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+
+                        $res[$pattern]    =   $single_draw;
+                        foreach($elements as $key => $value){
+                          if (in_array($single_draw, $value)) {
+                                $res["num_layout_{$pattern_key}"]    =   $key;
+                                break;
+                          }
+                            
+                        }
+                        
+                    } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+
+
+            // $res[$pattern]    = $pattern_key === intval($single_draw) ? $single_draw : $counts_nums_for_layout[$pattern_key];
+            // $counts_nums_for_layout[$pattern_key] =  ($res[$pattern] === $single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+
+
            }
         
         $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"color" => $res];
@@ -693,6 +828,101 @@ function board_game_mk6(array $draw_numbers)
     return array_reverse($historyArray);
 
  }
+
+
+
+ function chart_no_zodiac(Array $drawNumbers,int $index) : array{
+
+    $historyArray = [];
+    
+    $zodiacs = ["rat" => ["04","16","28","40",], "ox" => ["03","15","27","39"], "tiger" => ["02","14","26","38",], "rabbit" => ["01","13","25","37" , "49"], "dragon" => ["12","24","36","48",], "snake" => [ "11","23","35","47",], "horse" => ["10","22","34","46",], "goat" => ["09","21","33","45"], "monkey" => ["08","20","32","44" ], "rooster" => ["07","19","31","43"], "dog" => ["06","18","30","42"], "pig" => ["05","17","29","41"]];
+    $counts = array_fill_keys(array_keys($zodiacs), 1);
+
+    $nums_for_layout = [
+    1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+    11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+    16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+    21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+    26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+    31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+    36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+    41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+    46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+   ];
+
+
+     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+   $drawNumbers  = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+          $res = [];
+       
+          $single_draw = $drawNumber[$index];
+          foreach ($zodiacs as $key => $value) {
+            if(in_array($single_draw,$value)){
+
+            $res[$key]    =   $key ;
+            }else{
+                if(isset($res[$key])){
+                    continue;
+                }else{
+                    $res[$key] = $counts[$key];
+                }
+            }
+            $counts[$key] =  in_array($single_draw,$value) ? 1 : ($counts[$key] + 1);
+            if(in_array($single_draw,$value)){
+                $res["count_".$key] =  isset($res["count_".$key])  ? ($res["count_".$key]  + 1) : 1;
+            }
+             
+            }
+           
+             foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+
+                        $res[$pattern]    =   $single_draw;
+                        foreach($zodiacs as $key => $value){
+                          if (in_array($single_draw, $value)) {
+                                $res["num_layout_{$pattern_key}"]    =   $key;
+                                break;
+                          }
+                            
+                        }
+                        
+                    } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+
+
+            // $res[$pattern]    = $pattern_key === intval($single_draw) ? $single_draw : $counts_nums_for_layout[$pattern_key];
+            // $counts_nums_for_layout[$pattern_key] =  ($res[$pattern] === $single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+        
+        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"zodiac" => $res];
+
+       }catch(Throwable $th){
+        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => '', "Ball_2" => '', "Ball_3" =>'', "Ball_4" => '', "Ball_5" => '', "Ball_6" => '', "Extra_Ball" => '', 'zodiac' => ''];
+        }
+       
+        
+    
+    }
+    return array_reverse($historyArray);
+
+ }
+
  function chart_no_color(Array $drawNumbers,int $index) : array{
 
     $historyArray = [];
@@ -700,6 +930,21 @@ function board_game_mk6(array $draw_numbers)
     $colors = ["red" => ["01","02","07","08","12","13","18","19","23","24","29","30","34","35","40","45","46"], "blue" =>  ["03","04","09","10","14","15","20","25","26","31","36","37","41","42","47","48"], "green" =>  ["05","06","11","16","17","21","22","27","28","32","33","38","39","43","44","49"]];
     $counts = array_fill_keys(array_keys($colors), 1);
 
+    $nums_for_layout = [
+        1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+        11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+        16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+        21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+        26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+        31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+        36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+        41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+        46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+    ];
+
+
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
 
    $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
@@ -729,6 +974,32 @@ function board_game_mk6(array $draw_numbers)
             }
              
             }
+
+             foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+
+                        $res[$pattern]    =   $single_draw;
+                        foreach($colors as $key => $value){
+                          if (in_array($single_draw, $value)) {
+                                $res["num_layout_{$pattern_key}"]    =   $key;
+                                break;
+                          }
+                            
+                        }
+                        
+                    } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+
+
+            }
+
            
         
         $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"color" => $res];
@@ -743,63 +1014,6 @@ function board_game_mk6(array $draw_numbers)
     return array_reverse($historyArray);
 
  }
-
-
-
- 
- function chart_ball_no_five_elements(Array $drawNumbers) : array{
-
-    $historyArray = [];
-    
-   
-
-    $zodiacs = ["gold" => ["01","02","09","10","23","24","31","32","39","40"], "wood" => ["05","06","13","14","27","28","35","36","43","44"], "water" =>  ["11","12","19","20","33","34","41","42","49"], "fire" =>  ["07","08","15","16","29","30","37","38","45"], "earth" => ["03","04","17","18","25","26","29","30","37","38"]];
-    $counts = array_fill_keys(array_keys($zodiacs), 1);
-
-
-   $drawNumbers  = array_reverse($drawNumbers);
-    foreach ($drawNumbers as $item) {
-        $drawNumber  = $item['draw_number'];
-        $draw_period = $item['period'];
-
-        try{
-
-         $res = [];
-       
-        foreach ($drawNumber as   $single_draw) {
-          foreach ($zodiacs as $key => $value) {
-            if(in_array($single_draw,$value)){
-
-            $res[$key]    =   $key ;
-            }else{
-                if(isset($res[$key])){
-                    continue;
-                }else{
-                    $res[$key] = $counts[$key];
-                }
-            }
-           
-            $counts[$key] =  in_array($single_draw,$value) ? 1 : ($counts[$key] + 1);
-            if(in_array($single_draw,$value)){
-                $res["count_".$key] =  isset($res["count_".$key])  ? ($res["count_".$key]  + 1) : 1;
-            }
-             
-            }
-           }
-        
-        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"color" => $res];
-
-       }catch(Throwable $th){
-        $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => '', "Ball_2" => '', "Ball_3" =>'', "Ball_4" => '', "Ball_5" => '', "Ball_6" => '', "Extra_Ball" => '', 'color' => ''];
-        }
-       
-        
-    
-    }
-    return array_reverse($historyArray);
-
- }
-
 
  function chart_no_five_elements(Array $drawNumbers, int $index) : array{
 
@@ -807,9 +1021,24 @@ function board_game_mk6(array $draw_numbers)
     
    
 
-    $zodiacs = ["gold" => ["01","02","09","10","23","24","31","32","39","40"], "wood" => ["05","06","13","14","27","28","35","36","43","44"], "water" =>  ["11","12","19","20","33","34","41","42","49"], "fire" =>  ["07","08","15","16","29","30","37","38","45"], "earth" => ["03","04","17","18","25","26","29","30","37","38"]];
-    $counts = array_fill_keys(array_keys($zodiacs), 1);
+    $elements = ["gold" => ["01","02","09","10","23","24","31","32","39","40"], "wood" => ["05","06","13","14","27","28","35","36","43","44"], "water" =>  ["11","12","19","20","33","34","41","42","49"], "fire" =>  ["07","08","15","16","29","30","37","38","45"], "earth" => ["03","04","17","18","25","26","29","30","37","38"]];
+    $counts = array_fill_keys(array_keys($elements), 1);
 
+      $nums_for_layout = [
+        1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+        11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+        16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+        21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+        26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+        31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+        36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+        41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+        46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+    ];
+
+
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
 
    $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
@@ -821,7 +1050,7 @@ function board_game_mk6(array $draw_numbers)
          $res = [];
        
         $single_draw = $drawNumber[$index];
-          foreach ($zodiacs as $key => $value) {
+          foreach ($elements as $key => $value) {
             if(in_array($single_draw,$value)){
 
             $res[$key]    =   $key ;
@@ -840,6 +1069,32 @@ function board_game_mk6(array $draw_numbers)
              
             }
            
+             foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+
+                        $res[$pattern]    =   $single_draw;
+                        foreach($elements as $key => $value){
+                          if (in_array($single_draw, $value)) {
+                                $res["num_layout_{$pattern_key}"]    =   $key;
+                                break;
+                          }
+                            
+                        }
+                        
+                    } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+
+
+            // $res[$pattern]    = $pattern_key === intval($single_draw) ? $single_draw : $counts_nums_for_layout[$pattern_key];
+            // $counts_nums_for_layout[$pattern_key] =  ($res[$pattern] === $single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
         
         $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"color" => $res];
 
@@ -931,30 +1186,30 @@ function chart_history($drawNumber){
 
     $result = [
 
-        'chart_ball_no_zodiac'                    =>  chart_ball_no_zodiac($drawNumber),
-        'chart_ball_no_color'                     =>  chart_ball_no_color($drawNumber),
-        'chart_ball_no_five_elements'             =>  chart_ball_no_five_elements($drawNumber),
-        'chart_extra_no_zodiac'                   =>  chart_no_zodiac($drawNumber,6),
-        'chart_extra_no_color'                    =>  chart_no_color($drawNumber,6),
-        'chart_extra_no_five_elements'            =>  chart_no_five_elements($drawNumber,6),
-        'chart_ball_1_no_zodiac'                   =>  chart_no_zodiac($drawNumber,0),
-        'chart_ball_1_no_color'                    =>  chart_no_color($drawNumber,0),
-        'chart_ball_1_no_five_elements'            =>  chart_no_five_elements($drawNumber,0),
-        'chart_ball_2_no_zodiac'                   =>  chart_no_zodiac($drawNumber,1),
-        'chart_ball_2_no_color'                    =>  chart_no_color($drawNumber,1),
-        'chart_ball_2_no_five_elements'            =>  chart_no_five_elements($drawNumber,1),
-        'chart_ball_3_no_zodiac'                   =>  chart_no_zodiac($drawNumber,2),
-        'chart_ball_3_no_color'                    =>  chart_no_color($drawNumber,2),
-        'chart_ball_3_no_five_elements'            =>  chart_no_five_elements($drawNumber,2),
-        'chart_ball_4_no_zodiac'                   =>  chart_no_zodiac($drawNumber,3),
-        'chart_ball_4_no_color'                    =>  chart_no_color($drawNumber,3),
-        'chart_ball_4_no_five_elements'            =>  chart_no_five_elements($drawNumber,3),
-        'chart_ball_5_no_zodiac'                   =>  chart_no_zodiac($drawNumber,4),
-        'chart_ball_5_no_color'                    =>  chart_no_color($drawNumber,4),
-        'chart_ball_5_no_five_elements'            =>  chart_no_five_elements($drawNumber,4),
-        'chart_ball_6_no_zodiac'                   =>  chart_no_zodiac($drawNumber,5),
-        'chart_ball_6_no_color'                    =>  chart_no_color($drawNumber,5),
-        'chart_ball_6_no_five_elements'            =>  chart_no_five_elements($drawNumber,5),
+        'chart_ball_no_zodiac'          =>  chart_ball_no_zodiac($drawNumber),
+        'chart_ball_no_color'           =>  chart_ball_no_color($drawNumber),
+        'chart_ball_no_five_elements'   =>  chart_ball_no_five_elements($drawNumber),
+        'chart_extra_no_zodiac'         =>  chart_no_zodiac($drawNumber,6),
+        'chart_extra_no_color'          =>  chart_no_color($drawNumber,6),
+        'chart_extra_no_five_elements'  =>  chart_no_five_elements($drawNumber,6),
+        'chart_ball_1_no_zodiac'        =>  chart_no_zodiac($drawNumber,0),
+        'chart_ball_1_no_color'         =>  chart_no_color($drawNumber,0),
+        'chart_ball_1_no_five_elements' =>  chart_no_five_elements($drawNumber,0),
+        'chart_ball_2_no_zodiac'        =>  chart_no_zodiac($drawNumber,1),
+        'chart_ball_2_no_color'         =>  chart_no_color($drawNumber,1),
+        'chart_ball_2_no_five_elements' =>  chart_no_five_elements($drawNumber,1),
+        'chart_ball_3_no_zodiac'        =>  chart_no_zodiac($drawNumber,2),
+        'chart_ball_3_no_color'         =>  chart_no_color($drawNumber,2),
+        'chart_ball_3_no_five_elements' =>  chart_no_five_elements($drawNumber,2),
+        'chart_ball_4_no_zodiac'        =>  chart_no_zodiac($drawNumber,3),
+        'chart_ball_4_no_color'         =>  chart_no_color($drawNumber,3),
+        'chart_ball_4_no_five_elements' =>  chart_no_five_elements($drawNumber,3),
+        'chart_ball_5_no_zodiac'        =>  chart_no_zodiac($drawNumber,4),
+        'chart_ball_5_no_color'         =>  chart_no_color($drawNumber,4),
+        'chart_ball_5_no_five_elements' =>  chart_no_five_elements($drawNumber,4),
+        'chart_ball_6_no_zodiac'        =>  chart_no_zodiac($drawNumber,5),
+        'chart_ball_6_no_color'         =>  chart_no_color($drawNumber,5),
+        'chart_ball_6_no_five_elements' =>  chart_no_five_elements($drawNumber,5),
 
     ];
 

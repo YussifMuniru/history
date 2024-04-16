@@ -208,10 +208,10 @@ function two_sides(Array $draw_numbers){
        
        }
        elseif($sum >= 857 && $sum <= 924){
-        $five_elements = "Water";
+        $five_elements = "Fire";
        }
        elseif($sum >= 925 && $sum <= 1410){
-        $five_elements = "Water";
+        $five_elements = "Earth";
        }
         
 
@@ -220,6 +220,7 @@ function two_sides(Array $draw_numbers){
         array_push($history_array,[
         "draw_period"=>$draw_period,
         "winning"=> implode(",", $draw_number),
+        "sum_chart" => $sum,
         "sum" => ($sum > 810 ? "B":"S") ." ". (($sum % 2 == 0) ? "E" : "0"),
         "first_last"=> $first_last_more_result,
         "odd_even" => $odd_even_more_result,

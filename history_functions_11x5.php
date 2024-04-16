@@ -101,23 +101,117 @@ function two_sides_first_group(Array $draw_numbers,int $start_index,int $end_ind
 
 
 
+function fun_chart(Array $drawNumbers) : Array {
+
+
+        
+     
+    $patterns = ['5O0E' => 'five_Odd_zero_even','4O1E' => 'four_odd_one_even','3O2E' => 'three_odd_two_even','2O3E' =>  'two_odd_three_even', '1O4E' => 'one_odd_four_even', '0O5E' => 'zeo_odd_five_even'];
+    
+    $patterns_guess_middle = ['03' => 'three' , '04' => 'four' , '05' => 'five' , '06' => 'Six' , '07' => 'Seven' , '08' => 'Eight', '09' => 'Nine'];
+    
+    $counts = array_fill_keys(array_keys($patterns), 1);
+    $counts_guess_middle = array_fill_keys(array_keys($patterns_guess_middle), 1);
+    
+    $historyArray = [];
+    $drawNumbers  = array_reverse($drawNumbers);
+    
+    foreach ($drawNumbers as  $item) {
+        $draw_number = $item['draw_number'];
+        $mydata = [];
+        $num_odd = count(array_filter($draw_number, function($single_draw_number) {
+         return intval($single_draw_number) % 2 === 1;
+        }));
+        $num_even = 5 - $num_odd;
+        $pattern_string = "{$num_odd}O{$num_even}E";
+        foreach ($patterns as $patternKey => $pattern) {
+            $mydata[$pattern]    =  $patternKey === $pattern_string ? $patternKey : $counts[$patternKey];
+            $counts[$patternKey] =  ($mydata[$pattern] === $patternKey) ? 1 : ($counts[$patternKey] + 1);
+        }
+
+            sort($draw_number);
+            foreach ($patterns_guess_middle as $patternKey => $pattern) {
+         
+            $mydata[$pattern]    = $patternKey === $draw_number[2] ? $draw_number[2] : $counts_guess_middle[$patternKey];
+            $counts_guess_middle[$patternKey] =  ($mydata[$pattern] === $patternKey) ? 1 : ($counts_guess_middle[$patternKey] + 1);
+            }
+
+        $mydata["winning"]      = implode(",", $item["draw_number"]);
+        $mydata["draw_period"]  =  $item["period"];
+        
+        
+       array_push($historyArray, $mydata);
+    }
+
+    return array_reverse($historyArray);
+
+
+
+    }
+
+
+
+
+
+
+function two_sides_chart(Array $draw_numbers) : Array{
+
+   
+        $history_array = []; 
+       
+     
+      
+
+         foreach ($draw_numbers as  $item) {
+        $mydata = [];
+        
+        $mydata[]      = implode(",", $item["draw_number"]);
+        $mydata["draw_period"]  =  $item["period"];
+          try{
+        $draw_number = $item['draw_number'];
+       $mydata = [
+        "winning" => implode(",", $item["draw_number"]) , 'draw_period' => $item['period'] , 
+       'first'    => intval($draw_number[0]) > 5 && intval($draw_number[0]) != 11 ? 'B' : (intval($draw_number[0]) < 6 ? "S" : "Tie" ),
+       'second'   => intval($draw_number[1]) > 5 && intval($draw_number[1]) != 11 ? 'B' : (intval($draw_number[1]) < 6 ? "S" : "Tie" ),
+       'third'    => intval($draw_number[2]) > 5 && intval($draw_number[2]) != 11 ? 'B' : (intval($draw_number[2]) < 6 ? "S" : "Tie" ),
+       'fourth'   => intval($draw_number[3]) > 5 && intval($draw_number[3]) != 11 ? 'B' : (intval($draw_number[3]) < 6 ? "S" : "Tie" ),
+       'fifth'    => intval($draw_number[4]) > 5 && intval($draw_number[4]) != 11 ? 'B' : (intval($draw_number[4]) < 6 ? "S" : "Tie" ),
+       ];
+       
+       array_push($history_array, $mydata);
+      
+
+        }catch(Throwable $e){
+            return  [
+        "winning" => implode(",", $item["draw_number"]) , 'draw_period' => $item['period'] , 
+       'first'    => '',
+       'second'   => '',
+       'third'    => '',
+       'fourth'   => '',
+       'fifth'    => '',
+       ];
+
+            }
+}
+
+ return $history_array;
+
+}
+
+
 
 function render(Array $draw_numbers): array {
     
    
     $result = [
-                'first_three'     => eleven_5($draw_numbers),
-                'first_two'       => eleven_5($draw_numbers), 
-                'any_place'       => eleven_5($draw_numbers), 
-                'fixed_place'     => eleven_5($draw_numbers), 
-                'pick'            => eleven_5($draw_numbers), 
-                'fun'             => eleven_5($draw_numbers), 
-                'rapido'          => winning_number($draw_numbers), 
-                'two_sides'       => winning_number($draw_numbers), 
-                'pick_two_sides'  => winning_number($draw_numbers), 
-                'straight'        =>["first_2" => two_sides_first_group($draw_numbers,0,2),
-                                     "first_3" => two_sides_first_group($draw_numbers,0,3)],
-                'board_game' =>    board_game($draw_numbers,30),
+                'first_three'           => eleven_5($draw_numbers),
+                'first_two'             => eleven_5($draw_numbers), 
+                'any_place'             => eleven_5($draw_numbers), 
+                'fixed_place'           => eleven_5($draw_numbers), 
+                'pick'                  => eleven_5($draw_numbers), 
+                'fun'                   => eleven_5($draw_numbers), 
+                'fun_chart'             => fun_chart($draw_numbers),
+                'two_sides_chart'       => two_sides_chart($draw_numbers)
              ];
 
     return $result;
