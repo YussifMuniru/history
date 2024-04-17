@@ -1236,6 +1236,12 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
 
     $db_results = recenLotteryIsue($lottery_id);
     $history_results = "";
+ $draw_data = $db_results['data'];
+    foreach ($draw_data as $key => $value) {
+      if(count($value['draw_number']) !== 7){
+             array_splice($draw_data,$key,1);
+        }
+     }
 
     switch ($type) {
 
@@ -1259,6 +1265,7 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
             break;
     } 
 
+     if(!in_array($type,['two_sides','board_games','std','full_chart'])) return  ['status' => false];
 
     if($lottery_id > 0){
        $history_results = ['std' => render_mark6($db_results["data"]) , 'two_sides' => two_sides_render_mark6($db_results["data"]) , 'board_games' => board_games_render_mark6($db_results["data"]), 'full_chart' => chart_history($db_results["data"])]; 
@@ -1268,8 +1275,7 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
     echo json_encode($history_results);
     return $history_results;
 } else {
-    echo json_encode(["error" => "Invalid request"]);
-    return;
+     return  ['status' => false];
 }
 
 }

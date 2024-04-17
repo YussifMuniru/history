@@ -16,7 +16,9 @@ function store_history(Array $lottery_ids, int $time_interval){
             foreach($lottery_id_groups as $history_function_name => $lottery_ids){
                 if(in_array($lottery_id, $lottery_ids)){
                     echo "History stored".PHP_EOL;
-                   $histories_array[$lottery_id] = $history_function_name($lottery_id);
+                   $generated_history           =  $history_function_name($lottery_id);
+                   if(isset($generated_history['status'])) continue;
+                   $histories_array[$lottery_id] = $generated_history;
              }
             }
             

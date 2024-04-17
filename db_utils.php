@@ -48,7 +48,7 @@ if(!$row) return ["draw_periods"=>[],"draw_numbers"=>[]];
 // Step 2: Dynamically construct and execute a query to fetch data from the determined table
 $query = "SELECT * FROM {$tableName} ORDER BY draw_id DESC LIMIT :limit" ; 
 $stmt = $db->prepare($query);
-$limit = 1;
+$limit = 30;
 $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);

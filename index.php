@@ -72,9 +72,11 @@ function fetch_cached_history($lottery_id,$type) : String{
     try{
        $redis = new \Predis\Client();
        $cached_history = json_decode($redis->get("lottery_id_{$lottery_id}"),true);
-       if(!isset($cached_history[$type])) return json_encode(['status'=> false, 'msg'=> "Invalid request. Please try again."]);
+       if(!isset($cached_history[$type])) return json_encode([]);
        $cached_history = $type != null ? $cached_history[$type] : $cached_history;
        return json_encode($cached_history);
+    }catch(Throwable $e){
+        return json_encode([]);
     }
 
  

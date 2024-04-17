@@ -331,21 +331,26 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
     $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
 
     $db_results = recenLotteryIsue($lottery_id);
-    $draw_data = $db_results['data'];
+     $draw_data = $db_results['data'];
+    foreach ($draw_data as $key => $value) {
+      if(count($value['draw_number']) !== 3){
+             array_splice($draw_data,$key,1);
+        }
+     }
     $history_results = "";
 
     switch ($type) {
 
         case 'two_sides':
-            $history_results = two_sides_render($draw_data);
+            $history_results = two_sides_render($db_results['data']);
             break;
 
         case 'board_games':
-            $history_results = board_games_render($db_results["data"]);
+            $history_results = board_games_render($db_results['data']);
             break;
         
         case 'std':
-            $history_results = render($db_results["data"]);
+            $history_results = render($db_results['data']);
             break;
         
         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
@@ -354,15 +359,15 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
 
 
     if($lottery_id > 0){
-       $history_results = ['std' => render($db_results["data"]) , 'two_sides' => two_sides_render($db_results["data"]) , 'board_games' => board_games_render($db_results["data"])]; 
+       $history_results = ['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data']) , 'board_games' => board_games_render($db_results['data'])]; 
     }
     
     
-    echo json_encode($history_results);
+    //echo json_encode($history_results);
     return $history_results;
 } else {
     echo json_encode(["error" => "Invalid request"]);
-    return;
+    return ['status' => false];
 }
 
 }
