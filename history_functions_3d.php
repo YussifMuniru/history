@@ -1,83 +1,9 @@
 <?php
+
 require_once 'cos.php';
 require_once 'db_utils.php';
-
-
-
-
-
-function findPattern(Array $pattern,Array $drawNumbers) : bool{
-   $count = array_count_values($drawNumbers);
-   sort($count); sort($pattern);
-    return $count == $pattern;
-}// end of findPattern.
-
-
-function spanPattern(Array $drawNumbers, int $index, int $slice) : int  {
-    
-    // Slicing the array from index for the length of slice
-    $slicedNumbers = array_slice($drawNumbers, $index, $slice);
-   
-    // Sorting the sliced array
-    sort($slicedNumbers);
-
-    
-    // Getting the max and min values in the sliced array
-   $maxValue = max($slicedNumbers);
-   $minValue = min($slicedNumbers);
-
-    // Returning the difference between max and min values
-    return $maxValue - $minValue;
-
-}// end of spanPattern. Returns the difference btn the max and min values of the draw number
-
-
-function sumPattern(Array $drawNumbers, int $index,int $slice) : int {
-    // Slicing the array from index for the length of slice
-    $slicedArray = array_slice($drawNumbers, $index, $slice);
-
-    // Calculating the sum of the sliced array
-    $sum = array_sum($slicedArray);
-
-    return $sum;
-} // end of sumPattern. Sum the array chunk.
-
-
-function dragonTigerTiePattern(int $idx1,int $idx2,Array $drawNumbers) : string{
-    $v1 = $drawNumbers[$idx1];
-    $v2 = $drawNumbers[$idx2];
-
-    if ($v1 > $v2) {
-      
-        return "D";
-    } elseif ($v1 === $v2) {
-       
-        return "Tie";
-    } else {
-       
-        return "T";
-    }
-}// end of dragonTigerTiePattern. returns the dragon tiger tie relationship btn the numbers
-
-function isPrime($number) {
-    
-    if ($number == 0) return false;
-
-    if ($number <= 3) {
-        return true; // 2 and 3 are prime numbers
-    }
-
-    // Check from 2 to sqrt(number) for any divisors
-    $sqrt = sqrt($number);
-    for ($i = 2; $i <= $sqrt; $i++) {
-        if ($number % $i == 0) {
-            return false; // Number is divisible by some number other than 1 and itself
-        }
-    }
-
-    // If we find no divisors, it's a prime number
-    return true;
-}
+require_once 'helpers.php';
+require_once 'index.php';
 
 function determinePattern(int $num,$small_category,$check_prime = false): String{
 
@@ -104,13 +30,12 @@ function determinePattern(int $num,$small_category,$check_prime = false): String
 }// end of determinePatter
 
 
-
 //--------------------End of helper functions--------------------
 
 
 
 
-function dragonTigerHistory(Array $drawNumbers) : Array {
+function dragonTigerHistory3d(Array $drawNumbers) : Array {
     $historyArray = array();
 
 
@@ -129,7 +54,7 @@ function dragonTigerHistory(Array $drawNumbers) : Array {
     }
 
     return $historyArray;
-}// end of dragonTigerhistory.
+}// end of dragonTigerHistory3d.
 
 
 
@@ -336,7 +261,7 @@ function render(Array $drawNumber) : Array{
                 'all2'        => ["first2"=> all2History($drawNumber,"all2first2"), "last2"=> all2History($drawNumber,"all2last2")],
                 'fixedplace'  => winning_number($drawNumber), 
                 'anyplace'    => winning_number($drawNumber),
-                'dragonTiger' => dragonTigerHistory($drawNumber),
+                'dragonTiger' => dragonTigerHistory3d($drawNumber),
              ];
      return $result;
 
@@ -391,27 +316,34 @@ function board_games_render(Array $drawNumber) : Array{
 
 
 
+// if(isset($_GET["lottery_id"])){
+//     generate_history_3d(0);
+// }
 
-if (isset($_GET["lottery_id"])) {
+get_history();
 
+function generate_history_3d(int $lottery_id){
 
+    
+if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
 
-    $lottery_id = $_GET["lottery_id"];
-    $type       = $_GET["type"];
+    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
+    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
 
     $db_results = recenLotteryIsue($lottery_id);
+    $draw_data = $db_results['data'];
     $history_results = "";
 
-     switch ($type) {
+    switch ($type) {
 
         case 'two_sides':
-            $history_results = two_sides_render($db_results["data"]);
+            $history_results = two_sides_render($draw_data);
             break;
 
         case 'board_games':
             $history_results = board_games_render($db_results["data"]);
             break;
-
+        
         case 'std':
             $history_results = render($db_results["data"]);
             break;
@@ -419,15 +351,63 @@ if (isset($_GET["lottery_id"])) {
         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
             break;
     } 
+
+
+    if($lottery_id > 0){
+       $history_results = ['std' => render($db_results["data"]) , 'two_sides' => two_sides_render($db_results["data"]) , 'board_games' => board_games_render($db_results["data"])]; 
+    }
     
     
     echo json_encode($history_results);
-   
-   
+    return $history_results;
 } else {
-    print_r(json_encode(["error" => "Invalid request."]));
+    echo json_encode(["error" => "Invalid request"]);
     return;
 }
+
+}
+
+
+
+
+
+
+// if (isset($_GET["lottery_id"])) {
+
+
+
+//     $lottery_id = $_GET["lottery_id"];
+//     $type       = $_GET["type"];
+
+//     $db_results = recenLotteryIsue($lottery_id);
+//     $history_results = "";
+
+//      switch ($type) {
+
+//         case 'two_sides':
+//             $history_results = two_sides_render($db_results["data"]);
+//             break;
+
+//         case 'board_games':
+//             $history_results = board_games_render($db_results["data"]);
+//             break;
+
+//         case 'std':
+//             $history_results = render($db_results["data"]);
+//             break;
+        
+//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
+//             break;
+//     } 
+    
+    
+//     echo json_encode($history_results);
+   
+   
+// } else {
+//     print_r(json_encode(["error" => "Invalid request."]));
+//     return;
+// }
 
 
 

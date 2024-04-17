@@ -1,12 +1,14 @@
 <?php
 require_once 'cos.php';
 require_once 'db_utils.php';
+require_once 'helpers.php';
+require_once 'index.php';
 
 
 
 
 
-function eleven_5(Array $draw_numbers)  : Array { 
+function eleven_5_happy8(Array $draw_numbers)  : Array { 
    
    
     $results = [];
@@ -130,7 +132,7 @@ function over_under(Array $drawNumbers) : Array{
     return array_reverse($historyArray);
 }// end of over_under(). return the max category,either over or under 
 
-function b_s_o_e_sum(Array $drawNumbers) : Array{
+function b_s_o_e_sum_happy8(Array $drawNumbers) : Array{
 
     $big = 1;
     $small = 1;
@@ -271,14 +273,14 @@ function board_game_happy8(Array $draw_numbers){
 
 
 
-function render(Array $draw_numbers): array {
+function render_happy8(Array $draw_numbers): array {
     
    
     $result = array(
-               'pick'=> eleven_5($draw_numbers), 
+               'pick'=> eleven_5_happy8($draw_numbers), 
                 'fun'=> over_under($draw_numbers),
                 'odd_even'=> odd_even($draw_numbers),
-                'b_s_o_e_sum'=> b_s_o_e_sum($draw_numbers),
+                'b_s_o_e_sum_happy8'=> b_s_o_e_sum_happy8($draw_numbers),
                 'two_sides' => two_sides($draw_numbers),
                 'ball_no'   => ball_no($draw_numbers),
                 'board_game' =>    board_game_happy8($draw_numbers),
@@ -286,10 +288,10 @@ function render(Array $draw_numbers): array {
 
     return $result;
 
-} // end of render(). Returns all the history for happy8.
+} // end of render_happy8(). Returns all the history for happy8.
 
 
-function two_sides_render(Array $draw_numbers): array {
+function two_sides_render_happy8(Array $draw_numbers): array {
     
    
     $result = array(
@@ -300,10 +302,10 @@ function two_sides_render(Array $draw_numbers): array {
 
     return $result;
 
-} // end of render(). Returns all the history for happy8.
+} // end of render_happy8(). Returns all the history for happy8.
 
 
-function board_games_render(Array $draw_numbers): array {
+function board_games_render_happy8(Array $draw_numbers): array {
     
    
     $result = array(
@@ -312,15 +314,24 @@ function board_games_render(Array $draw_numbers): array {
 
     return $result;
 
-} // end of render(). Returns all the history for happy8.
+} // end of render_happy8(). Returns all the history for happy8.
 
 
 
-if (isset($_GET["lottery_id"])) {
 
-     
-    $lottery_id = $_GET["lottery_id"];
-    $type       = $_GET["type"];
+// if(isset($_GET["lottery_id"])){
+//     generate_history_happy8(0);
+// }
+
+get_history();
+
+function generate_history_happy8(int $lottery_id){
+
+    
+if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
+
+    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
+    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
 
     $db_results = recenLotteryIsue($lottery_id);
     $history_results = "";
@@ -328,32 +339,75 @@ if (isset($_GET["lottery_id"])) {
     switch ($type) {
 
         case 'two_sides':
-            $history_results = two_sides_render($db_results["data"]);
+            $history_results = two_sides_render_happy8($db_results["data"]);
             break;
 
         case 'board_games':
-            $history_results = board_games_render($db_results["data"]);
+            $history_results = board_games_render_happy8($db_results["data"]);
             break;
         
-         case 'std':
-            $history_results = render($db_results["data"]);
+        case 'std':
+            $history_results = render_happy8($db_results["data"]);
             break;
         
         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
             break;
     } 
+
+
+    if($lottery_id > 0){
+       $history_results = ['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) , 'board_games' => board_games_render_happy8($db_results["data"])]; 
+    }
     
     
     echo json_encode($history_results);
-    
-   
+    return $history_results;
 } else {
-    print_r(json_encode(["error" => "Invalid request."]));
+    echo json_encode(["error" => "Invalid request"]);
     return;
 }
 
+}
 
-//echo json_encode(render($results["draw_numbers"], $results["draw_periods"]));
+
+// if (isset($_GET["lottery_id"])) {
+
+     
+//     $lottery_id = $_GET["lottery_id"];
+//     $type       = $_GET["type"];
+
+//     $db_results = recenLotteryIsue($lottery_id);
+//     $history_results = "";
+
+//     switch ($type) {
+
+//         case 'two_sides':
+//             $history_results = two_sides_render_happy8($db_results["data"]);
+//             break;
+
+//         case 'board_games':
+//             $history_results = board_games_render_happy8($db_results["data"]);
+//             break;
+        
+//          case 'std':
+//             $history_results = render_happy8($db_results["data"]);
+//             break;
+        
+//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
+//             break;
+//     } 
+    
+    
+//     echo json_encode($history_results);
+    
+   
+// } else {
+//     print_r(json_encode(["error" => "Invalid request."]));
+//     return;
+// }
+
+
+//echo json_encode(render_happy8($results["draw_numbers"], $results["draw_periods"]));
 
 
 
@@ -383,5 +437,5 @@ if (isset($_GET["lottery_id"])) {
 // }
 
 
-// echo json_encode(render($results["draw_numbers"], $results["draw_periods"]));
+// echo json_encode(render_happy8($results["draw_numbers"], $results["draw_periods"]));
 

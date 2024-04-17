@@ -1,9 +1,11 @@
 <?php
 require_once 'cos.php';
 require_once 'db_utils.php';
+require_once 'helpers.php';
+require_once 'index.php';
 
 
-function dragonTigerTiePattern($idx1, $idx2, $drawNumbers) {
+function dragonTigerTiePattern_pk10($idx1, $idx2, $drawNumbers) {
     $v1 = $drawNumbers[$idx1];
     $v2 = $drawNumbers[$idx2];
 
@@ -19,7 +21,7 @@ function dragonTigerTiePattern($idx1, $idx2, $drawNumbers) {
     }
 }
 
-function winning_number(Array $draw_numbers) : array{
+function winning_number_pk10(Array $draw_numbers) : array{
           
     $results = [];
     foreach ($draw_numbers as  $value) {
@@ -32,7 +34,7 @@ function winning_number(Array $draw_numbers) : array{
  }
 
 
-function odd_even(Array $drawNumbers) : Array{
+function odd_even_pk10(Array $drawNumbers) : Array{
    
 
     $tie = 1;
@@ -84,100 +86,100 @@ function odd_even(Array $drawNumbers) : Array{
     return $historyArray;
    
 }
-function over_under(Array $drawNumbers) : Array{
+// function over_under(Array $drawNumbers) : Array{
    
    
-    $tie = 1;
-    $over = 1;
-    $under = 1;
+//     $tie = 1;
+//     $over = 1;
+//     $under = 1;
 
-    $historyArray = [];
-    foreach ($drawNumbers as $item) {
-        $value       = $item['draw_number'];
-        $draw_period = $item['period'];
-        sort($value);
+//     $historyArray = [];
+//     foreach ($drawNumbers as $item) {
+//         $value       = $item['draw_number'];
+//         $draw_period = $item['period'];
+//         sort($value);
        
-        $tenth_value = intval($value[9]);
-        $eleveth_value = intval($value[10]);
-        $is_tie = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
-        $is_under = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 1 && $eleveth_value <= 40) );
-        $is_over = (($tenth_value >= 41 && $tenth_value <= 80) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
+//         $tenth_value = intval($value[9]);
+//         $eleveth_value = intval($value[10]);
+//         $is_tie = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
+//         $is_under = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 1 && $eleveth_value <= 40) );
+//         $is_over = (($tenth_value >= 41 && $tenth_value <= 80) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
         
       
         
 
-          // Assuming findPattern() is defined with similar logic in PHP
-        $mydata = array(
-            'draw_period' => $draw_period,
-            'winning' => implode(",",$value),
-            'over' => $is_over ? "Over" : $over,
-            'tie'  =>  $is_tie ? "Tie" : $tie,
-            'under' => $is_under ? "Under" : $under,
+//           // Assuming findPattern() is defined with similar logic in PHP
+//         $mydata = array(
+//             'draw_period' => $draw_period,
+//             'winning' => implode(",",$value),
+//             'over' => $is_over ? "Over" : $over,
+//             'tie'  =>  $is_tie ? "Tie" : $tie,
+//             'under' => $is_under ? "Under" : $under,
             
-          );
+//           );
         
-        array_unshift($historyArray, $mydata);
+//         array_unshift($historyArray, $mydata);
 
      
-        $currentPattern = array_values($mydata);
-        sort($currentPattern);
-        $currentPattern = $currentPattern[2];
+//         $currentPattern = array_values($mydata);
+//         sort($currentPattern);
+//         $currentPattern = $currentPattern[2];
        
-        // Update counts
-       $over = ($currentPattern == "Over")  ? 1 : ($over += 1);
-       $tie = ($currentPattern == "Tie") ? 1 : ($tie += 1);
-       $under = ($currentPattern == "Under") ? 1 : ($under += 1);
+//         // Update counts
+//        $over = ($currentPattern == "Over")  ? 1 : ($over += 1);
+//        $tie = ($currentPattern == "Tie") ? 1 : ($tie += 1);
+//        $under = ($currentPattern == "Under") ? 1 : ($under += 1);
        
-    }
+//     }
 
    
 
-    return $historyArray;
-}
+//     return $historyArray;
+// }
 
-function b_s_o_e_sum(Array $drawNumbers) : Array{
+// function b_s_o_e_sum(Array $drawNumbers) : Array{
 
-    $big = 1;
-    $small = 1;
-    $odd = 1;
-    $even = 1;
+//     $big = 1;
+//     $small = 1;
+//     $odd = 1;
+//     $even = 1;
 
-    $historyArray = [];
-    foreach ($drawNumbers as $key => $item) {
+//     $historyArray = [];
+//     foreach ($drawNumbers as $key => $item) {
        
-        $value = $item['draw_number'];
-        $draw_period = $item['period'];
-        $sum = array_sum($value);
+//         $value = $item['draw_number'];
+//         $draw_period = $item['period'];
+//         $sum = array_sum($value);
 
-        $mydata = array(
-            'draw_period' => $draw_period,
-            'winning' => implode(',',$value),
-            'sum'    =>     $sum ,
-            'big_small'    =>     (($sum >= 810) ? "B" : $big) . " ". (($sum < 810 ) ? "S" : $small),
-            'odd_even'    =>     (($sum % 2 === 1)  ? "O" : $odd). " ". (($sum % 2 === 0) ? "E" : $even)
+//         $mydata = array(
+//             'draw_period' => $draw_period,
+//             'winning' => implode(',',$value),
+//             'sum'    =>     $sum ,
+//             'big_small'    =>     (($sum >= 810) ? "B" : $big) . " ". (($sum < 810 ) ? "S" : $small),
+//             'odd_even_pk10'    =>     (($sum % 2 === 1)  ? "O" : $odd). " ". (($sum % 2 === 0) ? "E" : $even)
             
-          );
+//           );
         
-        array_unshift($historyArray, $mydata);
+//         array_unshift($historyArray, $mydata);
 
-        $big_small_pattern = explode(" ",$mydata['big_small']);
-        $big_small_pattern = explode(" ",$mydata['odd_even']);
-        $big_pattern = $big_small_pattern[0];
-        $small_pattern = $big_small_pattern[1];
-        $odd_pattern = $big_small_pattern[0];
-        $even_pattern = $big_small_pattern[1];
+//         $big_small_pattern = explode(" ",$mydata['big_small']);
+//         $big_small_pattern = explode(" ",$mydata['odd_even_pk10']);
+//         $big_pattern = $big_small_pattern[0];
+//         $small_pattern = $big_small_pattern[1];
+//         $odd_pattern = $big_small_pattern[0];
+//         $even_pattern = $big_small_pattern[1];
         
         
-        // Update counts
-       $big = (intval($big_pattern) === "B")  ? 1 : ($big += 1);
-       $small = (intval($small_pattern) === "S") ? 1 : ($small += 1);
-       $odd = (intval($odd_pattern) === "O") ? 1 : ($odd += 1);
-       $even = (intval($even_pattern) === "E") ? 1 : ($even += 1);
-        }
+//         // Update counts
+//        $big = (intval($big_pattern) === "B")  ? 1 : ($big += 1);
+//        $small = (intval($small_pattern) === "S") ? 1 : ($small += 1);
+//        $odd = (intval($odd_pattern) === "O") ? 1 : ($odd += 1);
+//        $even = (intval($even_pattern) === "E") ? 1 : ($even += 1);
+//         }
         
-        return $historyArray;
+//         return $historyArray;
     
-}
+// }
 
 function dragon_tiger_history(Array $drawNumbers) {
     $historyArray = array();
@@ -188,15 +190,15 @@ function dragon_tiger_history(Array $drawNumbers) {
         $draw_period = $item['period'];
 
         
-        // Assuming dragonTigerTiePattern is a function you have defined in PHP
+        // Assuming dragonTigerTiePattern_pk10 is a function you have defined in PHP
         $mydata = array(
             'draw_period' => $draw_period,
             "winning" => implode(",",$draw_number),
-            'onex10' => dragonTigerTiePattern(0, 9, $draw_number),
-            'twox9' => dragonTigerTiePattern(1, 8, $draw_number),
-            'threex8' => dragonTigerTiePattern(2, 7, $draw_number),
-            'fourx7' => dragonTigerTiePattern(3, 6, $draw_number),
-            'fivex6' => dragonTigerTiePattern(4, 5, $draw_number),
+            'onex10' => dragonTigerTiePattern_pk10(0, 9, $draw_number),
+            'twox9' => dragonTigerTiePattern_pk10(1, 8, $draw_number),
+            'threex8' => dragonTigerTiePattern_pk10(2, 7, $draw_number),
+            'fourx7' => dragonTigerTiePattern_pk10(3, 6, $draw_number),
+            'fivex6' => dragonTigerTiePattern_pk10(4, 5, $draw_number),
             );
         array_unshift($historyArray, $mydata);
     }
@@ -305,12 +307,12 @@ function board_game_pk10(Array $draw_numbers){
 
 
 
-function render(Array $draw_numbers): array {
+function render_pk10(Array $draw_numbers): array {
     
    
     return       [
-                'guess_rank'        => winning_number($draw_numbers), 
-                'fixed_place'       => winning_number($draw_numbers),
+                'guess_rank'        => winning_number_pk10($draw_numbers), 
+                'fixed_place'       => winning_number_pk10($draw_numbers),
                 'dragon_tiger'      => dragon_tiger_history($draw_numbers),
                 'b_s_o_e'=>['first' => b_s_o_e_of_first_5($draw_numbers),'top_two' => b_s_o_e_of_sum_of_top_two($draw_numbers)] ,
                 'sum'    =>['top_two' => sum_of_top_two($draw_numbers),'top_three' => sum_of_top_three($draw_numbers) ],
@@ -322,70 +324,112 @@ function render(Array $draw_numbers): array {
 
 
 
-function two_sides_render(Array $draw_numbers): array {
-    
-   
-    return       [
-                "rapido" => pk_10_two_sides($draw_numbers),
-                'two_sides'         => pk_10_two_sides($draw_numbers),
-                'fixed_place_two_sides'         => pk_10_two_sides($draw_numbers),
-                'sum_of_top_two_two_sides'         => pk_10_two_sides($draw_numbers),
-                
-                    ];  
+function two_sides_render_pk10(Array $draw_numbers): array {
+     return [
+        "rapido"                   => pk_10_two_sides($draw_numbers),
+        'two_sides'                => pk_10_two_sides($draw_numbers),
+        'fixed_place_two_sides'    => pk_10_two_sides($draw_numbers),
+        'sum_of_top_two_two_sides' => pk_10_two_sides($draw_numbers),
+            ];  
 }
 
 
 
-function board_games_render(Array $draw_numbers): array {
-    
-   
-    return       [
-                'board_game'        => board_game_pk10($draw_numbers),
-                
-                    ];  
+function board_games_render_pk10(Array $draw_numbers): array {
+     return    [ 'board_game' => board_game_pk10($draw_numbers), ];  
 }
 
 
 
-// echo json_encode(render([["draw_number" => ["07",'05','02','09','03','08','04','01','10','06'],'period'=>'1,2,3,4,5']]));
+// echo json_encode(render_pk10([["draw_number" => ["07",'05','02','09','03','08','04','01','10','06'],'period'=>'1,2,3,4,5']]));
 // return;
 
 
+// if(isset($_GET["lottery_id"])){
+//     generate_history_pk10(0);
+// }
 
-if (isset($_GET["lottery_id"])) {
+get_history();
 
-      
-    $lottery_id = $_GET["lottery_id"];
-    $type       = $_GET["type"];
+function generate_history_pk10(int $lottery_id){
+
+    
+if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
+
+    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
+    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
 
     $db_results = recenLotteryIsue($lottery_id);
     $history_results = "";
 
     switch ($type) {
 
-        case 'std':
-            $history_results = render($db_results["data"]);
-            break;
         case 'two_sides':
-            $history_results = two_sides_render($db_results["data"]);
+            $history_results = two_sides_render_pk10($db_results["data"]);
             break;
 
         case 'board_games':
-            $history_results = board_games_render($db_results["data"]);
+            $history_results = board_games_render_pk10($db_results["data"]);
+            break;
+        
+        case 'std':
+            $history_results = render_pk10($db_results["data"]);
             break;
         
         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
             break;
-        
     } 
+
+
+    if($lottery_id > 0){
+       $history_results = ['std' => render_pk10($db_results["data"]) , 'two_sides' => two_sides_render_pk10($db_results["data"]) , 'board_games' => board_games_render_pk10($db_results["data"])]; 
+    }
     
     
     echo json_encode($history_results);
-   
+    return $history_results;
 } else {
-    print_r(json_encode(["error" => "Invalid request."]));
+    echo json_encode(["error" => "Invalid request"]);
     return;
 }
+
+}
+
+
+// if (isset($_GET["lottery_id"])) {
+
+      
+//     $lottery_id = $_GET["lottery_id"];
+//     $type       = $_GET["type"];
+
+//     $db_results = recenLotteryIsue($lottery_id);
+//     $history_results = "";
+
+//     switch ($type) {
+
+//         case 'std':
+//             $history_results = render_pk10($db_results["data"]);
+//             break;
+//         case 'two_sides':
+//             $history_results = two_sides_render_pk10($db_results["data"]);
+//             break;
+
+//         case 'board_games':
+//             $history_results = board_games_render_pk10($db_results["data"]);
+//             break;
+        
+//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
+//             break;
+        
+//     } 
+    
+    
+//     echo json_encode($history_results);
+   
+// } else {
+//     print_r(json_encode(["error" => "Invalid request."]));
+//     return;
+// }
 
 
 
@@ -412,5 +456,5 @@ if (isset($_GET["lottery_id"])) {
 // }
 
 
-// echo json_encode(render($results["draw_numbers"], $results["draw_periods"]));
+// echo json_encode(render_pk10($results["draw_numbers"], $results["draw_periods"]));
 

@@ -1,8 +1,8 @@
 <?php
 require_once 'cos.php';
 require_once 'db_utils.php';
-
-
+require_once 'helpers.php';
+require_once 'index.php';
 
 function eleven_5(Array $draw_numbers)  : array { 
    
@@ -19,7 +19,7 @@ function eleven_5(Array $draw_numbers)  : array {
 
 }// end of eleven_5(): return the wnning number:format ["winning"=>"1,2,3,4,5"]
 
-function winning_number(Array $draw_numbers)  : array { 
+function winning_number_11x5(Array $draw_numbers)  : array { 
    
     $results = [];
     foreach ($draw_numbers as $value) {
@@ -30,7 +30,7 @@ function winning_number(Array $draw_numbers)  : array {
 
     return $results;
 
-}// end of winning_number(): return the wnning number:format ["winning"=>"1,2,3,4,5"]
+}// end of winning_number_11x5(): return the wnning number:format ["winning"=>"1,2,3,4,5"]
 
 
 function two_sides_2sides(array $draw_results) : array{
@@ -200,7 +200,7 @@ function two_sides_chart(Array $draw_numbers) : Array{
 
 
 
-function render(Array $draw_numbers): array {
+function render_11x5(Array $draw_numbers): array {
     
    
     $result = [
@@ -218,13 +218,13 @@ function render(Array $draw_numbers): array {
 }
 
 
-function two_sides_render(Array $draw_numbers): array {
+function two_sides_render_11x5(Array $draw_numbers): array {
     
    
     $result = [
-                'rapido'          => winning_number($draw_numbers), 
+                'rapido'          => winning_number_11x5($draw_numbers), 
                 'two_sides'       => two_sides_2sides($draw_numbers), 
-                'pick'  => ['pick'=> winning_number($draw_numbers) , "first_2" => two_sides_first_group($draw_numbers,0,2),
+                'pick'  => ['pick'=> winning_number_11x5($draw_numbers) , "first_2" => two_sides_first_group($draw_numbers,0,2),
                             "first_3" => two_sides_first_group($draw_numbers,0,3)], 
                 'straight'        =>["first_2" => two_sides_first_group($draw_numbers,0,2),
                                      "first_3" => two_sides_first_group($draw_numbers,0,3)],
@@ -235,7 +235,7 @@ function two_sides_render(Array $draw_numbers): array {
 }
 
 
-function board_games_render(Array $draw_numbers): array {
+function board_games_render_11x5(Array $draw_numbers): array {
     
    
     $result = [
@@ -247,17 +247,23 @@ function board_games_render(Array $draw_numbers): array {
 }
 
 
-// echo json_encode(render([["draw_number" => ["02",'05','06','04','09'],'period'=>'1,2,3,4,5']]));
+// echo json_encode(render_11x5([["draw_number" => ["02",'05','06','04','09'],'period'=>'1,2,3,4,5']]));
 
 
-// return;
+get_history();
+
+// if(isset($_GET["lottery_id"])){
+//     generate_history_11x5(0);
+// }
 
 
-if (isset($_GET["lottery_id"])) {
+function generate_history_11x5(int $lottery_id){
 
-   
-    $lottery_id = $_GET["lottery_id"];
-    $type       = $_GET["type"];
+    
+if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
+
+    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
+    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
 
     $db_results = recenLotteryIsue($lottery_id);
     $history_results = "";
@@ -265,31 +271,79 @@ if (isset($_GET["lottery_id"])) {
     switch ($type) {
 
         case 'two_sides':
-            $history_results = two_sides_render($db_results["data"]);
+            $history_results = two_sides_render_11x5($db_results["data"]);
             break;
 
         case 'board_games':
-            $history_results = board_games_render($db_results["data"]);
+            $history_results = board_games_render_11x5($db_results["data"]);
             break;
         
         case 'std':
-            $history_results = render($db_results["data"]);
+            $history_results = render_11x5($db_results["data"]);
             break;
         
         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
             break;
     } 
+
+
+    if($lottery_id > 0){
+       $history_results = ['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) , 'board_games' => board_games_render_11x5($db_results["data"])]; 
+    }
     
     
     echo json_encode($history_results);
-   
+    return $history_results;
 } else {
-    print_r(json_encode(["error" => "Invalid request."]));
+    echo json_encode(["error" => "Invalid request"]);
     return;
 }
 
+}
 
-//echo json_encode(render($results["draw_numbers"], $results["draw_periods"]));
+
+
+
+// return;
+
+
+// if (isset($_GET["lottery_id"])) {
+
+   
+//     $lottery_id = $_GET["lottery_id"];
+//     $type       = $_GET["type"];
+
+//     $db_results = recenLotteryIsue($lottery_id);
+//     $history_results = "";
+
+//     switch ($type) {
+
+//         case 'two_sides':
+//             $history_results = two_sides_render_11x5($db_results["data"]);
+//             break;
+
+//         case 'board_games':
+//             $history_results = board_games_render_11x5($db_results["data"]);
+//             break;
+        
+//         case 'std':
+//             $history_results = render_11x5($db_results["data"]);
+//             break;
+        
+//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
+//             break;
+//     } 
+    
+    
+//     echo json_encode($history_results);
+   
+// } else {
+//     print_r(json_encode(["error" => "Invalid request."]));
+//     return;
+// }
+
+
+//echo json_encode(render_11x5($results["draw_numbers"], $results["draw_periods"]));
 
 
 
@@ -309,5 +363,5 @@ if (isset($_GET["lottery_id"])) {
 // }
 
 
-// print json_encode(render($results["draw_numbers"], $results["draw_periods"]));
+// print json_encode(render_11x5($results["draw_numbers"], $results["draw_periods"]));
 

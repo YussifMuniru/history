@@ -1,19 +1,12 @@
 <?php
 require_once 'cos.php';
 require_once 'db_utils.php';
+require_once 'helpers.php';
+require_once 'index.php';
 
 
 
-function findPattern(Array $pattern, Array $drawNumbers,int $index,int $slice): bool{
-    $count = array_count_values(array_slice($drawNumbers, $index, $slice));
-    sort($count);sort($pattern);
-    return $count == $pattern;
-}// end of findPattern.
-
-
-
-
-function spanPattern(Array $drawNumbers,int $index,int $slice): int{
+function spanPattern5d(Array $drawNumbers,int $index,int $slice): int{
     // Slicing the array from index for the length of slice
     $slicedNumbers = array_slice($drawNumbers, $index, $slice);
     
@@ -29,18 +22,7 @@ function spanPattern(Array $drawNumbers,int $index,int $slice): int{
 
     // Returning the difference between max and min values
     return $maxValue - $minValue;
-}// end of spanPattern
-
-
-function sumPattern(Array $drawNumbers,int $index,int $slice) : int{
-    // Slicing the array from index for the length of slice
-    $slicedArray = array_slice($drawNumbers, $index, $slice);
-
-    // Calculating the sum of the sliced array
-    $sum = array_sum($slicedArray);
-
-    return $sum;
-}// end of sumPattern
+}// end of spanPattern5d
 
 
 
@@ -65,14 +47,14 @@ function bigSmallOddEvenPattern(Array $drawNumbers,int $start,int $slice,int $in
 }// end of bigSmallOddEvenPattern
 
 
-function determinePattern(int $num,$lower_limit = 5): String{
+function determinePattern5d(int $num,$lower_limit = 5): String{
     if ($num <= $lower_limit) {
         return $num % 2 === 0 ? "S E" : "S O";
     } elseif ($num > $lower_limit) {
         return $num % 2 === 0 ? "B E" : "B O";
     }
     return "not found";
-}// end of determinePattern
+}// end of determinePattern5d
 
 
 
@@ -92,9 +74,9 @@ function bigSmallOddEvenPattern3($drawNumbers, $start,int $slice,int $index1,int
 
 
     // Determine the pattern for each number
-    $first2 = determinePattern($numbers[$index1]);
-    $last2 = determinePattern($numbers[$index2]);
-    $last3 = determinePattern($numbers[$index3]);
+    $first2 = determinePattern5d($numbers[$index1]);
+    $last2 = determinePattern5d($numbers[$index2]);
+    $last3 = determinePattern5d($numbers[$index3]);
 
     // Return the concatenated result
     return ["sum"=> $sum , "num1" => $first2 , "num2" => $last2 , "num3"  => $last3];
@@ -150,23 +132,7 @@ function sumAndFindPattern1($drawNumber, $index, $slice, $range)
     return ["sum" => $sum, "b_s" =>  $pattern_parts[0],"o_e"=>$pattern_parts[1]];
 }
 
-function dragonTigerTiePattern(int $idx1,int $idx2,Array $drawNumbers) : string{
 
-    
-    $v1 = $drawNumbers[$idx1];
-    $v2 = $drawNumbers[$idx2];
-
-    if ($v1 > $v2) {
-
-        return "D";
-    } elseif ($v1 === $v2) {
-
-        return "Tie";
-    } else {
-
-        return "T";
-    }
-}
 
 
 
@@ -701,7 +667,7 @@ function bsoeHistory($drawNumbers, $typeOfModule){
 
 
 
-function all2History(Array $drawNumbers,String $typeOfModule) : Array{
+function all2History5d(Array $drawNumbers,String $typeOfModule) : Array{
 
     $historyArray = [];
 
@@ -712,7 +678,7 @@ function all2History(Array $drawNumbers,String $typeOfModule) : Array{
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj["period"];
 
-        // Assuming sumPattern and spanPattern functions are defined in PHP
+        // Assuming sumPattern and spanPattern5d functions are defined in PHP
         $objectKeyPrefix = str_replace("all2", "", $typeOfModule);
         $startIndex = $typeOfModule === "all2first2" ? 0 : 3;
         $length = $typeOfModule === "all2first2" ? 2 : 4;
@@ -721,7 +687,7 @@ function all2History(Array $drawNumbers,String $typeOfModule) : Array{
 
         $mydata = array(
             $objectKeyPrefix . "sum" => sumPattern($draw_number, $startIndex, $length),
-            $objectKeyPrefix . "span" => spanPattern($draw_number, $startIndex, $length)
+            $objectKeyPrefix . "span" => spanPattern5d($draw_number, $startIndex, $length)
         );
 
         $splitted_sum = str_split("$sum");
@@ -736,23 +702,23 @@ function all2History(Array $drawNumbers,String $typeOfModule) : Array{
 
 
     return array_reverse($historyArray);
-}// end of all2History: ["sum"..."span"]
+}// end of all2History5d: ["sum"..."span"]
 
 
 
-// function all2History(Array $draw_periods,Array $drawNumbers,String $typeOfModule) : Array{
+// function all2History5d(Array $draw_periods,Array $drawNumbers,String $typeOfModule) : Array{
 
 //     $historyArray = [];
 
 //     foreach ($drawNumbers as  $item) {
-//         // Assuming sumPattern and spanPattern functions are defined in PHP
+//         // Assuming sumPattern and spanPattern5d functions are defined in PHP
 //         $objectKeyPrefix = str_replace("all2", "", $typeOfModule);
 //         $startIndex = $typeOfModule === "all2first2" ? 0 : 3;
 //         $length = $typeOfModule === "all2first2" ? 2 : 4;
 
 //         $mydata = array(
 //             $objectKeyPrefix . "sum" => sumPattern($item, $startIndex, $length),
-//             $objectKeyPrefix . "span" => spanPattern($item, $startIndex, $length)
+//             $objectKeyPrefix . "span" => spanPattern5d($item, $startIndex, $length)
 //         );
 //         $mydata["winning"] = implode(",",$item);
 //         $mydata["draw_period"] = $draw_periods[$key];
@@ -760,11 +726,11 @@ function all2History(Array $drawNumbers,String $typeOfModule) : Array{
 //     }
 
 //     return $historyArray;
-// }// end of all2History: ["sum"..."span"]
+// }// end of all2History5d: ["sum"..."span"]
 
 
 
-function all3History(Array $drawNumbers,String $typeOf3) : Array{
+function all3History5d(Array $drawNumbers,String $typeOf3) : Array{
     $group3 = 1;
     $group6 = 1;
 
@@ -774,7 +740,7 @@ function all3History(Array $drawNumbers,String $typeOf3) : Array{
     foreach ($drawNumbers as  $draw_obj) {
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj["period"];
-        // Assuming sumPattern, spanPattern, and findPattern are functions you've defined elsewhere
+        // Assuming sumPattern, spanPattern5d, and findPattern are functions you've defined elsewhere
         // and they need to be converted to PHP as well.
         $objectKeyPrefix = str_replace("all3", "", $typeOf3);
 
@@ -792,7 +758,7 @@ function all3History(Array $drawNumbers,String $typeOf3) : Array{
 
         // $mydata = [
         //     $objectKeyPrefix . "sum" => sumPattern($draw_number, $startingIndex, $endIndex),
-        //     $objectKeyPrefix . "span" => spanPattern($draw_number,  $startingIndex, $endIndex),
+        //     $objectKeyPrefix . "span" => spanPattern5d($draw_number,  $startingIndex, $endIndex),
         //     $group3Key => $group3Condition,
         //     $group6Key => $group6Condition,
         // ];
@@ -802,7 +768,7 @@ function all3History(Array $drawNumbers,String $typeOf3) : Array{
 
         $mydata = [
             $objectKeyPrefix . "sum" => sumPattern($draw_number, $startingIndex, $endIndex),
-            $objectKeyPrefix . "span" => spanPattern($draw_number,  $startingIndex, $endIndex),
+            $objectKeyPrefix . "span" => spanPattern5d($draw_number,  $startingIndex, $endIndex),
             $group3Key => $group3Condition,
             $group6Key => $group6Condition,
         ];
@@ -826,7 +792,7 @@ function all3History(Array $drawNumbers,String $typeOf3) : Array{
     }
 
     return array_reverse($historyArray);
-}// end of all3History: ["group6"..."group3"]
+}// end of all3History5d: ["group6"..."group3"]
 
 
 function all4History(Array $drawNumbers,String $isFirst) : Array{
@@ -1023,7 +989,7 @@ function dragon_tiger_tie_chart(Array $drawNumbers,$start_index, $end_index) : A
 
 
 
-function winning_number(Array $draw_numbers) : array{
+function winning_number5d(Array $draw_numbers) : array{
           
     $results = [];
     foreach ($draw_numbers as  $value) {
@@ -1080,7 +1046,7 @@ function two_sides_rapido(Array $draw_numbers) {
         }
         $b_s_o_e = "";
         $sum = array_sum($draw_number);
-        $b_s_o_e = determinePattern($sum,22);
+        $b_s_o_e = determinePattern5d($sum,22);
         $keys = array_keys($chunck_result);
         
         $final_results = [
@@ -1112,20 +1078,20 @@ function two_sides_rapido(Array $draw_numbers) {
 
 
 
-function render(Array $drawNumber) : Array{
+function render5d(Array $drawNumber) : Array{
 
     $result = [
         'all5'                       =>    all5History($drawNumber),
         'all4'                       =>    ["first4" => all4History($drawNumber, "all4first4"), "last4" =>  all4History($drawNumber,"all4last4")],
-        'all3'                       =>    ["first3"=> all3History($drawNumber, "all3first3"),"mid3"=> all3History($drawNumber, "all3mid3"),"last3"=> all3History($drawNumber, "all3last3")] ,
-        'all2'                       =>    ["first2" => all2History($drawNumber, "all2first2"),"last2"=>all2History($drawNumber, "all2last2") ],
+        'all3'                       =>    ["first3"=> all3History5d($drawNumber, "all3first3"),"mid3"=> all3History5d($drawNumber, "all3mid3"),"last3"=> all3History5d($drawNumber, "all3last3")] ,
+        'all2'                       =>    ["first2" => all2History5d($drawNumber, "all2first2"),"last2"=>all2History5d($drawNumber, "all2last2") ],
         'fixedplace'                 =>    all5History($drawNumber),
         'anyplace'                   =>    all5History($drawNumber),
         'bsoe'                       =>    ["first2"=> bsoeHistory($drawNumber, "bsoefirst2"), "first3"=>  bsoeHistory($drawNumber,"bsoefirst3"),"last2"=> bsoeHistory($drawNumber, "bsoelast2"), "last3"                      =>    bsoeHistory($drawNumber, "bsoelast3") ,"bsoesumofall3"=> bsoeHistory($drawNumber, "bsoesumofall3"),"sumofall5"=> bsoeHistory($drawNumber,"bsoesumofall5")],
-        'pick2'                      =>    winning_number($drawNumber),
-        'fun'                        =>    winning_number  ($drawNumber),
-        'pick3'                      =>    winning_number($drawNumber),
-        'pick4'                      =>    winning_number($drawNumber),
+        'pick2'                      =>    winning_number5d($drawNumber),
+        'fun'                        =>    winning_number5d  ($drawNumber),
+        'pick3'                      =>    winning_number5d($drawNumber),
+        'pick4'                      =>    winning_number5d($drawNumber),
         'dragonTiger'                =>    dragonTigerHistory($drawNumber),
         'dragon_tiger_tie_chart'     =>    ['one_x_2'=>   dragon_tiger_tie_chart($drawNumber,0,1), 'one_x_3'=>   dragon_tiger_tie_chart($drawNumber,0,2),'one_x_4'=>   dragon_tiger_tie_chart($drawNumber,0,3),'one_x_5'=>   dragon_tiger_tie_chart($drawNumber,0,4),'two_x_3'=>   dragon_tiger_tie_chart($drawNumber,1,2),'two_x_4'=>   dragon_tiger_tie_chart($drawNumber,1,3),'two_x_5'=>   dragon_tiger_tie_chart($drawNumber,1,4),'three_x_4'=>   dragon_tiger_tie_chart($drawNumber,2,3),'three_x_5'=>   dragon_tiger_tie_chart($drawNumber,2,4),'four_x_5'=>   dragon_tiger_tie_chart($drawNumber,3,4)],
         'stud'                       =>    studHistory($drawNumber),
@@ -1136,10 +1102,10 @@ function render(Array $drawNumber) : Array{
    ];
 
    return false ? [] : $result;
-}// end of render. Returns all the history for 5D.
+}// end of render5d. Returns all the history for 5D.
 
 
-function two_sides_render(Array $drawNumber) : Array{
+function two_sides_render_5d(Array $drawNumber) : Array{
 
     
    
@@ -1153,10 +1119,10 @@ function two_sides_render(Array $drawNumber) : Array{
    ];
 
    return false ? [] : $result;
-}// end of render. Returns all the history for 5D.
+}// end of render5d. Returns all the history for 5D.
 
 
-function board_games_render(Array $drawNumber) : Array{
+function board_games_render_5d(Array $drawNumber) : Array{
 
     
    
@@ -1168,12 +1134,12 @@ function board_games_render(Array $drawNumber) : Array{
    ];
 
    return false ? [] : $result;
-}// end of render. Returns all the history for 5D.
+}// end of render5d. Returns all the history for 5D.
 
 
 
 
-// echo json_encode(render([["draw_number" => ["0",'4','4','3','9'],'period'=>'1,2,3,4,5']]));
+// echo json_encode(render5d([["draw_number" => ["0",'4','4','3','9'],'period'=>'1,2,3,4,5']]));
 
 
 // return;
@@ -1181,12 +1147,31 @@ function board_games_render(Array $drawNumber) : Array{
 //  $results = ["draw_numbers"=>[["5","7","1","0","7"],["4","3","3","7","7"],["4","5","5","0","9"],["5","2","8","4","3"]],"draw_periods"=>[["1,2,3,4,4"], ["1,2,3,4,4"],["1,2,3,4,4"],["1,2,3,4,4"]]];
 
 
+// if(isset($_SERVER) && isset($_SERVER['REQUEST_METHOD'])){
+
+// if($_SERVER['REQUEST_METHOD'] == 'GET'){
+//     $lottery_id = $_GET['lottery_id'];
+//     $type       = $_GET['type'];
+//     if(!isset($lottery_id) || !isset($type)){
+//         echo json_encode(['status' => 'error', 'message' =>'Invalid request.']);
+//         return;
+//     }
+//    echo fetch_cached_history($lottery_id,$type);
+// }
+// }
 
 
-if (isset($_GET["lottery_id"])) {
 
-    $lottery_id = $_GET["lottery_id"];
-    $type       = $_GET["type"];
+get_history();
+
+
+function generate_history_5d(int $lottery_id){
+
+    
+if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
+
+    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
+    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
 
     $db_results = recenLotteryIsue($lottery_id);
     $history_results = "";
@@ -1194,28 +1179,36 @@ if (isset($_GET["lottery_id"])) {
     switch ($type) {
 
         case 'two_sides':
-            $history_results = two_sides_render($db_results["data"]);
+            $history_results = two_sides_render_5d($db_results["data"]);
             break;
 
         case 'board_games':
-            $history_results = board_games_render($db_results["data"]);
+            $history_results = board_games_render_5d($db_results["data"]);
             break;
         
         case 'std':
-            $history_results = render($db_results["data"]);
+            $history_results = render5d($db_results["data"]);
             break;
         
         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
             break;
     } 
+
+
+    if($lottery_id > 0){
+       $history_results = ['std' => render5d($db_results["data"]) , 'two_sides' => two_sides_render_5d($db_results["data"]) , 'board_games' => board_games_render_5d($db_results["data"])]; 
+    }
     
     
     echo json_encode($history_results);
-   
+    return $history_results;
 } else {
-    echo json_encode(["error" => "Invalid request."]);
+    echo json_encode(["error" => "Invalid request"]);
     return;
 }
+
+}
+
 
 
 
