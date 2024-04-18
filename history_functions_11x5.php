@@ -250,15 +250,16 @@ function board_games_render_11x5(Array $draw_numbers): array {
 // echo json_encode(render_11x5([["draw_number" => ["02",'05','06','04','09'],'period'=>'1,2,3,4,5']]));
 
 
-get_history();
+// get_history();
 
 // if(isset($_GET["lottery_id"])){
 //     generate_history_11x5(0);
 // }
 
 
-function generate_history_11x5(int $lottery_id){
+// function generate_history_11x5(int $lottery_id){
 
+    $lottery_id = $_GET['$lottery_id'];
     
 if ($lottery_id > 0) {
 
@@ -271,6 +272,10 @@ if ($lottery_id > 0) {
         }
      }
 
+     echo json_encode(['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) , 'board_games' => board_games_render_11x5($db_results["data"])]);
+
+     return;
+
     if($lottery_id > 0){
        $history_results = ['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) , 'board_games' => board_games_render_11x5($db_results["data"])]; 
     }
@@ -279,6 +284,6 @@ if ($lottery_id > 0) {
     return  ['status' => false];
 }
 
-}
+// }
 
 

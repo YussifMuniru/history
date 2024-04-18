@@ -140,7 +140,7 @@ function board_game_fst3(Array $draw_numbers){
         $draw_period  = $val['period']; 
 
         $sum = array_sum($draw_number);
-        array_unshift($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 4 && $sum <= 10  ? 'Small' : ($sum < 17 ? 'big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Pair' : 'One','sum' => $sum ]);
+        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 4 && $sum <= 10  ? 'Small' : ($sum < 17 ? 'big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Pair' : 'One','sum' => $sum ]);
     }
 
 
@@ -202,16 +202,18 @@ function board_games_render_fast3(Array $draw_numbers) : Array{
 
 // return;
 
-get_history();
+// get_history();
 
 // if(isset($_GET["lottery_id"])){
 //     generate_history_fast3(0);
 // }
 
 
-function generate_history_fast3(int $lottery_id){
+// function generate_history_fast3(int $lottery_id){
 
     
+    $lottery_id = $_GET["lottery_id"];
+
 if ($lottery_id > 0) {
 
     $db_results = recenLotteryIsue($lottery_id);
@@ -223,6 +225,11 @@ if ($lottery_id > 0) {
         }
      }
 
+
+     echo json_encode(['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]) , 'board_games' => board_games_render_fast3($db_results["data"])]);
+
+     return;
+
    if($lottery_id > 0){
        $history_results = ['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]) , 'board_games' => board_games_render_fast3($db_results["data"])]; 
     }
@@ -232,5 +239,5 @@ if ($lottery_id > 0) {
    return  ['status' => false];
 }
 
-}
+// }
 

@@ -66,7 +66,7 @@ function odd_even_pk10(Array $drawNumbers) : Array{
             
           );
         
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
 
      
         $currentPattern = array_values($mydata);
@@ -118,7 +118,7 @@ function odd_even_pk10(Array $drawNumbers) : Array{
             
 //           );
         
-//         array_unshift($historyArray, $mydata);
+//         array_push($historyArray, $mydata);
 
      
 //         $currentPattern = array_values($mydata);
@@ -160,7 +160,7 @@ function odd_even_pk10(Array $drawNumbers) : Array{
             
 //           );
         
-//         array_unshift($historyArray, $mydata);
+//         array_push($historyArray, $mydata);
 
 //         $big_small_pattern = explode(" ",$mydata['big_small']);
 //         $big_small_pattern = explode(" ",$mydata['odd_even_pk10']);
@@ -200,7 +200,7 @@ function dragon_tiger_history(Array $drawNumbers) {
             'fourx7' => dragonTigerTiePattern_pk10(3, 6, $draw_number),
             'fivex6' => dragonTigerTiePattern_pk10(4, 5, $draw_number),
             );
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
     }
 
     return $historyArray;
@@ -225,7 +225,7 @@ function b_s_o_e_of_first_5(Array $drawNumbers) {
           
         }
         $res['pos'] = $pos_key;
-        array_unshift($historyArray,$res);
+        array_push($historyArray,$res);
         
     }   
     return $historyArray;
@@ -238,7 +238,7 @@ function b_s_o_e_of_sum_of_top_two(Array $drawNumbers) {
         $sum = array_sum($value);
         $b_s = ($sum >= 12) ? "B" : "S";
         $o_e = ($sum % 2 === 1) ? "O" : "E";
-        array_unshift($historyArray,['draw_period' => $draw_period,"winning" => implode(",", $value), "sum"=>$sum, "b_s" =>$b_s, "o_e" => $o_e]);
+        array_push($historyArray,['draw_period' => $draw_period,"winning" => implode(",", $value), "sum"=>$sum, "b_s" =>$b_s, "o_e" => $o_e]);
 
     }   
     return $historyArray;
@@ -251,7 +251,7 @@ function sum_of_top_two(Array $drawNumbers) {
             $value       = $item['draw_number'];
             $draw_period = $item['period'];
             $sum = array_sum(array_slice($value,0,2));
-            array_unshift( $historyArray, ['draw_period'=>$draw_period,"winning" => implode(",", $value), "sum"=>$sum]);
+            array_push( $historyArray, ['draw_period'=>$draw_period,"winning" => implode(",", $value), "sum"=>$sum]);
     }   
     return $historyArray;
 }
@@ -263,7 +263,7 @@ function sum_of_top_three(Array $drawNumbers) {
             $value = $item["draw_number"];
             $draw_period = $item["period"];
             $sum = array_sum(array_slice($value,0,3));
-            array_unshift( $historyArray, ['draw_period'=>$draw_period,"winning" => implode(",", $value), "sum"=>$sum]);
+            array_push( $historyArray, ['draw_period'=>$draw_period,"winning" => implode(",", $value), "sum"=>$sum]);
     }   
     return $historyArray;
 }
@@ -279,7 +279,7 @@ function pk_10_two_sides(Array $draw_numbers) : Array{
         $draw_period = $item['period'];
         $sum         = $value[0] + $value[1];
 
-        array_unshift($historyArray, ["draw_period"=>$draw_period,"winning"=>implode(",",$value),"sum"=>$sum,"b_s"=> $sum > 11 ? "B":"S","o_e" => $sum % 2 == 0 ? "E":"O"]);
+        array_push($historyArray, ["draw_period"=>$draw_period,"winning"=>implode(",",$value),"sum"=>$sum,"b_s"=> $sum > 11 ? "B":"S","o_e" => $sum % 2 == 0 ? "E":"O"]);
     }
 
     return $historyArray;
@@ -297,7 +297,7 @@ function board_game_pk10(Array $draw_numbers){
          $second_half = array_sum(array_slice($draw_number,4,5));
 
         
-         array_unshift($histor_array,["draw_period"=>$draw_period,"winning"=>implode(",",$draw_number), 'first_digit'=>$draw_number[0] , "fst_lst"=>$first_half > $second_half ? "first" :"last"]);
+         array_push($histor_array,["draw_period"=>$draw_period,"winning"=>implode(",",$draw_number), 'first_digit'=>$draw_number[0] , "fst_lst"=>$first_half > $second_half ? "first" :"last"]);
 
     }    
 

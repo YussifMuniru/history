@@ -50,7 +50,7 @@ function dragonTigerHistory3d(Array $drawNumbers) : Array {
             'onex3' => dragonTigerTiePattern(0, 2, $draw_number),
             'twox3' => dragonTigerTiePattern(1, 2, $draw_number),
             );
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
     }
 
     return $historyArray;
@@ -80,7 +80,7 @@ function all2History(Array $drawNumbers,String $typeOfModule) : Array {
             $objectKeyPrefix . "span" => spanPattern($draw_number, $startIndex, $length)
         );
 
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
         
 
     }
@@ -301,7 +301,7 @@ function board_games_render(Array $drawNumber) : Array{
    
     $result = [
                 
-                'board_game' =>    board_game($drawNumber),
+                'board_game' => board_game($drawNumber),
              ];
              
      return $result;
@@ -312,10 +312,15 @@ function board_games_render(Array $drawNumber) : Array{
 
 
 
-function generate_history_3d(int $lottery_id){
+//  function generate_history_3d(int $lottery_id){
 
     
-if ($lottery_id > 0) {
+    $lottery_id = $_GET['lottery_id'];
+
+
+  if ($lottery_id > 0) {
+
+ 
 
     $db_results = recenLotteryIsue($lottery_id);
      $draw_data = $db_results['data'];
@@ -325,6 +330,12 @@ if ($lottery_id > 0) {
         }
      }
     $history_results = "";
+
+    echo json_encode(['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data']) , 'board_games' => board_games_render($db_results['data'])]);
+    
+
+    return;
+
    if($lottery_id > 0){
        $history_results = ['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data']) , 'board_games' => board_games_render($db_results['data'])]; 
     }
@@ -335,8 +346,8 @@ if ($lottery_id > 0) {
     return ['status' => false];
 }
 
-}
+// }
 
 
-get_history();
+// get_history();
 

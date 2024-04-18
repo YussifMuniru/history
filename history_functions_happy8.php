@@ -55,7 +55,7 @@ function odd_even(Array $drawNumbers) : Array{
             'even' =>  $num_odds < 10? "Even" : $even,
            );
         
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
 
      
         $currentPattern = array_values($mydata);
@@ -113,7 +113,7 @@ function over_under(Array $drawNumbers) : Array{
             
           );
         
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
 
      
         $currentPattern = array_values($mydata);
@@ -155,7 +155,7 @@ function b_s_o_e_sum_happy8(Array $drawNumbers) : Array{
             
           );
         
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
 
 
 
@@ -323,10 +323,11 @@ function board_games_render_happy8(Array $draw_numbers): array {
 //     generate_history_happy8(0);
 // }
 
-get_history();
+// get_history();
 
-function generate_history_happy8(int $lottery_id){
+// function generate_history_happy8(int $lottery_id){
 
+   $lottery_id = $_GET['lottery_id'];
     
 if ($lottery_id > 0) {
 
@@ -339,6 +340,7 @@ if ($lottery_id > 0) {
         }
      }
 
+     echo json_encode(['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) , 'board_games' => board_games_render_happy8($db_results["data"])]);
  
 
     if($lottery_id > 0){
@@ -350,4 +352,4 @@ if ($lottery_id > 0) {
    return  ['status' => false];
 }
 
-}
+// }

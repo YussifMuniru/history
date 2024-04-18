@@ -438,7 +438,7 @@ function threeCardsHistory($drawNumbers, $typeOfModule)
 
     //     $mydata["winning"] = implode(",",$item);
     //     $mydata["draw_period"] = $draw_periods[$key];
-    //     array_unshift($historyArray, $mydata);
+    //     array_push($historyArray, $mydata);
     // }
 
     // return $historyArray;
@@ -551,7 +551,7 @@ $gourd        = 1;
 
         $mydata["winning"] = implode(",",$draw_number);
         $mydata["draw_period"] = $draw_period;
-        array_unshift($historyArray, $mydata);
+        array_push($historyArray, $mydata);
 
 
         $currentPattern = array_values($mydata);
@@ -722,7 +722,7 @@ function all2History5d(Array $drawNumbers,String $typeOfModule) : Array{
 //         );
 //         $mydata["winning"] = implode(",",$item);
 //         $mydata["draw_period"] = $draw_periods[$key];
-//         array_unshift($historyArray, $mydata);
+//         array_push($historyArray, $mydata);
 //     }
 
 //     return $historyArray;
@@ -995,7 +995,7 @@ function winning_number5d(Array $draw_numbers) : array{
     foreach ($draw_numbers as  $value) {
         $draw_number = $value["draw_number"];
         $draw_period = $value['period'];
-        array_unshift($results,["draw_periods"=>$draw_period,"winning" => implode(",",$draw_number)]); 
+        array_push($results,["draw_periods"=>$draw_period,"winning" => implode(",",$draw_number)]); 
     }
 
     return $results;
@@ -1066,7 +1066,7 @@ function two_sides_rapido(Array $draw_numbers) {
         ];
             
        
-        array_unshift($historyArray, $final_results);
+        array_push($historyArray, $final_results);
     }
 
     return $historyArray;
@@ -1162,11 +1162,12 @@ function board_games_render_5d(Array $drawNumber) : Array{
 
 
 
-get_history();
+// get_history();
 
 
-function generate_history_5d(int $lottery_id){
+// function generate_history_5d(int $lottery_id){
 
+    $lottery_id  = $_GET['lottery_id'];
     
 if ($lottery_id > 0) {
 
@@ -1179,6 +1180,8 @@ if ($lottery_id > 0) {
         }
      }
 
+     echo json_encode(['std' => render5d($draw_data) , 'two_sides' => two_sides_render_5d($draw_data) , 'board_games' => board_games_render_5d($draw_data)]);
+
 if($lottery_id > 0){
        $history_results = ['std' => render5d($draw_data) , 'two_sides' => two_sides_render_5d($draw_data) , 'board_games' => board_games_render_5d($draw_data)]; 
     }
@@ -1190,7 +1193,7 @@ if($lottery_id > 0){
     return  ['status' => false];
 }
 
-}
+// }
 
 
 

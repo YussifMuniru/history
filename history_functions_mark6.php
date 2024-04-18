@@ -41,7 +41,7 @@ function extra_no_head_tail_no(array $drawNumbers): array
 {
 
     $historyArray = [];
-    $drawNumbers  = array_reverse($drawNumbers);
+    //$drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $draw_obj) {
         $item = $draw_obj['draw_number'];
         $draw_period = $draw_obj['period'];
@@ -1267,15 +1267,17 @@ function chart_history($drawNumber){
 
 // echo json_encode(render_mark6([["draw_number" =>  ["29", "34", "44", "45", "43", "04", "10"],'period'=>'1,2,3,4,5'],]));
 
-get_history();
+// get_history();
 
-// if(isset($_GET["lottery_id"])){
-//     generate_history_mark6(0);
-// }
+// // if(isset($_GET["lottery_id"])){
+// //     generate_history_mark6(0);
+// // }
 
 
-function generate_history_mark6(int $lottery_id,bool $is_board_game = false){
+// function generate_history_mark6(int $lottery_id,bool $is_board_game = false){
 
+
+    $lottery_id = $_GET["lottery_id"];
     
 if ($lottery_id > 0) {
   
@@ -1288,6 +1290,11 @@ if ($lottery_id > 0) {
         }
        
      }
+
+
+     echo json_encode(['std' => render_mark6($db_results["data"]) , 'two_sides' => two_sides_render_mark6($db_results["data"]),'full_chart' => chart_history($db_results["data"])]);
+
+     return;
 
      if($is_board_game){
         $history_results = ['board_games' => board_games_render_mark6($db_results["data"])];
@@ -1302,6 +1309,6 @@ if ($lottery_id > 0) {
      return  ['status' => false];
 }
 
-}
+// }
 
 
