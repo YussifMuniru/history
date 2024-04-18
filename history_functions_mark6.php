@@ -11,6 +11,32 @@ set_error_handler(function ($severity, $message, $file, $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
 });
 
+
+
+
+
+function b_s_o_e_mark6(int $num, Array $bounds){
+    $res = []; 
+
+    if($num <= $bounds['small_bound']) $res['b_s'] = 'S'; 
+    if($num >= $bounds['big_bound']) $res['b_s'] = 'B'; 
+    if($num <= $bounds['tail_small_bound']) $res['tail_b_s'] = 'S'; 
+    if($num >= $bounds['tail_big_bound']) $res['tail_b_s'] = 'B'; 
+    $res['o_e'] = ($num % 2 === 1) ? 'O' : 'E';
+    return $res;
+}
+
+
+
+
+
+
+
+
+///---------------- END OF HELPER FUNCTIONs --------------------------------
+
+
+
 function extra_no_head_tail_no(array $drawNumbers): array
 {
 
@@ -547,8 +573,9 @@ function board_game_mk6(array $draw_numbers)
 
 
  function chart_ball_no_zodiac(Array $drawNumbers) : array{
+   
 
-    
+ 
     $historyArray = [];
 
     $zodiacs = ["rat" => ["04", "16", "28", "40",], "ox" => ["03", "15", "27", "39"], "tiger" => ["02", "14", "26", "38",], "rabbit" => ["01", "13", "25", "37", "49"], "dragon" => ["12", "24", "36", "48",], "snake" => ["11", "23", "35", "47",], "horse" => ["10", "22", "34", "46",], "goat" => ["09", "21", "33", "45"], "monkey" => ["08", "20", "32", "44"], "rooster" => ["07", "19", "31", "43"], "dog" => ["06", "18", "30", "42"], "pig" => ["05", "17", "29", "41"]];
@@ -569,7 +596,7 @@ function board_game_mk6(array $draw_numbers)
 
 
      $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
-
+     $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
         $draw_period = $item['period'];
@@ -623,6 +650,9 @@ function board_game_mk6(array $draw_numbers)
             // $res[$pattern]    = $pattern_key === intval($single_draw) ? $single_draw : $counts_nums_for_layout[$pattern_key];
             // $counts_nums_for_layout[$pattern_key] =  ($res[$pattern] === $single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
             }
+
+
+
             }
 
            
@@ -832,7 +862,7 @@ function board_game_mk6(array $draw_numbers)
 
 
 
- function chart_no_zodiac(Array $drawNumbers,int $index) : array{
+ function chart_no_zodiac(Array $drawNumbers,int $index,Array $bounds) : array{
 
     $historyArray = [];
     
@@ -851,9 +881,12 @@ function board_game_mk6(array $draw_numbers)
     41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
     46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
    ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
 
-
-     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+   
+   $sky           = ['ox','rabbit','dragon','horse','monkey','pig'];
+   $first_zodiac  = ['rat','ox','tiger','rabbit','dragon','snake'];
+   $poultry_beast_zodiac = ['ox','horse','goat','rooster','dog','pig'];
 
 
    $drawNumbers  = array_reverse($drawNumbers);
@@ -868,7 +901,9 @@ function board_game_mk6(array $draw_numbers)
           $single_draw = $drawNumber[$index];
           foreach ($zodiacs as $key => $value) {
             if(in_array($single_draw,$value)){
-
+            $res['sky_ground']               = in_array($key,$sky)          ? 'Sky'          :(intval($single_draw) != 49 ? 'Ground' : 'Tie');
+            $res['first_last_zodiac']        = in_array($key,$first_zodiac) ? 'First Zodiac' :(intval($single_draw) != 49 ? 'Last Zodiac'   : 'Tie');
+            $res['poultry_beast_zodiac']     = in_array($key,$poultry_beast_zodiac) ? 'Poultry Zodiac' :(intval($single_draw) != 49 ? 'Beast Zodiac'   : 'Tie');
             $res[$key]    =   $key ;
             }else{
                 if(isset($res[$key])){
@@ -910,10 +945,23 @@ function board_game_mk6(array $draw_numbers)
             // $res[$pattern]    = $pattern_key === intval($single_draw) ? $single_draw : $counts_nums_for_layout[$pattern_key];
             // $counts_nums_for_layout[$pattern_key] =  ($res[$pattern] === $single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
             }
+
+            $b_s_o_e = b_s_o_e_mark6($single_draw,$bounds);
+            $res['big_small'] = intval($single_draw)  != 49 ? $b_s_o_e['b_s'] : 'Tie';
+            $res['odd_even']  = intval($single_draw)  != 49 ? $b_s_o_e['o_e'] : 'Tie';
+            
+            $sum         = strlen($single_draw) ? intval($single_draw) : array_sum(str_split($single_draw));
+            $b_s_o_e_sum = b_s_o_e_mark6($sum,$bounds);
+            $res['sum_big_small'] = intval($single_draw)  != 49 ? $b_s_o_e_sum['b_s'] : 'Tie';
+            $res['sum_odd_even']  = intval($single_draw)  != 49 ? $b_s_o_e_sum['o_e'] : 'Tie';
+
+            $tail_big_small = b_s_o_e_mark6(str_split($single_draw)[1],$bounds);
+            $res['tail_big_small'] = intval($single_draw)  != 49 ? $tail_big_small['tail_b_s'] : 'Tie';
         
         $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => $drawNumber[0], "Ball_2" => $drawNumber[1], "Ball_3" => $drawNumber[2], "Ball_4" => $drawNumber[3], "Ball_5" => $drawNumber[4], "Ball_6" => $drawNumber[5], "Extra_Ball" => $drawNumber[6],"zodiac" => $res];
 
        }catch(Throwable $th){
+        echo $th->getMessage();
         $historyArray[] = ["draw_period"=> $draw_period ,"Ball_1" => '', "Ball_2" => '', "Ball_3" =>'', "Ball_4" => '', "Ball_5" => '', "Ball_6" => '', "Extra_Ball" => '', 'zodiac' => ''];
         }
        
@@ -1121,7 +1169,7 @@ function render_mark6(array $drawNumber): array
 
 
     $result = [
-                'extra_no'              => ["extra_no"=>winning_number_mark6($drawNumber),"head_tail_no"=> extra_no_head_tail_no($drawNumber)], 
+                'extra_no'              => ["extra_no" => winning_number_mark6($drawNumber),"head_tail_no"=> extra_no_head_tail_no($drawNumber)], 
                 'special_zodiac'        => ["combo_zodiac" => winning_number_mark6($drawNumber), "special_zodiac" => winning_number_mark6($drawNumber),"five_elements" => five_elements($drawNumber), "form_extra_no"         => form_extra_no($drawNumber), "form_sum_of_extra_h_and_t" => form_sum_of_extra_h_and_t($drawNumber), "form_extra_tail" => form_extra_tail($drawNumber), "form_extra_zodiac"     => form_extra_zodiac($drawNumber)], 
                 'color'                 => color_balls($drawNumber), 
                 'ball_no'               =>  winning_number_mark6($drawNumber), 
@@ -1134,8 +1182,8 @@ function render_mark6(array $drawNumber): array
                 'extra_no_2_sides'      =>["two_sides"=> form_extra_no($drawNumber),"no"=> winning_number_mark6($drawNumber),"all_color"=> color_balls($drawNumber,24),"special_zodiac_h_t"=> extra_no_head_tail_no($drawNumber),"combo_zodiac" => winning_number_mark6($drawNumber), "five_elements" =>  five_elements($drawNumber)] ,
                 'ball_no_2_sides'       =>["pick_1_ball_no"=> winning_number_mark6($drawNumber),"ball_no_1_1"=> winning_number_mark6($drawNumber), "one_zodiac_color_balls"=> extra_n_ball_color( $drawNumber)] ,
                 'specific_no'           =>["fixed_place_ball_1"=> winning_number_mark6($drawNumber),"fixed_place_ball_2"=> winning_number_mark6($drawNumber),"fixed_place_ball_3"=> winning_number_mark6($drawNumber),"fixed_place_ball_4"    => winning_number_mark6($drawNumber),"fixed_place_ball_5"=> winning_number_mark6($drawNumber),"fixed_place_ball_6"=> winning_number_mark6($drawNumber)],
-                'row_zodiac_row_tail'   =>["two_consec_zodiac"=> winning_number_mark6($drawNumber),"three_consec_zodiac"=> winning_number_mark6($drawNumber),"four_consec_zodiac"=> winning_number_mark6($drawNumber),"five_consec_zodiac"    => winning_number_mark6($drawNumber),"second_consec_tail_no"=> two_consec_tail($drawNumber),"third_consec_tail_no"=> two_consec_tail($drawNumber),"fourth_consec_tail_no" => two_consec_tail($drawNumber),"five_consec_tail_no"=> two_consec_tail($drawNumber)],
-                "row_no"                => ["win_2_3"=> winning_number_mark6($drawNumber),"win_3_3"=>winning_number_mark6($drawNumber),"win_2_2"=> winning_number_mark6($drawNumber),"two_no"=>winning_number_mark6($drawNumber),"win_extra_no"       => winning_number_mark6($drawNumber),"win_4_4"=>winning_number_mark6($drawNumber)],
+                'row_zodiac_row_tail'   =>["two_consec_zodiac"=> winning_number_mark6($drawNumber),"three_consec_zodiac"=> winning_number_mark6($drawNumber),"four_consec_zodiac"=> winning_number_mark6($drawNumber),"five_consec_zodiac" => winning_number_mark6($drawNumber),"second_consec_tail_no"=> two_consec_tail($drawNumber),"third_consec_tail_no" => two_consec_tail($drawNumber),"fourth_consec_tail_no" => two_consec_tail($drawNumber),"five_consec_tail_no" => two_consec_tail($drawNumber)],
+                "row_no"                => ["win_2_3" => winning_number_mark6($drawNumber),"win_3_3"=>winning_number_mark6($drawNumber),"win_2_2"=> winning_number_mark6($drawNumber),"two_no"=> winning_number_mark6($drawNumber),"win_extra_no" => winning_number_mark6($drawNumber),"win_4_4"=>winning_number_mark6($drawNumber)],
                 "zodiac_and_tail"       => sum_zodiac($drawNumber),
                 "sum"                   => sum_zodiac($drawNumber),
                 "optional"              => winning_number_mark6($drawNumber),
@@ -1190,27 +1238,27 @@ function chart_history($drawNumber){
         'chart_ball_no_zodiac'          =>  chart_ball_no_zodiac($drawNumber),
         'chart_ball_no_color'           =>  chart_ball_no_color($drawNumber),
         'chart_ball_no_five_elements'   =>  chart_ball_no_five_elements($drawNumber),
-        'chart_extra_no_zodiac'         =>  chart_no_zodiac($drawNumber,6),
-        'chart_extra_no_color'          =>  chart_no_color($drawNumber,6),
-        'chart_extra_no_five_elements'  =>  chart_no_five_elements($drawNumber,6),
-        'chart_ball_1_no_zodiac'        =>  chart_no_zodiac($drawNumber,0),
-        'chart_ball_1_no_color'         =>  chart_no_color($drawNumber,0),
-        'chart_ball_1_no_five_elements' =>  chart_no_five_elements($drawNumber,0),
-        'chart_ball_2_no_zodiac'        =>  chart_no_zodiac($drawNumber,1),
-        'chart_ball_2_no_color'         =>  chart_no_color($drawNumber,1),
-        'chart_ball_2_no_five_elements' =>  chart_no_five_elements($drawNumber,1),
-        'chart_ball_3_no_zodiac'        =>  chart_no_zodiac($drawNumber,2),
-        'chart_ball_3_no_color'         =>  chart_no_color($drawNumber,2),
-        'chart_ball_3_no_five_elements' =>  chart_no_five_elements($drawNumber,2),
-        'chart_ball_4_no_zodiac'        =>  chart_no_zodiac($drawNumber,3),
-        'chart_ball_4_no_color'         =>  chart_no_color($drawNumber,3),
-        'chart_ball_4_no_five_elements' =>  chart_no_five_elements($drawNumber,3),
-        'chart_ball_5_no_zodiac'        =>  chart_no_zodiac($drawNumber,4),
-        'chart_ball_5_no_color'         =>  chart_no_color($drawNumber,4),
-        'chart_ball_5_no_five_elements' =>  chart_no_five_elements($drawNumber,4),
-        'chart_ball_6_no_zodiac'        =>  chart_no_zodiac($drawNumber,5),
-        'chart_ball_6_no_color'         =>  chart_no_color($drawNumber,5),
-        'chart_ball_6_no_five_elements' =>  chart_no_five_elements($drawNumber,5),
+        'chart_extra_no_zodiac'         =>  chart_no_zodiac($drawNumber,6,['small_bound' => 24, 'big_bound' => 25,'sum_small_bound' => 6, 'sum_big_bound' => 7,'tail_small_bound' => 4, 'tail_big_bound' => 5]),
+        // 'chart_extra_no_color'          =>  chart_no_color($drawNumber,6,),
+        // 'chart_extra_no_five_elements'  =>  chart_no_five_elements($drawNumber,6,),
+        // 'chart_ball_1_no_zodiac'        =>  chart_no_zodiac($drawNumber,0),
+        // 'chart_ball_1_no_color'         =>  chart_no_color($drawNumber,0),
+        // 'chart_ball_1_no_five_elements' =>  chart_no_five_elements($drawNumber,0),
+        // 'chart_ball_2_no_zodiac'        =>  chart_no_zodiac($drawNumber,1),
+        // 'chart_ball_2_no_color'         =>  chart_no_color($drawNumber,1),
+        // 'chart_ball_2_no_five_elements' =>  chart_no_five_elements($drawNumber,1),
+        // 'chart_ball_3_no_zodiac'        =>  chart_no_zodiac($drawNumber,2),
+        // 'chart_ball_3_no_color'         =>  chart_no_color($drawNumber,2),
+        // 'chart_ball_3_no_five_elements' =>  chart_no_five_elements($drawNumber,2),
+        // 'chart_ball_4_no_zodiac'        =>  chart_no_zodiac($drawNumber,3),
+        // 'chart_ball_4_no_color'         =>  chart_no_color($drawNumber,3),
+        // 'chart_ball_4_no_five_elements' =>  chart_no_five_elements($drawNumber,3),
+        // 'chart_ball_5_no_zodiac'        =>  chart_no_zodiac($drawNumber,4),
+        // 'chart_ball_5_no_color'         =>  chart_no_color($drawNumber,4),
+        // 'chart_ball_5_no_five_elements' =>  chart_no_five_elements($drawNumber,4),
+        // 'chart_ball_6_no_zodiac'        =>  chart_no_zodiac($drawNumber,5),
+        // 'chart_ball_6_no_color'         =>  chart_no_color($drawNumber,5),
+        // 'chart_ball_6_no_five_elements' =>  chart_no_five_elements($drawNumber,5),
 
     ];
 
@@ -1226,53 +1274,29 @@ get_history();
 // }
 
 
-function generate_history_mark6(int $lottery_id){
+function generate_history_mark6(int $lottery_id,bool $is_board_game = false){
 
     
-if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
-
-    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
-    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
-
+if ($lottery_id > 0) {
+  
     $db_results = recenLotteryIsue($lottery_id);
-    $history_results = "";
- $draw_data = $db_results['data'];
+    $draw_data = $db_results['data'];
+  
     foreach ($draw_data as $key => $value) {
       if(count($value['draw_number']) !== 7){
-             array_splice($draw_data,$key,1);
+           array_splice($draw_data,$key,1);
         }
+       
      }
 
-    switch ($type) {
-
-        case 'two_sides':
-            $history_results = two_sides_render_mark6($db_results["data"]);
-            break;
-
-        case 'board_games':
-            $history_results = board_games_render_mark6($db_results["data"]);
-            break;
-        
-        case 'std':
-            $history_results = render_mark6($db_results["data"]);
-            break;
-
-        case 'full_chart':
-            $history_results = chart_history($db_results["data"]);
-            break;
-        
-        default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
-            break;
-    } 
-
-     if(!in_array($type,['two_sides','board_games','std','full_chart'])) return  ['status' => false];
+     if($is_board_game){
+        $history_results = ['board_games' => board_games_render_mark6($db_results["data"])];
+     }
 
     if($lottery_id > 0){
-       $history_results = ['std' => render_mark6($db_results["data"]) , 'two_sides' => two_sides_render_mark6($db_results["data"]) , 'board_games' => board_games_render_mark6($db_results["data"]), 'full_chart' => chart_history($db_results["data"])]; 
+       $history_results = ['std' => render_mark6($db_results["data"]) , 'two_sides' => two_sides_render_mark6($db_results["data"]),'full_chart' => chart_history($db_results["data"])]; 
     }
     
-    
-    echo json_encode($history_results);
     return $history_results;
 } else {
      return  ['status' => false];
@@ -1281,75 +1305,3 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
 }
 
 
-
-// return;
-
-// function generate_history_mark6()
-// {
-
-//     if (isset($_GET["lottery_id"])) {
-
-
-
-//         $lottery_id = $_GET["lottery_id"];
-//         $type       = $_GET["type"];
-
-//         $db_results = recenLotteryIsue($lottery_id);
-//         $history_results = "";
-//         // print_r($db_results["data"]);
-//         switch ($type) {
-
-//         case 'std':
-//             $history_results = render_mark6($db_results["data"]);
-//             break;
-//         case 'full_chart':
-//             $history_results = chart_history($db_results["data"]);
-//             break;
-        
-//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
-//             break;
-//     } 
-    
-    
-//     return json_encode($history_results);
-    
-   
-// } else {
-//     echo json_encode(["error" => "Invalid request."]);
-//     return;
-// }
-
-// }
-
-
-// echo generate_history_mark6();
-
-
-//echo json_encode(render_mark6($results["draw_numbers"], $results["draw_periods"]));
-
-
-// $results =["draw_numbers" => [ 
-  
-   
-//     ["29", "34", "44", "45", "43", "04", "20"],
-//     ["31", "34", "48", "09", "16", "33", "43"],
-  
-// ],"draw_periods"=>[["1,2,3,4,5"],["1,2,3,4,5"]]];
-   
-
-// $results = [];
-
-// if (isset($_GET["lottery_id"])) {
-
-//     $lottery_id = $_GET["lottery_id"];
-
-//     $results = fetchDrawNumbers($lottery_id);
-    
-   
-// } else {
-//     print_r(json_encode(["error" => "Invalid request."]));
-//     return;
-// }
-
-
-// echo json_encode(render_mark6($results["draw_numbers"], $results["draw_periods"]));

@@ -303,6 +303,7 @@ function board_games_render(Array $drawNumber) : Array{
                 
                 'board_game' =>    board_game($drawNumber),
              ];
+             
      return $result;
 
 
@@ -310,25 +311,11 @@ function board_games_render(Array $drawNumber) : Array{
 }// end of render method. returns all the history for 3D.
 
 
-// echo json_encode(render([["draw_number" => ["9",'0','5','5','8'],'period'=>'1,2,3,4,5']]));
-
-
-
-
-
-// if(isset($_GET["lottery_id"])){
-//     generate_history_3d(0);
-// }
-
-get_history();
 
 function generate_history_3d(int $lottery_id){
 
     
-if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
-
-    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
-    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
+if ($lottery_id > 0) {
 
     $db_results = recenLotteryIsue($lottery_id);
      $draw_data = $db_results['data'];
@@ -338,104 +325,18 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
         }
      }
     $history_results = "";
-
-    switch ($type) {
-
-        case 'two_sides':
-            $history_results = two_sides_render($db_results['data']);
-            break;
-
-        case 'board_games':
-            $history_results = board_games_render($db_results['data']);
-            break;
-        
-        case 'std':
-            $history_results = render($db_results['data']);
-            break;
-        
-        default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
-            break;
-    } 
-
-
-    if($lottery_id > 0){
+   if($lottery_id > 0){
        $history_results = ['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data']) , 'board_games' => board_games_render($db_results['data'])]; 
     }
     
-    
-    //echo json_encode($history_results);
     return $history_results;
 } else {
-    echo json_encode(["error" => "Invalid request"]);
+   
     return ['status' => false];
 }
 
 }
 
 
-
-
-
-
-// if (isset($_GET["lottery_id"])) {
-
-
-
-//     $lottery_id = $_GET["lottery_id"];
-//     $type       = $_GET["type"];
-
-//     $db_results = recenLotteryIsue($lottery_id);
-//     $history_results = "";
-
-//      switch ($type) {
-
-//         case 'two_sides':
-//             $history_results = two_sides_render($db_results["data"]);
-//             break;
-
-//         case 'board_games':
-//             $history_results = board_games_render($db_results["data"]);
-//             break;
-
-//         case 'std':
-//             $history_results = render($db_results["data"]);
-//             break;
-        
-//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
-//             break;
-//     } 
-    
-    
-//     echo json_encode($history_results);
-   
-   
-// } else {
-//     print_r(json_encode(["error" => "Invalid request."]));
-//     return;
-// }
-
-
-
-
-// //echo json_encode(render($results["draw_numbers"], $results["draw_periods"]));
-// echo json_encode(render($results["data"]));
-
-
-
-//   $results = ["draw_numbers"=>[["2","0","7"],["5","5","5"]],"draw_periods" =>[["1,2,3,4,5"],["1,2,3,4,5"]]];
-// $results  = [];
-// if (isset($_GET["lottery_id"])) {
-
-//     $lottery_id = $_GET["lottery_id"];
-
-//     $results = fetchDrawNumbers($lottery_id);
-
-   
-// } else {
-//     print_r(json_encode(["error" => "Invalid request."]));
-//     return;
-// }
-
-
-// print json_encode(render($results["draw_numbers"], $results["draw_periods"]));
+get_history();
 

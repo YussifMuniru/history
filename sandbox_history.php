@@ -21,8 +21,6 @@ $timer = $loop->addPeriodicTimer(1, function () {
      $one_hundred_eighty_seconds_interval = 180; 
      $three_hundred_seconds_interval      = 300; 
 
-     $lottery_ids_with_time_intervals = [60 => [1,3,4,6,7,10,13,25,27,29,30,31,32,33,34,35] , 90 => [9,11,14,17], 180 => [8,12,15,16,23], 300 => [5,26,28]];
-     $lottery_id_groups = ['generate_history_5d' => [1,4,5,6,7,8,9],'generate_history_pk10' => [3,17,23,34], 'generate_history_fast3'=> [10,11,12,31],'generate_history_3d'=> [16,30], 'generate_history_11x5' => [27,28,33], 'generate_history_mark6' => [25,26,32], 'generate_history_pc28' => [13,14,15], 'generate_history_happy8' => [29,35]]; 
      
     //  echo TestHistory::get(date('H:i:s').PHP_EOL);
  

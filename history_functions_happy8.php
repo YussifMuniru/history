@@ -328,10 +328,7 @@ get_history();
 function generate_history_happy8(int $lottery_id){
 
     
-if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
-
-    $lottery_id = isset($_GET["lottery_id"]) ? $_GET["lottery_id"] : $lottery_id;
-    $type       = isset($_GET["type"])       ? $_GET["type"]       : '';
+if ($lottery_id > 0) {
 
     $db_results = recenLotteryIsue($lottery_id);
     $history_results = "";
@@ -342,106 +339,15 @@ if (isset($_GET["lottery_id"]) || $lottery_id > 0) {
         }
      }
 
-    switch ($type) {
-
-        case 'two_sides':
-            $history_results = two_sides_render_happy8($db_results['data']);
-            break;
-
-        case 'board_games':
-            $history_results = board_games_render_happy8($db_results['data']);
-            break;
-        
-        case 'std':
-            $history_results = render_happy8($db_results['data']);
-            break;
-        
-        default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
-            break;
-    } 
-
-     if(!in_array($type,['two_sides','board_games','std'])) return  ['status' => false];
+ 
 
     if($lottery_id > 0){
        $history_results = ['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) , 'board_games' => board_games_render_happy8($db_results["data"])]; 
     }
-    
-    
-    echo json_encode($history_results);
+
     return $history_results;
 } else {
    return  ['status' => false];
 }
 
 }
-
-
-// if (isset($_GET["lottery_id"])) {
-
-     
-//     $lottery_id = $_GET["lottery_id"];
-//     $type       = $_GET["type"];
-
-//     $db_results = recenLotteryIsue($lottery_id);
-//     $history_results = "";
-
-//     switch ($type) {
-
-//         case 'two_sides':
-//             $history_results = two_sides_render_happy8($db_results["data"]);
-//             break;
-
-//         case 'board_games':
-//             $history_results = board_games_render_happy8($db_results["data"]);
-//             break;
-        
-//          case 'std':
-//             $history_results = render_happy8($db_results["data"]);
-//             break;
-        
-//         default: $history_results = ["data"=> "Error",'msg'=> "Invalid game module."];
-//             break;
-//     } 
-    
-    
-//     echo json_encode($history_results);
-    
-   
-// } else {
-//     print_r(json_encode(["error" => "Invalid request."]));
-//     return;
-// }
-
-
-//echo json_encode(render_happy8($results["draw_numbers"], $results["draw_periods"]));
-
-
-
-// $results = ["draw_numbers"=> [ 
-//     ["01","06","10","11","17","23","25","26","36","38","40","41","45","48","54","60","61","67","69","76"],
-//     ["15","19","20","19","24","27","28","29","33","43","46","49","50","55","57","62","64","69","75","77"],
-//     ["01","04","06","12","18","30","39","42","45","52","54","56","57","60","61","62","67","72","73","78"],
-//     ["04","05","08","11","27","35","38","39","40","41","42","45","47","52","59","58","66","67","76","80"],
-//     ["01","05","13","15","24","27","30","35","36","46","47","49","50","53","62","65","70","73","75","79"],
-//     ["13","18","19","20","25","26","30","38","51","55","56","60","61","66","67","68","80","04","07","14"],
-// ],"draw_periods"=> [["1,2,3,4,5"],["1,2,3,4,5"],["1,2,3,4,5"],["1,2,3,4,5"],["1,2,3,4,5"],["1,2,3,4,5"]]];
-   
-
-
-// $results = ["draw_numbers"=>$drawNumber,"draw_periods"=>[]];
-
-// if (isset($_GET["lottery_id"])) {
-
-//     $lottery_id = $_GET["lottery_id"];
-
-//     $results = fetchDrawNumbers($lottery_id);
-    
-   
-// } else {
-//     print_r(json_encode(["error" => "Invalid request."]));
-//     return;
-// }
-
-
-// echo json_encode(render_happy8($results["draw_numbers"], $results["draw_periods"]));
-
