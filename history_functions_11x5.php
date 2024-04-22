@@ -91,7 +91,7 @@ function two_sides_first_group(Array $draw_numbers,int $start_index,int $end_ind
                                   : (gettype($layout[$key + 1]) === "string" ? 1 : intval($layout[$key + 1]) + 1);
                  }
      
-                 array_push($history_array,["draw_period" => $draw_period,"draw_number"=>implode(",",$draw_number),"layout"=>array_combine(["first","second","third","fourth","fifth","sixth","seventh","eighth","ninth","tenth","eleventh"],$layout)]);
+                 array_push($history_array,["draw_period" => $draw_period,"winning"=> implode(",",$draw_number),"layout"=>array_combine(["first","second","third","fourth","fifth","sixth","seventh","eighth","ninth","tenth","eleventh"],$layout)]);
             
          }
      
@@ -150,6 +150,110 @@ function fun_chart(Array $drawNumbers) : Array {
     }
 
 
+function chart_no_11x5(Array $drawNumbers,$index) : Array {
+
+    $history_array = [];
+
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",10 => "ten", 11 => "eleven",
+   ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+          $res = ["draw_period"=> $draw_period,'winning'=> implode(',',$drawNumber)];
+       
+          $single_draw = $drawNumber[$index];
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                      $res[$pattern]    =   $single_draw;
+                      } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+
+           
+        array_push($history_array,$res);
+
+       }catch(Throwable $th){
+        echo $th->getMessage();
+        $res[] = [];
+        }
+       
+        
+    
+    }
+    return array_reverse($history_array);
+
+ 
+
+ }
+
+
+
+  function no_layout_11x5(Array $drawNumbers) : Array {
+
+    $history_array = [];
+
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+   ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+           $values_counts =   array_count_values($drawNumber);
+           $res = ["draw_period"=> $draw_period,'winning'=> implode(',',$drawNumber),'dup' => count(array_unique($drawNumber)) !== count($drawNumber) ? (string) array_search(max($values_counts),$values_counts) : ''];
+       
+         foreach($drawNumber as $key => $single_draw){
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                      $res[$pattern]    =   $single_draw;
+                      } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+        }
+           
+        array_push($history_array,$res);
+
+       }catch(Throwable $th){
+        echo $th->getMessage();
+        $res[] = [];
+        }
+       
+        
+    
+    }
+    return array_reverse($history_array);
+
+ 
+
+ }
 
 
 
@@ -211,7 +315,9 @@ function render_11x5(Array $draw_numbers): array {
                 'pick'                  => eleven_5($draw_numbers), 
                 'fun'                   => eleven_5($draw_numbers), 
                 'fun_chart'             => fun_chart($draw_numbers),
-                'two_sides_chart'       => two_sides_chart($draw_numbers)
+                'two_sides_chart'       => two_sides_chart($draw_numbers),
+                'chart_no_11x5'                   =>    ["chart_1" => chart_no_11x5($draw_numbers,0),"chart_2" => chart_no_11x5($draw_numbers,1),"chart_3" => chart_no_11x5($draw_numbers,2),"chart_4" => chart_no_11x5($draw_numbers,3),"chart_5" => chart_no_11x5($draw_numbers,4)],  
+                'no_layout_11x5'                  =>    no_layout_11x5($draw_numbers),
              ];
 
     return $result;
@@ -224,9 +330,9 @@ function two_sides_render_11x5(Array $draw_numbers): array {
     $result = [
                 'rapido'          => winning_number_11x5($draw_numbers), 
                 'two_sides'       => two_sides_2sides($draw_numbers), 
-                'pick'  => ['pick'=> winning_number_11x5($draw_numbers) , "first_2" => two_sides_first_group($draw_numbers,0,2),
-                            "first_3" => two_sides_first_group($draw_numbers,0,3)], 
-                'straight'        =>["first_2" => two_sides_first_group($draw_numbers,0,2),
+                'pick'            => ['pick'=> winning_number_11x5($draw_numbers) , "first_2" => two_sides_first_group($draw_numbers,0,2),
+                "first_3"          => two_sides_first_group($draw_numbers,0,3)], 
+                'straight'         =>["first_2" => two_sides_first_group($draw_numbers,0,2),
                                      "first_3" => two_sides_first_group($draw_numbers,0,3)],
                
              ];
@@ -237,7 +343,7 @@ function two_sides_render_11x5(Array $draw_numbers): array {
 
 function board_games_render_11x5(Array $draw_numbers): array {
     
-   
+
     $result = [
                
                 'board_game' =>    board_game($draw_numbers,30)
@@ -250,16 +356,14 @@ function board_games_render_11x5(Array $draw_numbers): array {
 // echo json_encode(render_11x5([["draw_number" => ["02",'05','06','04','09'],'period'=>'1,2,3,4,5']]));
 
 
-// get_history();
-
-// if(isset($_GET["lottery_id"])){
-//     generate_history_11x5(0);
-// }
+get_history();
 
 
-// function generate_history_11x5(int $lottery_id){
 
-    $lottery_id = $_GET['$lottery_id'];
+
+function generate_history_11x5(int $lottery_id,$is_board_game){
+
+    
     
 if ($lottery_id > 0) {
 
@@ -272,18 +376,20 @@ if ($lottery_id > 0) {
         }
      }
 
-     echo json_encode(['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) , 'board_games' => board_games_render_11x5($db_results["data"])]);
+     $history_results = [];
 
-     return;
+     if(!$is_board_game){
+         $history_results = ['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) ]; 
+      }else{
+          $history_results = ['board_games' => board_games_render_11x5($db_results["data"])];
+     }
 
-    if($lottery_id > 0){
-       $history_results = ['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) , 'board_games' => board_games_render_11x5($db_results["data"])]; 
-    }
+     
     return $history_results;
 } else {
     return  ['status' => false];
 }
 
-// }
+}
 
 

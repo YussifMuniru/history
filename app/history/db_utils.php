@@ -143,7 +143,7 @@ function board_game(Array $draw_numbers,$lower_limit = 22){
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj['period'];
         $sum = array_sum($draw_number);
-        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum <= $lower_limit ? 'Small' : 'Big', 'o_e' => ($sum % 2 == 0)  ? 'Pair' : 'One','sum' => $sum ]);
+        array_push($history_array, ["draw_period" => $draw_period,"winning"=> implode(",",$draw_number),"b_s" =>  $sum <= $lower_limit ? 'Small' : 'Big', 'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum ]);
     }
 
 

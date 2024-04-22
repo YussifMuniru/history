@@ -262,7 +262,7 @@ function board_game_happy8(Array $draw_numbers){
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj['period'];
         $sum = array_sum($draw_number);
-        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 210 && $sum <= 809  ? 'Small' : ($sum > 810 && $sum <= 1410 ? 'big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Pair' : 'One','sum' => $sum ]);
+        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 210 && $sum <= 809  ? 'Small' : ($sum > 810 && $sum <= 1410 ? 'big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum ]);
     }
 
 
@@ -323,11 +323,10 @@ function board_games_render_happy8(Array $draw_numbers): array {
 //     generate_history_happy8(0);
 // }
 
-// get_history();
+get_history();
 
-// function generate_history_happy8(int $lottery_id){
+function generate_history_happy8(int $lottery_id,bool $is_board_game){
 
-   $lottery_id = $_GET['lottery_id'];
     
 if ($lottery_id > 0) {
 
@@ -340,16 +339,21 @@ if ($lottery_id > 0) {
         }
      }
 
-     echo json_encode(['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) , 'board_games' => board_games_render_happy8($db_results["data"])]);
+
+     $history_results = [];
+
+      if(!$is_board_game){
+         $history_results = ['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) ]; 
+        
+      }else{
+         $history_results = ['board_games' => board_games_render_happy8($db_results["data"])];
+      }
  
 
-    if($lottery_id > 0){
-       $history_results = ['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) , 'board_games' => board_games_render_happy8($db_results["data"])]; 
-    }
 
     return $history_results;
 } else {
    return  ['status' => false];
 }
 
-// }
+ }

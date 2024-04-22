@@ -253,6 +253,114 @@ function sum_of_two_no(Array $draw_numbers) : Array{
 
 
 
+ function chart_no_3d(Array $drawNumbers,$index) : Array {
+
+    $history_array = [];
+
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+   ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+          $res = ["draw_period"=> $draw_period,'winning'=> implode(',',$drawNumber)];
+       
+          $single_draw = $drawNumber[$index];
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                      $res[$pattern]    =   $single_draw;
+                      } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+
+           
+        array_push($history_array,$res);
+
+       }catch(Throwable $th){
+        echo $th->getMessage();
+        $res[] = [];
+        }
+       
+        
+    
+    }
+    return array_reverse($history_array);
+
+ 
+
+ }
+
+
+
+ function no_layout_3d(Array $drawNumbers) : Array {
+
+    $history_array = [];
+
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+   ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+           $values_counts =   array_count_values($drawNumber);
+           $res = ["draw_period"=> $draw_period,'winning'=> implode(',',$drawNumber),'dup' => count(array_unique($drawNumber)) !== count($drawNumber) ? (string) array_search(max($values_counts),$values_counts) : ''];
+       
+         foreach($drawNumber as $key => $single_draw){
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                      $res[$pattern]    =   $single_draw;
+                      } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+        }
+           
+        array_push($history_array,$res);
+
+       }catch(Throwable $th){
+        echo $th->getMessage();
+        $res[] = [];
+        }
+       
+        
+    
+    }
+    return array_reverse($history_array);
+
+ 
+
+ }
+
+
+
+
 function render(Array $drawNumber) : Array{
     
    
@@ -262,6 +370,8 @@ function render(Array $drawNumber) : Array{
                 'fixedplace'  => winning_number($drawNumber), 
                 'anyplace'    => winning_number($drawNumber),
                 'dragonTiger' => dragonTigerHistory3d($drawNumber),
+                'chart_no'    => ["chart_1" => chart_no_5d($drawNumber,0),"chart_2" => chart_no_5d($drawNumber,1),"chart_3" => chart_no_5d($drawNumber,2),],
+                'no_layout'   => no_layout_3d($drawNumber),
              ];
      return $result;
 
@@ -312,10 +422,9 @@ function board_games_render(Array $drawNumber) : Array{
 
 
 
-//  function generate_history_3d(int $lottery_id){
+ function generate_history_3d(int $lottery_id,bool $is_board_game){
 
     
-    $lottery_id = $_GET['lottery_id'];
 
 
   if ($lottery_id > 0) {
@@ -329,16 +438,15 @@ function board_games_render(Array $drawNumber) : Array{
              array_splice($draw_data,$key,1);
         }
      }
-    $history_results = "";
+    $history_results = [];
 
-    echo json_encode(['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data']) , 'board_games' => board_games_render($db_results['data'])]);
-    
+    if(!$is_board_game){
+         $history_results = ['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data'])]; 
+     }else{
+        echo 'Entered here';
+       $history_results = ['board_games' => board_games_render($db_results['data'])];  
+     }
 
-    return;
-
-   if($lottery_id > 0){
-       $history_results = ['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data']) , 'board_games' => board_games_render($db_results['data'])]; 
-    }
     
     return $history_results;
 } else {
@@ -346,8 +454,8 @@ function board_games_render(Array $drawNumber) : Array{
     return ['status' => false];
 }
 
-// }
+}
 
 
-// get_history();
+get_history();
 

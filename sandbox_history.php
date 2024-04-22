@@ -27,7 +27,7 @@ $timer = $loop->addPeriodicTimer(1, function () {
     echo date('s').PHP_EOL;
 
     if(($time % $sixty_seconds_interval) == 0){
-        $lottery_ids =  [1,3,4,6,7,10,13,25,27,29,30,31,32,33,34,35];
+        $lottery_ids =  [1,3,4,6,7,10,13,25,27,29,30,31,32,33,34,35,36];
         store_history($lottery_ids,$sixty_seconds_interval);
     }
 

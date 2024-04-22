@@ -5,6 +5,58 @@ require_once 'helpers.php';
 require_once 'index.php';
 
 
+
+ function chart_no(Array $drawNumbers,$index) : Array {
+
+    $history_array = [];
+
+    $nums_for_layout = [1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten"
+   ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+          $res = ["draw_period"=> $draw_period,'winning'=> implode(',',$drawNumber)];
+       
+          $single_draw = $drawNumber[$index];
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                      $res[$pattern]    =   $single_draw;
+                      } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+
+           
+        array_push($history_array,$res);
+
+       }catch(Throwable $th){
+        echo $th->getMessage();
+        $res[] = [];
+        }
+       
+        
+    
+    }
+    return array_reverse($history_array);
+
+ 
+
+ }
+
 function dragonTigerTiePattern_pk10($idx1, $idx2, $drawNumbers) {
     $v1 = $drawNumbers[$idx1];
     $v2 = $drawNumbers[$idx2];
@@ -316,8 +368,7 @@ function render_pk10(Array $draw_numbers): array {
                 'dragon_tiger'      => dragon_tiger_history($draw_numbers),
                 'b_s_o_e'=>['first' => b_s_o_e_of_first_5($draw_numbers),'top_two' => b_s_o_e_of_sum_of_top_two($draw_numbers)] ,
                 'sum'    =>['top_two' => sum_of_top_two($draw_numbers),'top_three' => sum_of_top_three($draw_numbers) ],
-                'two_sides'         => pk_10_two_sides($draw_numbers),
-                'board_game'        => board_game_pk10($draw_numbers),
+                'chart_no'          => ["chart_1" => chart_no($draw_numbers,0),"chart_2" => chart_no($draw_numbers,1),"chart_3" => chart_no($draw_numbers,2),"chart_4" => chart_no($draw_numbers,3),"chart_5" => chart_no($draw_numbers,4),"chart_6" => chart_no($draw_numbers,5),"chart_7" => chart_no($draw_numbers,6),"chart_8" => chart_no($draw_numbers,7),"chart_9" => chart_no($draw_numbers,8),"chart_10" => chart_no($draw_numbers,9)]
                 
                     ];  
 }
@@ -351,9 +402,9 @@ function board_games_render_pk10(Array $draw_numbers): array {
 
 get_history();
 
-function generate_history_pk10(int $lottery_id){
+function generate_history_pk10(int $lottery_id,bool $is_board_game){
 
-    
+
 if ($lottery_id > 0) {
 
     $db_results = recenLotteryIsue($lottery_id);
@@ -365,15 +416,19 @@ if ($lottery_id > 0) {
         }
      }
 
-     
 
-     if($lottery_id > 0){
-       $history_results = ['std' => render_pk10($db_results["data"]) , 'two_sides' => two_sides_render_pk10($db_results["data"]) , 'board_games' => board_games_render_pk10($db_results["data"])]; 
-    }
+     $history_results = [];
     
+     if(!$is_board_game){
+         $history_results = ['std' => render_pk10($db_results["data"]) , 'two_sides' => two_sides_render_pk10($db_results["data"])]; 
+        
+     }else{
+         $history_results = ['board_games' => board_games_render_pk10($db_results["data"])];
+     }
+
     return $history_results;
 } else {
     return  ['status' => false];
 }
 
-}
+ }

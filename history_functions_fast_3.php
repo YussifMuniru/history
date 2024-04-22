@@ -113,10 +113,10 @@ function winning(Array $drawNumbers):array{
 }//end of winning(). return ["winning"=>1,2,3];
 
 
-function two_sides_all_kinds(Array $draw_numbers):array{
+function two_sides_all_kinds(Array $draw_numbers): Array {
 
     $history_array = [];
-    $objects = ["1"=>"Fish","2"=>"FishPrawn","3"=>"gourd","4"=>"Coin","5"=>"Crab","6"=>"Rooster"];
+    $objects = ["1"=>"Fish","2"=>"FisPrawn","3"=>"gourd","4"=>"Coin","5"=>"Crab","6"=>"Rooster"];
 
     foreach ($draw_numbers as $val) {
             $draw_number = $val["draw_number"];
@@ -129,6 +129,20 @@ function two_sides_all_kinds(Array $draw_numbers):array{
   }
 
 
+function full_chart_fish_prawn_crab(Array $draw_numbers): Array {
+
+    $history_array = [];
+    $objects = [1 => "Fish",2 => "Prawn",3 => "gourd", 4 => "Coin", 5 => "Crab", 6 => "Rooster"];
+
+    foreach ($draw_numbers as $val) {
+            $draw_number = $val["draw_number"];
+            $draw_period  = $val['period']; 
+            array_push($history_array,["draw_period"=> $draw_period,"winning"=> implode(",",$draw_number),"sum"=> array_sum($draw_number),"b_s"=> array_sum($draw_number) >= 11 ? "B" : "S","fish_prawn_crab" => $objects[intval($draw_number[0])]." ".  $objects[intval($draw_number[1])]." ". $objects[intval($draw_number[2])]]);
+   }
+
+  return $history_array;
+  }
+
   
 function board_game_fst3(Array $draw_numbers){
 
@@ -140,7 +154,7 @@ function board_game_fst3(Array $draw_numbers){
         $draw_period  = $val['period']; 
 
         $sum = array_sum($draw_number);
-        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 4 && $sum <= 10  ? 'Small' : ($sum < 17 ? 'big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Pair' : 'One','sum' => $sum ]);
+        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 4 && $sum <= 10  ? 'Small' : ($sum < 17 ? 'Big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum ]);
     }
 
 
@@ -149,20 +163,70 @@ function board_game_fst3(Array $draw_numbers){
 }
 
 
+function no_layout_fast3(Array $drawNumbers) : Array {
+
+    $history_array = [];
+
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+   ];
+   $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+
+        try{
+
+           $values_counts =   array_count_values($drawNumber);
+           $res = ["draw_period"=> $draw_period,'winning'=> implode(',',$drawNumber),'dup' => count(array_unique($drawNumber)) !== count($drawNumber) ? (string) array_search(max($values_counts),$values_counts) : ''];
+       
+         foreach($drawNumber as $key => $single_draw){
+          foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                      $res[$pattern]    =   $single_draw;
+                      } else {
+                        if (isset($res[$pattern])) {
+                            continue;
+                        } else {
+                            $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                        }
+                    }
+
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+        }
+           
+        array_push($history_array,$res);
+
+       }catch(Throwable $th){
+        echo $th->getMessage();
+        $res[] = [];
+        }
+       
+        
+    
+    }
+    return array_reverse($history_array);
+
+ 
+
+ }
+
+
 function render_fast3(Array $draw_numbers) : Array{
-    
-  
-    
     $result = [
-                'b_s_o_e_sum'         => b_s_o_e_sum($draw_numbers), 
-                'sum'                 => sum($draw_numbers), 
-                'three_of_a_kind'     => three_of_a_kind($draw_numbers), 
-                'three_no'            => three_of_a_kind($draw_numbers), 
-                'one_pair'            => three_of_a_kind($draw_numbers), 
-                'two_no'              => three_of_a_kind($draw_numbers), 
-                'guess_a_number'      => winning($draw_numbers), 
-                'two_sides_all_kinds' => two_sides_all_kinds($draw_numbers),
-                'board_game'          => board_game_fst3($draw_numbers),
+                'b_s_o_e_sum'     => b_s_o_e_sum($draw_numbers), 
+                'sum'             => sum($draw_numbers), 
+                'three_of_a_kind' => three_of_a_kind($draw_numbers), 
+                'three_no'        => three_of_a_kind($draw_numbers), 
+                'one_pair'        => three_of_a_kind($draw_numbers), 
+                'two_no'          => three_of_a_kind($draw_numbers), 
+                'guess_a_number'  => winning($draw_numbers), 
+                'no_layout'       => no_layout_fast3($draw_numbers),
+                'fish_praw_crab'  => full_chart_fish_prawn_crab($draw_numbers),
               ];
     return $result;
 
@@ -188,9 +252,8 @@ function board_games_render_fast3(Array $draw_numbers) : Array{
     
   
     
-    $result = [
-                'board_game'          => board_game_fst3($draw_numbers),
-              ];
+    $result = ['board_game' => board_game_fst3($draw_numbers),];
+
     return $result;
 
 
@@ -202,17 +265,12 @@ function board_games_render_fast3(Array $draw_numbers) : Array{
 
 // return;
 
-// get_history();
-
-// if(isset($_GET["lottery_id"])){
-//     generate_history_fast3(0);
-// }
+get_history();
 
 
-// function generate_history_fast3(int $lottery_id){
 
-    
-    $lottery_id = $_GET["lottery_id"];
+function generate_history_fast3(int $lottery_id,bool $is_board_game){
+
 
 if ($lottery_id > 0) {
 
@@ -225,13 +283,13 @@ if ($lottery_id > 0) {
         }
      }
 
+     $history_results = [];
 
-     echo json_encode(['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]) , 'board_games' => board_games_render_fast3($db_results["data"])]);
 
-     return;
-
-   if($lottery_id > 0){
-       $history_results = ['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]) , 'board_games' => board_games_render_fast3($db_results["data"])]; 
+    if(!$is_board_game){
+        $history_results = ['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]) ]; 
+     }else{
+         $history_results = ['board_games' => board_games_render_fast3($db_results["data"])];
     }
 
     return $history_results;
@@ -239,5 +297,5 @@ if ($lottery_id > 0) {
    return  ['status' => false];
 }
 
-// }
+ }
 
