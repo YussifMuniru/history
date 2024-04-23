@@ -146,20 +146,14 @@ function over_under_board_game(Array $drawNumbers){
 
     foreach ($drawNumbers as $draw_number) {
         $value = $draw_number['draw_number'];
-        $draw_period = $draw_number['period'];
-       
         sort($value);
-       
         $tenth_value = intval($value[9]);
         $eleveth_value = intval($value[10]);
         $is_tie = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
         $is_under = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 1 && $eleveth_value <= 40) );
         $is_over = (($tenth_value >= 41 && $tenth_value <= 80) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
         
-      
-        
-
-          // Assuming findPattern() is defined with similar logic in PHP
+        // Assuming findPattern() is defined with similar logic in PHP
         $mydata = [
             'over' => $is_over ? "Over" : $over,
             'tie'  =>  $is_tie ? "Tie" : $tie,

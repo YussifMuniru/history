@@ -16,18 +16,18 @@ set_error_handler(function ($severity, $message, $file, $line) {
 
 
  $zodiacs = [
- "Rat"     => generateArray(1),
- "Ox"      => generateArray(2),
- "Tiger"   => generateArray(3),
- "Rabbit"  => generateArray(4),
- "Dragon"  => generateArray(5),
- "Snake"   => generateArray(6),
- "Horse"   => generateArray(7),
- "Goat"    => generateArray(8),
- "Monkey"  => generateArray(9),
- "Rooster" => generateArray(10),
- "Dog"     => generateArray(11),
- "Pig"     => generateArray(12)
+ "rat"     => generateArray(1),
+ "ox"      => generateArray(2),
+ "tiger"   => generateArray(3),
+ "rabbit"  => generateArray(4),
+ "dragon"  => generateArray(5),
+ "snake"   => generateArray(6),
+ "horse"   => generateArray(7),
+ "goat"    => generateArray(8),
+ "monkey"  => generateArray(9),
+ "rooster" => generateArray(10),
+ "dog"     => generateArray(11),
+ "pig"     => generateArray(12)
 ];
 
 
