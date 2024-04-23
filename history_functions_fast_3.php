@@ -132,7 +132,7 @@ function two_sides_all_kinds(Array $draw_numbers): Array {
 function full_chart_fish_prawn_crab(Array $draw_numbers): Array {
 
     $history_array = [];
-    $objects = [1 => "Fish",2 => "Prawn",3 => "gourd", 4 => "Coin", 5 => "Crab", 6 => "Rooster"];
+    $objects = [1 => "Fish",2 => "Prawn",3 => "gourd", 4 => "Cash", 5 => "Crab", 6 => "Rooster"];
 
     foreach ($draw_numbers as $val) {
             $draw_number = $val["draw_number"];
