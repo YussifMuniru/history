@@ -132,6 +132,60 @@ function over_under(Array $drawNumbers) : Array{
     return array_reverse($historyArray);
 }// end of over_under(). return the max category,either over or under 
 
+
+function over_under_board_game(Array $drawNumbers){
+
+
+     
+    $tie = 1;
+    $over = 1;
+    $under = 1;
+
+    $historyArray = [];
+    $drawNumbers = array_reverse($drawNumbers);
+
+    foreach ($drawNumbers as $draw_number) {
+        $value = $draw_number['draw_number'];
+        $draw_period = $draw_number['period'];
+       
+        sort($value);
+       
+        $tenth_value = intval($value[9]);
+        $eleveth_value = intval($value[10]);
+        $is_tie = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
+        $is_under = (($tenth_value >= 1 && $tenth_value <= 40) && ($eleveth_value >= 1 && $eleveth_value <= 40) );
+        $is_over = (($tenth_value >= 41 && $tenth_value <= 80) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
+        
+      
+        
+
+          // Assuming findPattern() is defined with similar logic in PHP
+        $mydata = [
+            'over' => $is_over ? "Over" : $over,
+            'tie'  =>  $is_tie ? "Tie" : $tie,
+            'under' => $is_under ? "Under" : $under,
+        ];
+        
+        array_push($historyArray, $mydata);
+
+     
+        $currentPattern = array_values($mydata);
+        sort($currentPattern);
+        $currentPattern = $currentPattern[2];
+       
+        // Update counts
+       $over = ($currentPattern == "Over")  ? 1 : ($over += 1);
+       $tie = ($currentPattern == "Tie") ? 1 : ($tie += 1);
+       $under = ($currentPattern == "Under") ? 1 : ($under += 1);
+       
+    }
+
+   
+
+    return array_reverse($historyArray);
+
+}
+
 function b_s_o_e_sum_happy8(Array $drawNumbers) : Array{
 
     $big = 1;
@@ -255,18 +309,57 @@ function ball_no( Array $draw_numbers):array{
 
 
 function board_game_happy8(Array $draw_numbers){
+   
+    $tie = 1;
+    $over = 1;
+    $under = 1;
 
     $history_array = [];
+    $draw_numbers = array_reverse($draw_numbers);
 
+    
     foreach($draw_numbers as $draw_obj){
+
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj['period'];
         $sum = array_sum($draw_number);
-        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum >= 210 && $sum <= 809  ? 'Small' : ($sum > 810 && $sum <= 1410 ? 'big' : ''), 'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum ]);
+        sort($draw_number);
+        $tenth_value   =  intval($draw_number[9]);
+        $eleveth_value =  intval($draw_number[10]);
+        $is_tie        = (($tenth_value >= 1  && $tenth_value <= 40) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
+        $is_under      = (($tenth_value >= 1  && $tenth_value <= 40) && ($eleveth_value >= 1  && $eleveth_value <= 40) );
+        $is_over       = (($tenth_value >= 41 && $tenth_value <= 80) && ($eleveth_value >= 41 && $eleveth_value <= 80) );
+        
+        // Assuming findPattern() is defined with similar logic in PHP
+        $over_under_data = [
+            'over' => $is_over ? "Over" : $over,
+            'tie'  =>  $is_tie ? "Tie" : $tie,
+            'under' => $is_under ? "Under" : $under,
+        ];
+        
+        array_push($history_array, [ "draw_period" => $draw_period,
+         "winning"=> implode(",",$draw_number), 
+         "b_s" =>  $sum >= 210 && $sum <= 809  ? 'Small' : ($sum > 810 && $sum <= 1410 ? 'Big' : ''),
+         'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum,
+         'over' => $is_over ? "Over" : $over,
+         'tie'  =>  $is_tie ? "Tie" : $tie,
+         'under' => $is_under ? "Under" : $under, ]);
+
+        $currentPattern = array_values($over_under_data);
+        sort($currentPattern);
+        $currentPattern = $currentPattern[2];
+       
+        // Update counts
+       $over   = ($currentPattern == "Over")  ? 1 : ($over += 1);
+       $tie    = ($currentPattern == "Tie")   ? 1 : ($tie += 1);
+       $under  = ($currentPattern == "Under") ? 1 : ($under += 1);
+
+
     }
 
+return array_reverse($history_array);
 
-    return $history_array;
+
 
 }
 
