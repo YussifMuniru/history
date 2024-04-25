@@ -37,23 +37,22 @@ function two_sides_2sides(array $draw_results) : array{
 
    $history_array = [];
    
-
    foreach ($draw_results as $draw_result){
     $draw_period = $draw_result['period'];
     $draw_number = $draw_result['draw_number'];
-    $pattern = '';
+
     $sum = array_sum($draw_number);
     $is_big_small = $sum > 30 ? "B" :(($sum === 30)  ? "Tie" : "S");
     $is_odd_even    = $sum % 2 === 0 ? "E" : "O";
     $is_dragon_tiger  = $draw_number[0] > $draw_number[4]  ? "D" : "T";
-    $tail_big_small_split =  str_split((string) array_reduce($draw_number,function($init,$curr){ return $init + intval(str_split($curr)[1]);}));
+    $tail_big_small_split =  str_split((string) array_reduce($draw_number,function($init,$curr){ return $init + intval(isset(str_split($curr)[1]) ? str_split($curr)[1] : str_split($curr)[0]);}));
     $tail_big_small_len = count($tail_big_small_split) ;
     $tail_big_small_digit     = $tail_big_small_len === 1 ? ((int)$tail_big_small_split[0]) :  ((int)$tail_big_small_split[1]);
     $tail_big_small_result = ($tail_big_small_digit >= 5) ? "B" : "S";
     
     
 
-    array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=>$is_dragon_tiger,'tail_big_small'=>$tail_big_small_result]);
+    array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=> $is_dragon_tiger,'tail_big_small'=> $tail_big_small_result]);
 
     
 
@@ -63,9 +62,10 @@ function two_sides_2sides(array $draw_results) : array{
 return $history_array;
 
 
-
-
 }
+
+
+
 
 function two_sides_first_group(Array $draw_numbers,int $start_index,int $end_index) : array {
         
@@ -208,7 +208,7 @@ function chart_no_11x5(Array $drawNumbers,$index) : Array {
     $history_array = [];
 
     $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
-    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten", 11 => "eleven"
    ];
    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
 

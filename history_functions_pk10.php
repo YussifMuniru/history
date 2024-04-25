@@ -233,16 +233,127 @@ function odd_even_pk10(Array $drawNumbers) : Array{
     
 // }
 
-function dragon_tiger_history(Array $drawNumbers) {
-    $historyArray = array();
+
+function dragon_tiger_tie_chart_pk10(array $drawNumbers, $start_index, $end_index): array
+{
+
+
+
+
+
+    $patterns = ['D' => 'Dragon', 'T' => 'Tiger', 'Tie' => 'Tie'];
+    $counts = array_fill_keys(array_values($patterns), 1);
+
+    $historyArray = [];
+    $drawNumbers  = array_reverse($drawNumbers);
+    foreach ($drawNumbers as  $item) {
+        $mydata = [];
+        //  'onex2' => dragonTigerTiePattern(0, 1, $draw_number),
+        foreach ($patterns as $patternKey => $pattern) {
+            $mydata[$pattern] = dragonTigerTiePattern($start_index, $end_index, $item["draw_number"]) ===  $patternKey  ? $pattern : $counts[$pattern];
+            $counts[$pattern] = ($mydata[$pattern] === $patterns[dragonTigerTiePattern($start_index, $end_index, $item["draw_number"])]) ? 1 : ($counts[$pattern] + 1);
+        }
+        $mydata["winning"]      = implode(",", $item["draw_number"]);
+        $mydata["draw_period"]  =  $item["period"];
+
+
+        array_push($historyArray, $mydata);
+    }
+
+    return array_reverse($historyArray);
+
+
+
+
+    // $g120 = 1;
+    // $g60 = 1;
+    // $g30 = 1;
+    // $g20 = 1;
+    // $g10 = 1;
+    // $g5 = 1;
+    // $historyArray = [];
+
+    // foreach ($drawNumbers as   $item) {
+
+    //     // Assuming findPattern() is defined with similar logic in PHP
+    //     $mydata = array(
+    //         'g120' => findPattern([1, 1, 1, 1, 1], $item, 0, 5) ? "g120" : $g120,
+    //         'g60' => findPattern([2, 1, 1, 1], $item, 0, 5) ? "g60" : $g60,
+    //         'g30' => findPattern([2, 2, 1], $item, 0, 5) ? "g30" : $g30,
+    //         'g20' => findPattern([3, 1, 1], $item, 0, 5) ? "g20" : $g20, // 1 triple, 2 diff 
+    //         'g10' => findPattern([3, 2], $item, 0, 5) ? "g10" : $g10, // 1 triple, 1 pair 
+    //         'g5' => findPattern([4, 1], $item, 0, 5) ? "g5" : $g5 // 1 quad, 1 diff 
+    //     );
+
+    //     $mydata["winning"] = implode(",",$item);
+    //     $mydata["draw_period"] = $draw_periods[$key];
+
+
+
+    //     array_push($historyArray, $mydata);
+
+
+    //     $currentPattern = array_values($mydata);
+    //     sort($currentPattern);
+    //     $currentPattern = $currentPattern[7];
+
+    //     // Update counts
+    //     $g120 = ($currentPattern == "g120")  ? 1 : ($g120 += 1);
+    //     $g60 = ($currentPattern == "g60") ? 1 : ($g60 += 1);
+    //     $g30 = ($currentPattern == "g30") ? 1 : ($g30 += 1);
+    //     $g20 = ($currentPattern == "g20") ? 1 : ($g20 += 1);
+    //     $g10 = ($currentPattern == "g10") ? 1 : ($g10 += 1);
+    //     $g5 =  ($currentPattern == "g5")  ? 1 : ($g5 += 1);
+
+
+    // }
+
+    // return $historyArray;
+} // end of all5History: ["g120"..."g5"]
+
+
+
+
+function two_sides_full_chart(Array $drawNumbers, int $start_index,int $end_index) : Array{
+   
+     $historyArray = array();
+
 
 
     foreach ($drawNumbers as $item) {
         $draw_number = $item['draw_number'];
         $draw_period = $item['period'];
-
-        
+        $draw_digit   = intval($draw_number[$start_index]);
         // Assuming dragonTigerTiePattern_pk10 is a function you have defined in PHP
+        
+        $mydata = array(
+            'b_s'          => $draw_digit > 5 ? "B" : "S" ,
+            'o_e'          => $draw_digit % 2 === 1 ? "O" : "E",
+            'dragon_tiger' => dragonTigerTiePattern_pk10($start_index, $end_index, $draw_number),
+            );
+
+            $mydata['draw_period'] = $draw_period;
+            $mydata['winning']     =  implode(",",$draw_number);
+        array_push($historyArray, $mydata);
+    }
+
+    return $historyArray;
+
+    
+}
+
+
+function dragon_tiger_history(Array $drawNumbers) {
+    $historyArray = array();
+
+
+
+    foreach ($drawNumbers as $item) {
+        $draw_number = $item['draw_number'];
+        $draw_period = $item['period'];
+       
+        // Assuming dragonTigerTiePattern_pk10 is a function you have defined in PHP
+      
         $mydata = array(
             'draw_period' => $draw_period,
             "winning" => implode(",",$draw_number),
@@ -363,13 +474,15 @@ function render_pk10(Array $draw_numbers): array {
     
    
     return       [
-                'guess_rank'        => winning_number_pk10($draw_numbers), 
-                'fixed_place'       => winning_number_pk10($draw_numbers),
-                'dragon_tiger'      => dragon_tiger_history($draw_numbers),
-                'b_s_o_e'=>['first' => b_s_o_e_of_first_5($draw_numbers),'top_two' => b_s_o_e_of_sum_of_top_two($draw_numbers)] ,
-                'sum'    =>['top_two' => sum_of_top_two($draw_numbers),'top_three' => sum_of_top_three($draw_numbers) ],
-                'chart_no'          => ["chart_1" => chart_no($draw_numbers,0),"chart_2" => chart_no($draw_numbers,1),"chart_3" => chart_no($draw_numbers,2),"chart_4" => chart_no($draw_numbers,3),"chart_5" => chart_no($draw_numbers,4),"chart_6" => chart_no($draw_numbers,5),"chart_7" => chart_no($draw_numbers,6),"chart_8" => chart_no($draw_numbers,7),"chart_9" => chart_no($draw_numbers,8),"chart_10" => chart_no($draw_numbers,9)]
-                
+                'guess_rank'          => winning_number_pk10($draw_numbers), 
+                'fixed_place'         => winning_number_pk10($draw_numbers),
+                'dragon_tiger'        => dragon_tiger_history($draw_numbers),
+                'b_s_o_e'             => ['first' => b_s_o_e_of_first_5($draw_numbers),'top_two' => b_s_o_e_of_sum_of_top_two($draw_numbers)] ,
+                'sum'                 => ['top_two' => sum_of_top_two($draw_numbers),'top_three' => sum_of_top_three($draw_numbers) ],
+                'chart_no'            => ["chart_1" => chart_no($draw_numbers,0),"chart_2" => chart_no($draw_numbers,1),"chart_3" => chart_no($draw_numbers,2),"chart_4" => chart_no($draw_numbers,3),"chart_5" => chart_no($draw_numbers,4),"chart_6" => chart_no($draw_numbers,5),"chart_7" => chart_no($draw_numbers,6),"chart_8" => chart_no($draw_numbers,7),"chart_9" => chart_no($draw_numbers,8),"chart_10" => chart_no($draw_numbers,9)],
+                'dragon_tiger_chart'  => ["onex10" => dragon_tiger_tie_chart_pk10($draw_numbers,0,9), "twox9" => dragon_tiger_tie_chart_pk10($draw_numbers,1,8), "threex8" => dragon_tiger_tie_chart_pk10($draw_numbers,2,7), "fourx7" => dragon_tiger_tie_chart_pk10($draw_numbers,3,6), "fivex6" => dragon_tiger_tie_chart_pk10($draw_numbers,4,5)],
+                'full_chart_two_sides'=> [ "first" => two_sides_full_chart($draw_numbers,0,9), "second" => two_sides_full_chart($draw_numbers,1,8),"third" => two_sides_full_chart($draw_numbers,2,7),"fourth" => two_sides_full_chart($draw_numbers,3,6),"fifth" => two_sides_full_chart($draw_numbers,4,5),"sixth" => two_sides_full_chart($draw_numbers,5,5),"seventh" => two_sides_full_chart($draw_numbers,6,3),"eighth" => two_sides_full_chart($draw_numbers,7,2),"nineth" => two_sides_full_chart($draw_numbers,8,1),"tenth" => two_sides_full_chart($draw_numbers,9,0),],
+                'sum_of_top_two_two_sides' => pk_10_two_sides($draw_numbers),
                     ];  
 }
 

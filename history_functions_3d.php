@@ -57,6 +57,37 @@ function dragonTigerHistory3d(Array $drawNumbers) : Array {
 }// end of dragonTigerHistory3d.
 
 
+function dragon_tiger_tie_chart_3d(array $drawNumbers, $start_index, $end_index): array
+{
+
+
+
+
+
+    $patterns = ['D' => 'Dragon', 'T' => 'Tiger', 'Tie' => 'Tie'];
+    $counts = array_fill_keys(array_values($patterns), 1);
+
+    $historyArray = [];
+    $drawNumbers  = array_reverse($drawNumbers);
+    foreach ($drawNumbers as  $item) {
+        $mydata = [];
+        //  'onex2' => dragonTigerTiePattern(0, 1, $draw_number),
+        foreach ($patterns as $patternKey => $pattern) {
+            $mydata[$pattern] = dragonTigerTiePattern($start_index, $end_index, $item["draw_number"]) ===  $patternKey  ? $pattern : $counts[$pattern];
+            $counts[$pattern] = ($mydata[$pattern] === $patterns[dragonTigerTiePattern($start_index, $end_index, $item["draw_number"])]) ? 1 : ($counts[$pattern] + 1);
+        }
+        $mydata["winning"]      = implode(",", $item["draw_number"]);
+        $mydata["draw_period"]  =  $item["period"];
+
+
+        array_push($historyArray, $mydata);
+    }
+
+    return array_reverse($historyArray);
+
+
+
+} // end of dragon_tiger_tie_chart_3d
 
 
 function all2History(Array $drawNumbers,String $typeOfModule) : Array {
@@ -159,10 +190,10 @@ function all3TwoSidesHistory(Array $drawNumbers) : Array{
         $endIndex      = 3;
         
       
-        $group3Condition = findPattern([2, 1], $draw_number) ? "group3" : $group3;
+        $group3Condition = findPattern([2, 1], $draw_number,0,3) ? "group3" : $group3;
 
 
-        $group6Condition = findPattern([1, 1, 1], $draw_number) ? "group6" : $group6;
+        $group6Condition = findPattern([1, 1, 1], $draw_number,0,3) ? "group6" : $group6;
 
         $mydata = [
             'draw_period' => $draw_period,
@@ -249,6 +280,54 @@ function sum_of_two_no(Array $draw_numbers) : Array{
 
     return $history_array;
 }
+
+
+function sum_of_no_two_sides_chart(Array $draw_numbers ,int $start_index ,int $end_index){
+
+     $history_array = [];
+
+    foreach ($draw_numbers as $item) {
+        $value = $item["draw_number"];
+        $draw_period = $item['period'];
+        $sum_digits  = intval($value[$start_index]) + intval($value[$end_index]);
+        $tail_sum = isset(str_split(strval($sum_digits))[1]) ? str_split(strval($sum_digits))[1] : str_split(strval($sum_digits))[0];
+          array_push($history_array,[
+            "draw_periods" =>  $draw_period,
+            "winning"      =>  implode(",",$value),
+            "o_e"          =>  $sum_digits % 2 === 1 ? "O" : "E",
+            "tail_b_s"     =>  intval($tail_sum) >= 4 ? "B" : "S",
+            "tail_p_c"     =>  checkPrimeOrComposite($tail_sum),
+             "sum" => $sum_digits
+        ]);
+    }
+
+
+    return $history_array;
+    }
+function sum_two_sides_chart(Array $draw_numbers){
+
+     $history_array = [];
+
+    foreach ($draw_numbers as $item) {
+        $value = $item["draw_number"];
+        $draw_period = $item['period'];
+        $sum_digits  = array_sum($value);
+        $tail_sum = isset(str_split(strval($sum_digits))[1]) ? str_split(strval($sum_digits))[1] : str_split(strval($sum_digits))[0];
+          array_push($history_array,[
+            "draw_periods" =>  $draw_period,
+            "winning"      =>  implode(",",$value),
+            "o_e"          =>  $sum_digits % 2 === 1 ? "O" : "E",
+            "b_s"          =>  intval($sum_digits) >= 14 ? "B" : "S",
+            "tail_b_s"     =>  intval($tail_sum) >= 4 ? "B" : "S",
+            "tail_p_c"     =>  checkPrimeOrComposite($tail_sum),
+            "sum" => $sum_digits
+        ]);
+    }
+
+
+    return $history_array;
+    }
+
 
 
 
@@ -372,6 +451,7 @@ function render(Array $drawNumber) : Array{
                 'dragonTiger' => dragonTigerHistory3d($drawNumber),
                 'chart_no'    => ["chart_1" => chart_no_5d($drawNumber,0),"chart_2" => chart_no_5d($drawNumber,1),"chart_3" => chart_no_5d($drawNumber,2),],
                 'no_layout'   => no_layout_3d($drawNumber),
+                'full_chart_dragon_tiger_tie' => ['threex4' => dragon_tiger_tie_chart_3d($drawNumber,0, 1,),'threex5' => dragon_tiger_tie_chart_3d($drawNumber,0, 2, ), 'fourx5' => dragon_tiger_tie_chart_3d($drawNumber,1, 2, )],
              ];
      return $result;
 
@@ -395,7 +475,10 @@ function two_sides_render(Array $drawNumber) : Array{
                 'sum_of_2_no'=> sum_of_two_no($drawNumber), 
                 'group3'=> all3TwoSidesHistory($drawNumber), 
                 'group6'=> all3TwoSidesHistory($drawNumber), 
+                 'chart_no'    => ["chart_1" => chart_no_5d($drawNumber,0),"chart_2" => chart_no_5d($drawNumber,1),"chart_3" => chart_no_5d($drawNumber,2),],
+                'no_layout'   => no_layout_3d($drawNumber),
                 'span'=> all3TwoSidesHistory($drawNumber), 
+                'two_sides_full_chart' => ["sum_1x2" => sum_of_no_two_sides_chart($drawNumber,0,1), "sum_1x3" => sum_of_no_two_sides_chart($drawNumber,0,2), "sum_2x3" => sum_of_no_two_sides_chart($drawNumber,1,2),"sum" => sum_two_sides_chart($drawNumber)],
                
                
              ];

@@ -226,7 +226,7 @@ function render_fast3(Array $draw_numbers) : Array{
                 'two_no'          => three_of_a_kind($draw_numbers), 
                 'guess_a_number'  => winning($draw_numbers), 
                 'no_layout'       => no_layout_fast3($draw_numbers),
-                'fish_praw_crab'  => full_chart_fish_prawn_crab($draw_numbers),
+                'fish_prawn_crab'  => full_chart_fish_prawn_crab($draw_numbers),
               ];
     return $result;
 

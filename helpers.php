@@ -28,8 +28,8 @@ if($_SERVER['REQUEST_METHOD'] == 'GET'){
 }
 
 
-function findPattern(Array $pattern,Array $drawNumbers) : bool{
-   $count = array_count_values($drawNumbers);
+function findPattern(Array $pattern,Array $drawNumbers,int $index, int $slice) : bool{
+   $count = array_count_values(array_slice($drawNumbers, $index, $slice));
    sort($count); sort($pattern);
     return $count == $pattern;
 }// end of findPattern.
@@ -101,3 +101,20 @@ function isPrime($number) {
     return true;
 }
 
+function checkPrimeOrComposite($number)
+{
+
+    // Check if the number is less than 2.
+    if ($number == 1 || $number == 0) return $number === 1 ? "P" : "C";
+
+
+
+    // Check from 2 to the square root of the number.
+    for ($i = 2; $i <= sqrt($number); $i++) {
+        if ($number % $i == 0) {
+            return "C";
+        }
+    }
+    // If no divisors were found, it's prime.
+    return "P";
+}

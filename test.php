@@ -2,14 +2,176 @@
 
 require_once("vendor/autoload.php");
 
-class TestHistory {
+class TestHistory
+{
 
 
-    public static function get($time){
+    public static function get($time)
+    {
         return $time;
     }
+}
+
+
+function findPattern(array $pattern, array $drawNumbers, int $index, int $slice): bool
+{
+    $count = array_count_values(array_slice($drawNumbers, $index, $slice));
+    sort($count);
+    sort($pattern);
+    return $count == $pattern;
+} // end of findPattern.
+
+
+
+function spanPattern5d(array $drawNumbers, int $index, int $slice): int
+{
+    // Slicing the array from index for the length of slice
+    $slicedNumbers = array_slice($drawNumbers, $index, $slice);
+
+    // Sorting the sliced array
+    sort($slicedNumbers);
+
+    $slicedNumbers = array_map(function ($val) {
+        return intval($val);
+    }, $slicedNumbers);
+    // Getting the max and min values in the sliced array
+    $maxValue = max($slicedNumbers);
+    $minValue = min($slicedNumbers);
+
+    // Returning the difference between max and min values
+    return $maxValue - $minValue;
+} // end of spanPattern5d
+
+
+function sumPattern(array $drawNumbers, int $index, int $slice): int
+{
+    // Slicing the array from index for the length of slice
+    $slicedArray = array_slice($drawNumbers, $index, $slice);
+
+    // Calculating the sum of the sliced array
+    $sum = array_sum($slicedArray);
+
+    return $sum;
+} // end of sumPattern. Sum the array chunk.
+
+
+
+function all3History5d(array $drawNumbers, String $typeOf3): array
+{
+    $group3 = 1;
+    $group6 = 1;
+
+
+
+    $historyArray = [];
+
+    $drawNumbers = array_reverse($drawNumbers);
+    foreach ($drawNumbers as  $draw_obj) {
+        try {
+
+
+            $draw_number = $draw_obj['draw_number'];
+
+            $draw_period = $draw_obj["period"];
+            // Assuming sumPattern, spanPattern5d, and findPattern are functions you've defined elsewhere
+            // and they need to be converted to PHP as well.
+            $objectKeyPrefix = str_replace("all3", "", $typeOf3);
+
+            $group3Key = $objectKeyPrefix . "group3";
+            $group6Key = $objectKeyPrefix . "group6";
+
+            $startingIndex = $typeOf3 === "all3first3" ? 0 : ($typeOf3 === "all3mid3" ? 1 : 2);
+            $endIndex      = $typeOf3 === "all3first3" ? 3 : ($typeOf3 === "all3mid3" ? 3 : 3);
+
+
+            $group3Condition = findPattern([2, 1], $draw_number, $startingIndex, $endIndex) ? "group3" : $group3;
+
+
+            $group6Condition = findPattern([1, 1, 1], $draw_number, $startingIndex, $endIndex) ? "group6" : $group6;
+
+
+            $sum = sumPattern($draw_number, $startingIndex, $endIndex);
+
+            $mydata = [
+                $objectKeyPrefix . "sum" => sumPattern($draw_number, $startingIndex, $endIndex),
+                $objectKeyPrefix . "span" => spanPattern5d($draw_number,  $startingIndex, $endIndex),
+                $group3Key => $group3Condition,
+                $group6Key => $group6Condition,
+            ];
+
+            $splitted_sum = str_split("$sum");
+
+            $mydata["sum_tails"] = count($splitted_sum) == 1 ? $sum : intval($splitted_sum[1]);
+
+            $mydata["winning"] = implode(",", $draw_number);
+            $mydata["draw_period"] = $draw_period;
+
+            array_push($historyArray, $mydata);
+
+
+
+            $currentPattern = array_values($mydata);
+            sort($currentPattern);
+            $currentPattern = $currentPattern[5];
+            $group6 = $currentPattern == "group6" ? 1 : ($group6 += 1);
+            $group3 = $currentPattern == "group3" ? 1 : ($group3 += 1);
+        } catch (Throwable $e) {
+            echo "Error: " . $e->getMessage();
+        }
+    }
+
+    return array_reverse($historyArray);
+} // end of all3History5d: ["group6"..."group3"]
+
+
+function two_sides_2sides(array $draw_results) : array{
+
+   $history_array = [];
+   
+
+   foreach ($draw_results as $draw_result){
+    $draw_period = $draw_result['period'];
+    $draw_number = $draw_result['draw_number'];
+    print_r($draw_number).PHP_EOL;
+    echo $draw_period.PHP_EOL;
+    $sum = array_sum($draw_number);
+    $is_big_small = $sum > 30 ? "B" :(($sum === 30)  ? "Tie" : "S");
+    $is_odd_even    = $sum % 2 === 0 ? "E" : "O";
+    $is_dragon_tiger  = $draw_number[0] > $draw_number[4]  ? "D" : "T";
+    $tail_big_small_split =  str_split((string) array_reduce($draw_number,function($init,$curr){ return $init + intval(str_split($curr)[1]);}));
+    $tail_big_small_len = count($tail_big_small_split) ;
+    $tail_big_small_digit     = $tail_big_small_len === 1 ? ((int)$tail_big_small_split[0]) :  ((int)$tail_big_small_split[1]);
+    $tail_big_small_result = ($tail_big_small_digit >= 5) ? "B" : "S";
+    
+ array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=> $is_dragon_tiger,'tail_big_small'=> $tail_big_small_result]);
+ }
+   
+return $history_array;
+
 
 }
+
+
+
+
+$r = all3History5d(
+    [["draw_number" => ["5", "7", "1", "0", "7"], "period" => ["1,2,3,4,4"]], ["draw_number" => ["5", "", "1", "0", "7"], "period" => ["1,2,3,4,4"]]],
+    'all3first3'
+);
+
+$r = two_sides_2sides(
+    [["draw_number" => ["11","04","08","09","05"], "period" => ["1,2,3,4,4"]], ["draw_number" => ["09","04","08","10","01"], "period" => ["1,2,3,4,4"]]],
+);
+
+
+
+print_r($r);
+
+
+
+// echo json_encode($r);
+
+
 
 
 
@@ -22,11 +184,25 @@ class TestHistory {
 // echo intval('b');
 
 
-   $lottery_id = 1;
-    $redis = new \Predis\Client();
+// $lottery_id = 1;
+// $redis = new Predis\Client([
+//     'scheme' => 'tcp',
+//     'host'   => '127.0.0.1',
+//     'port'   => 6379,
+// ]);
 // //   lottery_id_board_games_34
-  $redis->get("lottery_id_std_{$lottery_id}");
- 
+// echo "<pre>";
+// try {
+//     print_r($redis->get("lottery_id_std_1"));
+// } catch (Throwable $th) {
+//     echo "Error in redis cache";
+//     echo $th->getMessage();
+// }
+
+// echo "kdsjf;a";
+// echo "</pre>";
+
+
 
 
 
