@@ -52,7 +52,37 @@ function two_sides_2sides(array $draw_results) : array{
     
     
 
-    array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=> $is_dragon_tiger,'tail_big_small'=> $tail_big_small_result]);
+    array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=> $is_dragon_tiger,'tail_big_small'=> $tail_big_small_result],);
+
+    
+
+   
+    }
+   
+return $history_array;
+
+
+}
+function two_sides_2sides_chart(array $draw_results) : array{
+
+   $history_array = [];
+   
+   foreach ($draw_results as $draw_result){
+    $draw_period = $draw_result['period'];
+    $draw_number = $draw_result['draw_number'];
+
+    $sum = array_sum($draw_number);
+    $is_big_small = $sum > 30 ? "B" :(($sum === 30)  ? "Tie" : "S");
+    $is_odd_even    = $sum % 2 === 0 ? "E" : "O";
+    $is_dragon_tiger  = $draw_number[0] > $draw_number[4]  ? "Dragon" : "Tiger";
+    $tail_big_small_split =  str_split((string) array_reduce($draw_number,function($init,$curr){ return $init + intval(isset(str_split($curr)[1]) ? str_split($curr)[1] : str_split($curr)[0]);}));
+    $tail_big_small_len = count($tail_big_small_split) ;
+    $tail_big_small_digit     = $tail_big_small_len === 1 ? ((int)$tail_big_small_split[0]) :  ((int)$tail_big_small_split[1]);
+    $tail_big_small_result = ($tail_big_small_digit >= 5) ? "Tai Big" : "Tail Small";
+    
+    
+
+    array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=> $is_dragon_tiger,'tail_big_small'=> $tail_big_small_result],);
 
     
 
@@ -275,11 +305,16 @@ function two_sides_chart(Array $draw_numbers) : Array{
         $draw_number = $item['draw_number'];
        $mydata = [
         "winning" => implode(",", $item["draw_number"]) , 'draw_period' => $item['period'] , 
-       'first'    => intval($draw_number[0]) > 5 && intval($draw_number[0]) != 11 ? 'B' : (intval($draw_number[0]) < 6 ? "S" : "Tie" ),
-       'second'   => intval($draw_number[1]) > 5 && intval($draw_number[1]) != 11 ? 'B' : (intval($draw_number[1]) < 6 ? "S" : "Tie" ),
-       'third'    => intval($draw_number[2]) > 5 && intval($draw_number[2]) != 11 ? 'B' : (intval($draw_number[2]) < 6 ? "S" : "Tie" ),
-       'fourth'   => intval($draw_number[3]) > 5 && intval($draw_number[3]) != 11 ? 'B' : (intval($draw_number[3]) < 6 ? "S" : "Tie" ),
-       'fifth'    => intval($draw_number[4]) > 5 && intval($draw_number[4]) != 11 ? 'B' : (intval($draw_number[4]) < 6 ? "S" : "Tie" ),
+       'first_b_s'    => intval($draw_number[0]) > 5 && intval($draw_number[0]) != 11 ? 'B' : (intval($draw_number[0]) < 6 ? "S" : "Tie" ),
+       'second_b_s'   => intval($draw_number[1]) > 5 && intval($draw_number[1]) != 11 ? 'B' : (intval($draw_number[1]) < 6 ? "S" : "Tie" ),
+       'third_b_s'    => intval($draw_number[2]) > 5 && intval($draw_number[2]) != 11 ? 'B' : (intval($draw_number[2]) < 6 ? "S" : "Tie" ),
+       'fourth_b_s'   => intval($draw_number[3]) > 5 && intval($draw_number[3]) != 11 ? 'B' : (intval($draw_number[3]) < 6 ? "S" : "Tie" ),
+       'fifth_b_s'    => intval($draw_number[4]) > 5 && intval($draw_number[4]) != 11 ? 'B' : (intval($draw_number[4]) < 6 ? "S" : "Tie" ),
+       'first_o_e'    => intval($draw_number[0]) % 2 === 1  ? "O" : "E" ,
+       'second_o_e'   => intval($draw_number[1]) % 2 === 1  ? "O" : "E" ,
+       'third_o_e'    => intval($draw_number[2]) % 2 === 1  ? "O" : "E" ,
+       'fourth_o_e'   => intval($draw_number[3]) % 2 === 1  ? "O" : "E" ,
+       'fifth_o_e'    => intval($draw_number[4]) % 2 === 1  ? "O" : "E" ,
        ];
        
        array_push($history_array, $mydata);
@@ -317,7 +352,8 @@ function render_11x5(Array $draw_numbers): array {
                 'fun_chart'             => fun_chart($draw_numbers),
                 'two_sides_chart'       => two_sides_chart($draw_numbers),
                 'chart_no_11x5'                   =>    ["chart_1" => chart_no_11x5($draw_numbers,0),"chart_2" => chart_no_11x5($draw_numbers,1),"chart_3" => chart_no_11x5($draw_numbers,2),"chart_4" => chart_no_11x5($draw_numbers,3),"chart_5" => chart_no_11x5($draw_numbers,4)],  
-                'no_layout_11x5'                  =>    no_layout_11x5($draw_numbers),
+                'no_layout_11x5'                  => no_layout_11x5($draw_numbers),
+                "two_sides_chart_sum"  => two_sides_2sides_chart($draw_numbers), 
              ];
 
     return $result;
