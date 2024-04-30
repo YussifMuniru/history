@@ -3,7 +3,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
+require_once 'entry.php';
 
 function determinePattern(int $num,$small_category,$check_prime = false): String{
 
@@ -507,10 +507,7 @@ function board_games_render(Array $drawNumber) : Array{
 
  function generate_history_3d(int $lottery_id,bool $is_board_game){
 
-    
-
-
-  if ($lottery_id > 0) {
+ if ($lottery_id > 0) {
 
  
 
@@ -526,7 +523,6 @@ function board_games_render(Array $drawNumber) : Array{
     if(!$is_board_game){
          $history_results = ['std' => render($db_results['data']) , 'two_sides' => two_sides_render($db_results['data'])]; 
      }else{
-        echo 'Entered here';
        $history_results = ['board_games' => board_games_render($db_results['data'])];  
      }
 
@@ -539,6 +535,4 @@ function board_games_render(Array $drawNumber) : Array{
 
 }
 
-
-get_history();
 

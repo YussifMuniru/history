@@ -2,7 +2,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
+require_once 'entry.php';
 
 
 
@@ -1252,7 +1252,7 @@ $results = ["draw_numbers" => [["1", "2", "7", "0", "4"]], "draw_periods" => [["
 
 
 
-get_history();
+// get_history();
 
 
 function generate_history_5d(int $lottery_id, $is_board_game)

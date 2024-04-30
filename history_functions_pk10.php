@@ -2,7 +2,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
+require_once 'entry.php';
 
 
 
@@ -513,7 +513,7 @@ function board_games_render_pk10(Array $draw_numbers): array {
 //     generate_history_pk10(0);
 // }
 
-get_history();
+
 
 function generate_history_pk10(int $lottery_id,bool $is_board_game){
 
@@ -534,7 +534,6 @@ if ($lottery_id > 0) {
     
      if(!$is_board_game){
          $history_results = ['std' => render_pk10($db_results["data"]) , 'two_sides' => two_sides_render_pk10($db_results["data"])]; 
-        
      }else{
          $history_results = ['board_games' => board_games_render_pk10($db_results["data"])];
      }
@@ -545,3 +544,4 @@ if ($lottery_id > 0) {
 }
 
  }
+

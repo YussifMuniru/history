@@ -124,31 +124,31 @@ function all3History5d(array $drawNumbers, String $typeOf3): array
 } // end of all3History5d: ["group6"..."group3"]
 
 
-function two_sides_2sides(array $draw_results) : array{
+function two_sides_2sides(array $draw_results): array
+{
 
-   $history_array = [];
-   
-
-   foreach ($draw_results as $draw_result){
-    $draw_period = $draw_result['period'];
-    $draw_number = $draw_result['draw_number'];
-    print_r($draw_number).PHP_EOL;
-    echo $draw_period.PHP_EOL;
-    $sum = array_sum($draw_number);
-    $is_big_small = $sum > 30 ? "B" :(($sum === 30)  ? "Tie" : "S");
-    $is_odd_even    = $sum % 2 === 0 ? "E" : "O";
-    $is_dragon_tiger  = $draw_number[0] > $draw_number[4]  ? "D" : "T";
-    $tail_big_small_split =  str_split((string) array_reduce($draw_number,function($init,$curr){ return $init + intval(str_split($curr)[1]);}));
-    $tail_big_small_len = count($tail_big_small_split) ;
-    $tail_big_small_digit     = $tail_big_small_len === 1 ? ((int)$tail_big_small_split[0]) :  ((int)$tail_big_small_split[1]);
-    $tail_big_small_result = ($tail_big_small_digit >= 5) ? "B" : "S";
-    
- array_push($history_array,['draw_period'=>$draw_period,'winning'=>implode(",",$draw_number),'big_small'=>$is_big_small,'odd_even'=>$is_odd_even,'dragon_tiger'=> $is_dragon_tiger,'tail_big_small'=> $tail_big_small_result]);
- }
-   
-return $history_array;
+    $history_array = [];
 
 
+    foreach ($draw_results as $draw_result) {
+        $draw_period = $draw_result['period'];
+        $draw_number = $draw_result['draw_number'];
+
+        $sum = array_sum($draw_number);
+        $is_big_small = $sum > 30 ? "B" : (($sum === 30)  ? "Tie" : "S");
+        $is_odd_even    = $sum % 2 === 0 ? "E" : "O";
+        $is_dragon_tiger  = $draw_number[0] > $draw_number[4]  ? "D" : "T";
+        $tail_big_small_split =  str_split((string) array_reduce($draw_number, function ($init, $curr) {
+            return $init + intval(str_split($curr)[1]);
+        }));
+        $tail_big_small_len = count($tail_big_small_split);
+        $tail_big_small_digit     = $tail_big_small_len === 1 ? ((int)$tail_big_small_split[0]) : ((int)$tail_big_small_split[1]);
+        $tail_big_small_result = ($tail_big_small_digit >= 5) ? "B" : "S";
+
+        array_push($history_array, ['draw_period' => $draw_period, 'winning' => implode(",", $draw_number), 'big_small' => $is_big_small, 'odd_even' => $is_odd_even, 'dragon_tiger' => $is_dragon_tiger, 'tail_big_small' => $tail_big_small_result]);
+    }
+
+    return $history_array;
 }
 
 
@@ -160,12 +160,12 @@ $r = all3History5d(
 );
 
 $r = two_sides_2sides(
-    [["draw_number" => ["11","04","08","09","05"], "period" => ["1,2,3,4,4"]], ["draw_number" => ["09","04","08","10","01"], "period" => ["1,2,3,4,4"]]],
+    [["draw_number" => ["11", "04", "08", "09", "05"], "period" => ["1,2,3,4,4"]], ["draw_number" => ["09", "04", "08", "10", "01"], "period" => ["1,2,3,4,4"]]],
 );
 
 
 
-print_r($r);
+
 
 
 
@@ -184,23 +184,38 @@ print_r($r);
 // echo intval('b');
 
 
-// $lottery_id = 1;
-// $redis = new Predis\Client([
-//     'scheme' => 'tcp',
-//     'host'   => '127.0.0.1',
-//     'port'   => 6379,
-// ]);
-// //   lottery_id_board_games_34
-// echo "<pre>";
-// try {
-//     print_r($redis->get("lottery_id_std_1"));
-// } catch (Throwable $th) {
-//     echo "Error in redis cache";
-//     echo $th->getMessage();
-// }
+$lottery_id = 1;
+$redis = new Predis\Client();
+//   lottery_id_board_games_34
 
-// echo "kdsjf;a";
-// echo "</pre>";
+try {
+    $cache = json_decode($redis->get("lottery_id_std_1"), true);
+    $latest_draw_period = substr(json_decode($redis->get('currentDraw{$lottery_id}'), true)['draw_period'], -4, 4);
+
+    if (multiArraySearch($latest_draw_period, $cache) !== '') {
+        echo "Not current history";
+    }
+} catch (Throwable $th) {
+    echo "Error in redis cache";
+    echo $th->getMessage();
+}
+
+
+// Function to search for a value in a multi-dimensional array
+function multiArraySearch($value, $array)
+{
+    foreach ($array as $key => $val) {
+        if ($val === $value) {
+            return $key;
+        } elseif (is_array($val)) {
+            $result = multiArraySearch($value, $val);
+            if ($result !== false) {
+                return $key . '.' . $result;
+            }
+        }
+    }
+    return false;
+}
 
 
 
@@ -261,6 +276,9 @@ print_r($r);
 
 //  return $finalResults;
 //  }
+
+
+
 
 
 

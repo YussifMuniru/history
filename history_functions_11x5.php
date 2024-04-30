@@ -2,7 +2,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
+require_once 'entry.php';
 
 function eleven_5(Array $draw_numbers)  : array { 
    
@@ -78,7 +78,7 @@ function two_sides_2sides_chart(array $draw_results) : array{
     $tail_big_small_split =  str_split((string) array_reduce($draw_number,function($init,$curr){ return $init + intval(isset(str_split($curr)[1]) ? str_split($curr)[1] : str_split($curr)[0]);}));
     $tail_big_small_len = count($tail_big_small_split) ;
     $tail_big_small_digit     = $tail_big_small_len === 1 ? ((int)$tail_big_small_split[0]) :  ((int)$tail_big_small_split[1]);
-    $tail_big_small_result = ($tail_big_small_digit >= 5) ? "Tai Big" : "Tail Small";
+    $tail_big_small_result = ($tail_big_small_digit >= 5) ? "Tail Big" : "Tail Small";
     
     
 
@@ -390,10 +390,6 @@ function board_games_render_11x5(Array $draw_numbers): array {
 
 
 // echo json_encode(render_11x5([["draw_number" => ["02",'05','06','04','09'],'period'=>'1,2,3,4,5']]));
-
-
-get_history();
-
 
 
 

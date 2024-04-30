@@ -2,7 +2,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
+require_once 'entry.php';
 
 
 function three_row(Array $drawNumber) : bool{ 
@@ -264,9 +264,6 @@ function board_games_render_fast3(Array $draw_numbers) : Array{
 
 
 // return;
-
-get_history();
-
 
 
 function generate_history_fast3(int $lottery_id,bool $is_board_game){

@@ -2,7 +2,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
+require_once 'entry.php';
 
 
 
@@ -410,7 +410,7 @@ function board_games_render_happy8(Array $draw_numbers): array {
 //     generate_history_happy8(0);
 // }
 
-get_history();
+
 
 function generate_history_happy8(int $lottery_id,bool $is_board_game){
 

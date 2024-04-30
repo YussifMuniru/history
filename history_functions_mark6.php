@@ -2,11 +2,7 @@
 require_once 'cos.php';
 require_once 'db_utils.php';
 require_once 'helpers.php';
-require_once 'index.php';
-
-
-
-// ini_set('display_errors',1);
+require_once 'entry.php';
 
 set_error_handler(function ($severity, $message, $file, $line) {
     throw new ErrorException($message, 0, $severity, $file, $line);
@@ -29,7 +25,6 @@ $zodiacs = [
     "dog"     => generateArray(11),
     "pig"     => generateArray(12)
 ];
-
 
 
 function generateMapping($start)
@@ -474,7 +469,7 @@ function two_consec_tail(array $drawNumbers): array
 function sum_zodiac(array $drawNumbers, array $zodiacs): array
 {
 
-
+    
     $historyArray = [];
 
     foreach ($drawNumbers as $item) {
@@ -1210,6 +1205,22 @@ function render_mark6(array $drawNumber): array
 {
 
     global $zodiacs;
+    
+
+$zodiacs = [
+    "rat"     => generateArray(1),
+    "ox"      => generateArray(2),
+    "tiger"   => generateArray(3),
+    "rabbit"  => generateArray(4),
+    "dragon"  => generateArray(5),
+    "snake"   => generateArray(6),
+    "horse"   => generateArray(7),
+    "goat"    => generateArray(8),
+    "monkey"  => generateArray(9),
+    "rooster" => generateArray(10),
+    "dog"     => generateArray(11),
+    "pig"     => generateArray(12)
+];
 
 
     $result = [
@@ -1220,7 +1231,7 @@ function render_mark6(array $drawNumber): array
         'one_zodiac'            =>  winning_number_mark6($drawNumber),
         'ball_color'            =>  winning_number_mark6($drawNumber),
         "extra_n_ball_no"       => ["sum" => sum_mark6($drawNumber), "tail_no" =>  winning_number_mark6($drawNumber), "mismatch" => winning_number_mark6($drawNumber), "two_consec_tail" => two_consec_tail($drawNumber), "three_consec_tail" => two_consec_tail($drawNumber), "four_consec_tail" => two_consec_tail($drawNumber), "five_consec_tail" => two_consec_tail($drawNumber), 'two_no' =>  winning_number_mark6($drawNumber),  'win_extra_no' =>  winning_number_mark6($drawNumber)],
-        'extra_n_ball_zodiac'   => ["one_consec_zodiac" =>  winning_number_mark6($drawNumber), "two_consec_zodiac" =>  winning_number_mark6($drawNumber), "three_consec_zodiac" =>  winning_number_mark6($drawNumber), "four_consec_zodiac" =>  winning_number_mark6($drawNumber), "five_consec_zodiac" =>  winning_number_mark6($drawNumber), "sum_zodiac" => sum_zodiac($drawNumber, $zodiacs), "o_e_sum_zodiac"        => sum_zodiac($drawNumber, $zodiacs)],
+        'extra_n_ball_zodiac'   => ["one_consec_zodiac" =>  winning_number_mark6($drawNumber), "two_consec_zodiac" =>  winning_number_mark6($drawNumber), "three_consec_zodiac" =>  winning_number_mark6($drawNumber), "four_consec_zodiac" =>  winning_number_mark6($drawNumber), "five_consec_zodiac" =>  winning_number_mark6($drawNumber), "sum_zodiac" => sum_zodiac($drawNumber, $zodiacs), "o_e_sum_zodiac" => sum_zodiac($drawNumber, $zodiacs)],
         'extra_n_ball_color'    => extra_n_ball_color($drawNumber),
         'conv'                  => winning_number_mark6($drawNumber),
         'extra_no_2_sides'      => ["two_sides" => form_extra_no($drawNumber), "no" => winning_number_mark6($drawNumber), "all_color" => color_balls($drawNumber, 24), "special_zodiac_h_t" => extra_no_head_tail_no($drawNumber), "combo_zodiac" => winning_number_mark6($drawNumber), "five_elements" =>  five_elements($drawNumber)],
@@ -1313,7 +1324,7 @@ function chart_history(array $drawNumber, array $zodiacs)
 
 // echo json_encode(render_mark6([["draw_number" =>  ["29", "34", "44", "45", "43", "04", "10"],'period'=>'1,2,3,4,5'],]));
 
-get_history();
+
 
 // // if(isset($_GET["lottery_id"])){
 // //     generate_history_mark6(0);
