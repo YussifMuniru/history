@@ -919,6 +919,7 @@ function chart_no_zodiac(array $drawNumbers, int $index, $zodiacs): array
 
             $single_draw = $drawNumber[$index];
             foreach ($zodiacs as $key => $value) {
+                 
                 if (in_array($single_draw, $value)) {
                     $res['sky_ground'] = in_array($key, $sky) ? 'Sky' : (intval($single_draw) != 49 ? 'Ground' : 'Tie');
                     $res['first_last_zodiac']        = in_array($key, $first_zodiac) ? 'First' : (intval($single_draw) != 49 ? 'Last'   : 'Tie');
@@ -1026,7 +1027,8 @@ function chart_no_color(array $drawNumbers, int $index): array
             foreach ($colors as $key => $value) {
                 if (in_array($single_draw, $value)) {
 
-                    $res['sky_ground'] = in_array($key, $sky)          ? 'Sky'          : (intval($single_draw) != 49 ? 'Ground' : 'Tie');
+
+                    $res['sky_ground'] = in_array($key, $sky)  ? 'Sky' : (intval($single_draw) != 49 ? 'Ground' : 'Tie');
                     $res['first_last_zodiac']        = in_array($key, $first_zodiac) ? 'First' : (intval($single_draw) != 49 ? 'Last'   : 'Tie');
                     $res['poultry_beast_zodiac']     = in_array($key, $poultry_beast_zodiac) ? 'Poultry' : (intval($single_draw) != 49 ? 'Beast'   : 'Tie');
 
