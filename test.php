@@ -188,40 +188,47 @@ $lottery_id = 1;
 $redis = new Predis\Client();
 //   lottery_id_board_games_34
 
-try {
-    $cache = json_decode($redis->get("lottery_id_std_1"), true);
-    $latest_draw_period = substr(json_decode($redis->get('currentDraw{$lottery_id}'), true)['draw_period'], -4, 4);
+// try {
+//     $cache = json_decode($redis->get("lottery_id_std_1"), true);
+//     $latest_draw_period = substr(json_decode($redis->get('currentDraw{$lottery_id}'), true)['draw_period'], -4, 4);
 
-    if (multiArraySearch($latest_draw_period, $cache) !== '') {
-        echo "Not current history";
-    }
-} catch (Throwable $th) {
-    echo "Error in redis cache";
-    echo $th->getMessage();
-}
-
-
-// Function to search for a value in a multi-dimensional array
-function multiArraySearch($value, $array)
-{
-    foreach ($array as $key => $val) {
-        if ($val === $value) {
-            return $key;
-        } elseif (is_array($val)) {
-            $result = multiArraySearch($value, $val);
-            if ($result !== false) {
-                return $key . '.' . $result;
-            }
-        }
-    }
-    return false;
-}
+//     if (multiArraySearch($latest_draw_period, $cache) !== '') {
+//         echo "Not current history";
+//     }
+// } catch (Throwable $th) {
+//     echo "Error in redis cache";
+//     echo $th->getMessage();
+// }
 
 
+// // Function to search for a value in a multi-dimensional array
+// function multiArraySearch($value, $array)
+// {
+//     foreach ($array as $key => $val) {
+//         if ($val === $value) {
+//             return $key;
+//         } elseif (is_array($val)) {
+//             $result = multiArraySearch($value, $val);
+//             if ($result !== false) {
+//                 return $key . '.' . $result;
+//             }
+//         }
+//     }
+//     return false;
+// }
 
 
+  $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
 
 
+    array_walk($nums_for_layout, function($key,$value){
+        $nums_for_layout[$key] = $value + 1;
+    });
+
+    print_r($nums_for_layout);
 
 // $values_counts = array_count_values([1,2,3,4,5]);
 
