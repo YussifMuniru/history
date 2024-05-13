@@ -1043,8 +1043,7 @@ function chart_no_5d(array $drawNumbers, $index): array
 
 function chart_no_stats(array $drawNumbers, $index): array
 {
-
-     $history_array  = [];
+    $history_array  = [];
     $nums_for_layout = [
         0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
         6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
@@ -1053,42 +1052,6 @@ function chart_no_stats(array $drawNumbers, $index): array
     $lack_count  =  array_fill_keys(array_values($nums_for_layout), 0);
     $max_lacks = [];
     $max_row_counts         = array_fill_keys(array_values($nums_for_layout), []);
-
-    // foreach ($drawNumbers as $item) {
-    //     $drawNumber  = $item['draw_number'];
-
-    //     try {
-    //         $single_draw = $drawNumber[$index];
-    //         foreach ($nums_for_layout as $pattern_key => $pattern) {
-    //             if ($pattern_key === intval($single_draw)) {
-    //                 $max_lacks[$pattern][] = $counts_nums_for_layout[$pattern_key];
-                 
-    //                 $res[$pattern]     = $single_draw;
-                 
-    //             } else {
-    //                      if (isset($res[$pattern])) {
-    //                     continue;
-    //                 } else {
-    //                     $res[$pattern] = $counts_nums_for_layout[$pattern_key];
-    //                 }
-                   
-    //                    //$lack_count[$pattern] = ($lack_count[$pattern] + 1); 
-    //                    //$max_lacks[$pattern]    = $max_lacks[count($max_lacks[$pattern]) - 1] + 1; 
-    //             }
-
-    //              $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
-    //          }
-
-    //    } catch (Throwable $th) {
-    //         echo $th->getMessage();
-    //         $lack_count[] = [];
-    //     }
-    // }
-
-
-  
-   //print_r($counts_nums_for_layout);
-    
    foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
         $draw_period = $item['period'];
