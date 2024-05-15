@@ -215,6 +215,62 @@ function no_layout_fast3(Array $drawNumbers) : Array {
 
  }
 
+  function no_layout_stats_fast3(array $drawNumbers): array
+{
+
+     $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
+
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count             =  array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lacks              = [];
+    $max_row_counts         = array_fill_keys(array_values($nums_for_layout), []);
+
+    foreach ($drawNumbers as $item) {
+        $drawNumber   = $item['draw_number'];
+        $draw_period  = $item['period'];
+        $draw_period   = intval($draw_period);
+        try {
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                    if (in_array($pattern_key,$drawNumber)) { 
+                        $max_lacks[$pattern][] = $counts_nums_for_layout[$pattern_key];
+                         if(empty($max_row_counts[$pattern])){
+                        $max_row_counts[$pattern][$draw_period] = 1;
+                      }else{
+                        $last_row_count = end($max_row_counts[$pattern]);
+                        $flipped_max_row_counts = array_flip($max_row_counts[$pattern]);
+                        $last_row_key   = end($flipped_max_row_counts);
+                        if(( intval($last_row_key) - $draw_period) == $last_row_count){
+                            $max_row_counts[$pattern][$last_row_key]  = $max_row_counts[$pattern][$last_row_key] + 1;
+                        }else{
+                            $max_row_counts[$pattern][$draw_period]   = 1;
+                        }
+                      }
+                    } else {
+                       
+                          $lack_count[$pattern] = ($lack_count[$pattern] + 1);
+                    }
+           
+                }
+          
+
+           
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+    
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lacks,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : max($max_row_counts[$key]) , 'max_lack' => array_key_exists($key,$max_lacks) ?  max($max_lacks[$key]) : 30 ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+}
 
 function render_fast3(Array $draw_numbers) : Array{
     $result = [
@@ -226,7 +282,8 @@ function render_fast3(Array $draw_numbers) : Array{
                 'two_no'          => three_of_a_kind($draw_numbers), 
                 'guess_a_number'  => winning($draw_numbers), 
                 'no_layout'       => no_layout_fast3($draw_numbers),
-                'fish_prawn_crab'  => full_chart_fish_prawn_crab($draw_numbers),
+                'no_layout_stats' => no_layout_stats_fast3($draw_numbers),
+                'fish_prawn_crab' => full_chart_fish_prawn_crab($draw_numbers),
               ];
     return $result;
 

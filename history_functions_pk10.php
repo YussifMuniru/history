@@ -57,6 +57,130 @@ require_once 'entry.php';
 
  }
 
+ function chart_no_stats_pk10(array $drawNumbers, $index): array
+{
+    $history_array  = [];
+    $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count  =  array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lacks = [];
+    $max_row_counts         = array_fill_keys(array_values($nums_for_layout), []);
+   foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+        $single_draw = $drawNumber[$index];
+        try {
+            $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                     $max_lacks[$pattern][] = $counts_nums_for_layout[$pattern_key];
+                     $res[$pattern]     = $single_draw;
+                     $draw_period   = intval($draw_period);
+                      if(empty($max_row_counts[$pattern])){
+                        $max_row_counts[$pattern][$draw_period] = 1;
+                      }else{
+                        $last_row_count = end($max_row_counts[$pattern]);
+                        $flipped_max_row_counts = array_flip($max_row_counts[$pattern]);
+                        $last_row_key   = end($flipped_max_row_counts);
+                        if(( intval($last_row_key) - $draw_period) == $last_row_count){
+                            $max_row_counts[$pattern][$last_row_key]  = $max_row_counts[$pattern][$last_row_key] + 1;
+                        }else{
+                            $max_row_counts[$pattern][$draw_period]   = 1;
+                        }
+                      }
+                    } else {
+                      if (isset($res[$pattern])) { continue;}
+                       else {
+                        $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                    }
+                    $lack_count[$pattern] = ($lack_count[$pattern] + 1);
+                }
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+         array_push($history_array,$res);
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lacks,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : max($max_row_counts[$key]) , 'max_lack' => array_key_exists($key,$max_lacks) ?  max($max_lacks[$key]) : 30 ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+
+}
+
+
+function no_layout_stats_pk10(array $drawNumbers): array
+{
+
+     $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
+
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count             =  array_fill_keys(array_values($nums_for_layout), 0);
+    $current_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_row_counts = array_fill_keys(array_values($nums_for_layout), 0);
+    $current_lack_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lack_counts = array_fill_keys(array_values($nums_for_layout), 0);
+
+    foreach ($drawNumbers as $key => $item) {
+        $drawNumber   = $item['draw_number'];
+        $draw_period  = $item['period'];
+        $draw_period   = intval($draw_period);
+        
+        try {
+              $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if (in_array($pattern_key,$drawNumber)) {
+                    
+                    $res[$pattern]     = $pattern_key;
+                    $draw_period   = intval($draw_period);
+                    $current_lack_streaks[$pattern] = 0;
+                    $current_streaks[$pattern]++;
+                    $max_row_counts[$pattern]  = max($max_row_counts[$pattern],$current_streaks[$pattern]);
+                    } else {
+                      if (isset($res[$pattern])) { continue;}
+                       else {
+                        $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                    }
+                    $current_lack_streaks[$pattern]++;
+                    $max_lack_counts[$pattern]  = max($max_lack_counts[$pattern],$current_lack_streaks[$pattern]);
+                   // If the pattern is not in the current draw, reset the current streak
+                   $current_streaks[$pattern] = 0;
+                }
+                $counts_nums_for_layout[$pattern_key] = in_array($pattern_key,$drawNumber) ? 0 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+         
+          
+
+           
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+
+     
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lack_counts,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : $max_row_counts[$key] , 'max_lack' =>  $max_lack_counts[$key] ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+}
+
+
+
 function dragonTigerTiePattern_pk10($idx1, $idx2, $drawNumbers) {
     $v1 = $drawNumbers[$idx1];
     $v2 = $drawNumbers[$idx2];
@@ -474,15 +598,17 @@ function render_pk10(Array $draw_numbers): array {
     
    
     return       [
-                'guess_rank'          => winning_number_pk10($draw_numbers), 
-                'fixed_place'         => winning_number_pk10($draw_numbers),
-                'dragon_tiger'        => dragon_tiger_history($draw_numbers),
-                'b_s_o_e'             => ['first' => b_s_o_e_of_first_5($draw_numbers),'top_two' => b_s_o_e_of_sum_of_top_two($draw_numbers)] ,
-                'sum'                 => ['top_two' => sum_of_top_two($draw_numbers),'top_three' => sum_of_top_three($draw_numbers) ],
-                'chart_no'            => ["chart_1" => chart_no($draw_numbers,0),"chart_2" => chart_no($draw_numbers,1),"chart_3" => chart_no($draw_numbers,2),"chart_4" => chart_no($draw_numbers,3),"chart_5" => chart_no($draw_numbers,4),"chart_6" => chart_no($draw_numbers,5),"chart_7" => chart_no($draw_numbers,6),"chart_8" => chart_no($draw_numbers,7),"chart_9" => chart_no($draw_numbers,8),"chart_10" => chart_no($draw_numbers,9)],
-                'dragon_tiger_chart'  => ["onex10" => dragon_tiger_tie_chart_pk10($draw_numbers,0,9), "twox9" => dragon_tiger_tie_chart_pk10($draw_numbers,1,8), "threex8" => dragon_tiger_tie_chart_pk10($draw_numbers,2,7), "fourx7" => dragon_tiger_tie_chart_pk10($draw_numbers,3,6), "fivex6" => dragon_tiger_tie_chart_pk10($draw_numbers,4,5)],
-                'full_chart_two_sides'=> [ "first" => two_sides_full_chart($draw_numbers,0,9), "second" => two_sides_full_chart($draw_numbers,1,8),"third" => two_sides_full_chart($draw_numbers,2,7),"fourth" => two_sides_full_chart($draw_numbers,3,6),"fifth" => two_sides_full_chart($draw_numbers,4,5),"sixth" => two_sides_full_chart($draw_numbers,5,5),"seventh" => two_sides_full_chart($draw_numbers,6,3),"eighth" => two_sides_full_chart($draw_numbers,7,2),"nineth" => two_sides_full_chart($draw_numbers,8,1),"tenth" => two_sides_full_chart($draw_numbers,9,0),],
+                'guess_rank'               => winning_number_pk10($draw_numbers), 
+                'fixed_place'              => winning_number_pk10($draw_numbers),
+                'dragon_tiger'             => dragon_tiger_history($draw_numbers),
+                'b_s_o_e'                  => ['first' => b_s_o_e_of_first_5($draw_numbers),'top_two' => b_s_o_e_of_sum_of_top_two($draw_numbers)] ,
+                'sum'                      => ['top_two' => sum_of_top_two($draw_numbers),'top_three' => sum_of_top_three($draw_numbers) ],
+                'chart_no'                 => ["chart_1" => chart_no($draw_numbers,0),"chart_2" => chart_no($draw_numbers,1),"chart_3" => chart_no($draw_numbers,2),"chart_4" => chart_no($draw_numbers,3),"chart_5" => chart_no($draw_numbers,4),"chart_6" => chart_no($draw_numbers,5),"chart_7" => chart_no($draw_numbers,6),"chart_8" => chart_no($draw_numbers,7),"chart_9" => chart_no($draw_numbers,8),"chart_10" => chart_no($draw_numbers,9)],
+                'chart_no_stats'           => ["chart_1" => chart_no_stats_pk10($draw_numbers,0),"chart_2" => chart_no_stats_pk10($draw_numbers,1),"chart_3" => chart_no_stats_pk10($draw_numbers,2),"chart_4" => chart_no_stats_pk10($draw_numbers,3),"chart_5" => chart_no_stats_pk10($draw_numbers,4),"chart_6" => chart_no_stats_pk10($draw_numbers,5),"chart_7" => chart_no_stats_pk10($draw_numbers,6),"chart_8" => chart_no_stats_pk10($draw_numbers,7),"chart_9" => chart_no_stats_pk10($draw_numbers,8),"chart_10" => chart_no_stats_pk10($draw_numbers,9)],
+                'dragon_tiger_chart'       => ["onex10" => dragon_tiger_tie_chart_pk10($draw_numbers,0,9), "twox9" => dragon_tiger_tie_chart_pk10($draw_numbers,1,8), "threex8" => dragon_tiger_tie_chart_pk10($draw_numbers,2,7), "fourx7" => dragon_tiger_tie_chart_pk10($draw_numbers,3,6), "fivex6" => dragon_tiger_tie_chart_pk10($draw_numbers,4,5)],
+                'full_chart_two_sides'     => [ "first" => two_sides_full_chart($draw_numbers,0,9), "second" => two_sides_full_chart($draw_numbers,1,8),"third" => two_sides_full_chart($draw_numbers,2,7),"fourth" => two_sides_full_chart($draw_numbers,3,6),"fifth" => two_sides_full_chart($draw_numbers,4,5),"sixth" => two_sides_full_chart($draw_numbers,5,5),"seventh" => two_sides_full_chart($draw_numbers,6,3),"eighth" => two_sides_full_chart($draw_numbers,7,2),"nineth" => two_sides_full_chart($draw_numbers,8,1),"tenth" => two_sides_full_chart($draw_numbers,9,0),],
                 'sum_of_top_two_two_sides' => pk_10_two_sides($draw_numbers),
+                'no_layout_stats'          => no_layout_stats_pk10($draw_numbers),
                     ];  
 }
 
@@ -496,22 +622,9 @@ function two_sides_render_pk10(Array $draw_numbers): array {
         'sum_of_top_two_two_sides' => pk_10_two_sides($draw_numbers),
             ];  
 }
-
-
-
 function board_games_render_pk10(Array $draw_numbers): array {
-     return    [ 'board_game' => board_game_pk10($draw_numbers), ];  
+     return  [ 'board_game' => board_game_pk10($draw_numbers), ];  
 }
-
-
-
-// echo json_encode(render_pk10([["draw_number" => ["07",'05','02','09','03','08','04','01','10','06'],'period'=>'1,2,3,4,5']]));
-// return;
-
-
-// if(isset($_GET["lottery_id"])){
-//     generate_history_pk10(0);
-// }
 
 
 

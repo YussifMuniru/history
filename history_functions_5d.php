@@ -1166,6 +1166,69 @@ function no_layout_5d(array $drawNumbers): array
 }
 
 
+function no_layout_stats(array $drawNumbers): array
+{
+
+     $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
+
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count             =  array_fill_keys(array_values($nums_for_layout), 0);
+    $current_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_row_counts = array_fill_keys(array_values($nums_for_layout), 0);
+    $current_lack_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lack_counts = array_fill_keys(array_values($nums_for_layout), 0);
+
+    foreach ($drawNumbers as $key => $item) {
+        $drawNumber   = $item['draw_number'];
+        $draw_period  = $item['period'];
+        $draw_period   = intval($draw_period);
+        
+        try {
+              $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if (in_array($pattern_key,$drawNumber)) {
+                    
+                    $res[$pattern]     = $pattern_key;
+                    $draw_period   = intval($draw_period);
+                    $current_lack_streaks[$pattern] = 0;
+                    $current_streaks[$pattern]++;
+                    $max_row_counts[$pattern]  = max($max_row_counts[$pattern],$current_streaks[$pattern]);
+                    } else {
+                      if (isset($res[$pattern])) { continue;}
+                       else {
+                        $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                    }
+                    $current_lack_streaks[$pattern]++;
+                    $max_lack_counts[$pattern]  = max($max_lack_counts[$pattern],$current_lack_streaks[$pattern]);
+                   // If the pattern is not in the current draw, reset the current streak
+                   $current_streaks[$pattern] = 0;
+                }
+                $counts_nums_for_layout[$pattern_key] = in_array($pattern_key,$drawNumber) ? 0 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+         
+          
+
+           
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+
+     
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lack_counts,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : $max_row_counts[$key] , 'max_lack' =>  $max_lack_counts[$key] ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+}
+
+
 
 // --------------------------------------TWO SIDES---------------------------------------------------
 
@@ -1235,34 +1298,31 @@ function two_sides_rapido(array $draw_numbers)
 }
 
 
-
-
-
-
 function render5d(array $drawNumber): array
 {
 
     $result = [
-        'all5'                       =>    all5History($drawNumber),
-        'all4'                       =>    ["first4" => all4History($drawNumber, "all4first4"), "last4" =>  all4History($drawNumber, "all4last4")],
-        'all3'                       =>    ["first3" => all3History5d($drawNumber, "all3first3"), "mid3" => all3History5d($drawNumber, "all3mid3"), "last3" => all3History5d($drawNumber, "all3last3")],
-        'all2'                       =>    ["first2" => all2History5d($drawNumber, "all2first2"), "last2" => all2History5d($drawNumber, "all2last2")],
-        'fixedplace'                 =>    all5History($drawNumber),
-        'anyplace'                   =>    all5History($drawNumber),
-        'bsoe'                       =>    ["first2" => bsoeHistory($drawNumber, "bsoefirst2"), "mid2" => bsoeHistory($drawNumber, "bsoemid2"), "first3" =>  bsoeHistory($drawNumber, "bsoefirst3"), "last2" => bsoeHistory($drawNumber, "bsoelast2"), "last3" =>    bsoeHistory($drawNumber, "bsoelast3"), "bsoesumofall3" => bsoeHistory($drawNumber, "bsoesumofall3"), "sumofall5" => bsoeHistory($drawNumber, "bsoesumofall5")],
-        'pick2'                      =>    winning_number5d($drawNumber),
-        'fun'                        =>    winning_number5d($drawNumber),
-        'pick3'                      =>    winning_number5d($drawNumber),
-        'pick4'                      =>    winning_number5d($drawNumber),
-        'dragonTiger'                =>    dragonTigerHistory($drawNumber),
-        'dragon_tiger_tie_chart'     =>    ['one_x_2' =>   dragon_tiger_tie_chart($drawNumber, 0, 1), 'one_x_3' =>   dragon_tiger_tie_chart($drawNumber, 0, 2), 'one_x_4' =>   dragon_tiger_tie_chart($drawNumber, 0, 3), 'one_x_5' =>   dragon_tiger_tie_chart($drawNumber, 0, 4), 'two_x_3' =>   dragon_tiger_tie_chart($drawNumber, 1, 2), 'two_x_4' =>   dragon_tiger_tie_chart($drawNumber, 1, 3), 'two_x_5' =>   dragon_tiger_tie_chart($drawNumber, 1, 4), 'three_x_4' =>   dragon_tiger_tie_chart($drawNumber, 2, 3), 'three_x_5' =>   dragon_tiger_tie_chart($drawNumber, 2, 4), 'four_x_5' =>   dragon_tiger_tie_chart($drawNumber, 3, 4)],
-        'stud'                       =>    studHistory($drawNumber),
-        'threecards'                 =>    threeCardsHistory($drawNumber, "threecardsfirst3"),
-        'bulls'                      =>    calculateBullHistory($drawNumber),
-        'bulls_chart'                =>    calculateBullChartHistory($drawNumber),
-        'chart_no_5d'                =>    ["chart_1" => chart_no_5d($drawNumber, 0), "chart_2" => chart_no_5d($drawNumber, 1), "chart_3" => chart_no_5d($drawNumber, 2), "chart_4" => chart_no_5d($drawNumber, 3), "chart_5" => chart_no_5d($drawNumber, 4)],
-        'no_layout_5d'               =>    no_layout_5d($drawNumber),
-        'full_chart_stats'            =>    ["chart_1" => chart_no_stats($drawNumber, 0), "chart_2" => chart_no_stats($drawNumber, 1), "chart_3" => chart_no_stats($drawNumber, 2), "chart_4" => chart_no_stats($drawNumber, 3), "chart_5" => chart_no_stats($drawNumber, 4)]
+        'all5'                   =>  all5History($drawNumber),
+        'all4'                   =>  ["first4" => all4History($drawNumber, "all4first4"), "last4" =>  all4History($drawNumber, "all4last4")],
+        'all3'                   =>  ["first3" => all3History5d($drawNumber, "all3first3"), "mid3" => all3History5d($drawNumber, "all3mid3"), "last3" => all3History5d($drawNumber, "all3last3")],
+        'all2'                   =>  ["first2" => all2History5d($drawNumber, "all2first2"), "last2" => all2History5d($drawNumber, "all2last2")],
+        'fixedplace'             =>  all5History($drawNumber),
+        'anyplace'               =>  all5History($drawNumber),
+        'bsoe'                   =>  ["first2" => bsoeHistory($drawNumber, "bsoefirst2"), "mid2" => bsoeHistory($drawNumber, "bsoemid2"), "first3" =>  bsoeHistory($drawNumber, "bsoefirst3"), "last2" => bsoeHistory($drawNumber, "bsoelast2"), "last3" =>    bsoeHistory($drawNumber, "bsoelast3"), "bsoesumofall3" => bsoeHistory($drawNumber, "bsoesumofall3"), "sumofall5" => bsoeHistory($drawNumber, "bsoesumofall5")],
+        'pick2'                  =>  winning_number5d($drawNumber),
+        'fun'                    =>  winning_number5d($drawNumber),
+        'pick3'                  =>  winning_number5d($drawNumber),
+        'pick4'                  =>  winning_number5d($drawNumber),
+        'dragonTiger'            =>  dragonTigerHistory($drawNumber),
+        'dragon_tiger_tie_chart' =>  ['one_x_2' =>   dragon_tiger_tie_chart($drawNumber, 0, 1), 'one_x_3' =>   dragon_tiger_tie_chart($drawNumber, 0, 2), 'one_x_4' =>   dragon_tiger_tie_chart($drawNumber, 0, 3), 'one_x_5' =>   dragon_tiger_tie_chart($drawNumber, 0, 4), 'two_x_3' =>   dragon_tiger_tie_chart($drawNumber, 1, 2), 'two_x_4' =>   dragon_tiger_tie_chart($drawNumber, 1, 3), 'two_x_5' =>   dragon_tiger_tie_chart($drawNumber, 1, 4), 'three_x_4' =>   dragon_tiger_tie_chart($drawNumber, 2, 3), 'three_x_5' =>   dragon_tiger_tie_chart($drawNumber, 2, 4), 'four_x_5' =>   dragon_tiger_tie_chart($drawNumber, 3, 4)],
+        'stud'                   =>  studHistory($drawNumber),
+        'threecards'             =>  threeCardsHistory($drawNumber, "threecardsfirst3"),
+        'bulls'                  =>  calculateBullHistory($drawNumber),
+        'bulls_chart'            =>  calculateBullChartHistory($drawNumber),
+        'chart_no_5d'            =>  ["chart_1" => chart_no_5d($drawNumber, 0), "chart_2" => chart_no_5d($drawNumber, 1), "chart_3" => chart_no_5d($drawNumber, 2), "chart_4" => chart_no_5d($drawNumber, 3), "chart_5"  => chart_no_5d($drawNumber, 4)],
+        'no_layout_5d'           =>  no_layout_5d($drawNumber),
+        'no_layout_5d_stats'     =>  no_layout_stats($drawNumber),
+        'full_chart_stats'       =>  ["chart_1" => chart_no_stats($drawNumber, 0), "chart_2" => chart_no_stats($drawNumber, 1), "chart_3" => chart_no_stats($drawNumber, 2), "chart_4" => chart_no_stats($drawNumber, 3), "chart_5" => chart_no_stats($drawNumber, 4)]
 
     ];
 
@@ -1272,66 +1332,26 @@ function render5d(array $drawNumber): array
 
 function two_sides_render_5d(array $drawNumber): array
 {
-
-
-
-
-
-    $result = [
-
-        'rapido'          =>    two_sides_rapido($drawNumber),
-        'all_kinds'       =>    two_sides_rapido($drawNumber),
-        'chart_no_5d'     =>    ["chart_1" => chart_no_5d($drawNumber, 0), "chart_2" => chart_no_5d($drawNumber, 1), "chart_3" => chart_no_5d($drawNumber, 2), "chart_4" => chart_no_5d($drawNumber, 3), "chart_5" => chart_no_5d($drawNumber, 4)],
-        'no_layout_5d'    =>    no_layout_5d($drawNumber),
-
+    return [
+        'rapido'       =>  two_sides_rapido($drawNumber),
+        'all_kinds'    =>  two_sides_rapido($drawNumber),
+        'chart_no_5d'  =>  ["chart_1" => chart_no_5d($drawNumber, 0), "chart_2" => chart_no_5d($drawNumber, 1), "chart_3" => chart_no_5d($drawNumber, 2), "chart_4" => chart_no_5d($drawNumber, 3), "chart_5" => chart_no_5d($drawNumber, 4)],
+        'no_layout_5d' =>  no_layout_5d($drawNumber),
     ];
 
-    return false ? [] : $result;
 } // end of render5d. Returns all the history for 5D.
 
 
 function board_games_render_5d(array $drawNumber): array
 {
-    $result = ['board_game' =>  board_game($drawNumber),];
+    return ['board_game' =>  board_game($drawNumber),];
 
-    return false ? [] : $result;
 } // end of render5d. Returns all the history for 5D.
-
-
-
-
-// echo json_encode(render5d([["draw_number" => ["0",'4','4','3','9'],'period'=>'1,2,3,4,5']]));
-
-
-// return;
-$results = ["draw_numbers" => [["1", "2", "7", "0", "4"]], "draw_periods" => [["1,2,3,4,4"]]];
-//  $results = ["draw_numbers"=>[["5","7","1","0","7"],["4","3","3","7","7"],["4","5","5","0","9"],["5","2","8","4","3"]],"draw_periods"=>[["1,2,3,4,4"], ["1,2,3,4,4"],["1,2,3,4,4"],["1,2,3,4,4"]]];
-
-
-// if(isset($_SERVER) && isset($_SERVER['REQUEST_METHOD'])){
-
-// if($_SERVER['REQUEST_METHOD'] == 'GET'){
-//     $lottery_id = $_GET['lottery_id'];
-//     $type       = $_GET['type'];
-//     if(!isset($lottery_id) || !isset($type)){
-//         echo json_encode(['status' => 'error', 'message' =>'Invalid request.']);
-//         return;
-//     }
-//    echo fetch_cached_history($lottery_id,$type);
-// }
-// }
-
-
-
-// get_history();
 
 
 function generate_history_5d(int $lottery_id, $is_board_game)
 {
-
-
     if ($lottery_id > 0) {
-
         $db_results = recenLotteryIsue($lottery_id);
         $draw_data = $db_results['data'];
         foreach ($draw_data as $key => $value) {

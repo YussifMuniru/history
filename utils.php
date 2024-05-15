@@ -77,21 +77,21 @@ function fetch_cached_history($lottery_id, $type):  mixed
     $redis              = new \Predis\Client();
     $cache_key          = "lottery_id_{$type}_{$lottery_id}";
     $cached_history     = json_decode($redis->get($cache_key), true);
-    $latest_draw_period = substr(json_decode($redis->get("currentDraw{$lottery_id}"), true)['draw_period'], -4, 4);
+    // $latest_draw_period = substr(json_decode($redis->get("currentDraw{$lottery_id}"), true)['draw_period'], -4, 4);
    
-    if (multiArraySearch($latest_draw_period, $cached_history) !== '') {
-        $lottery_id_groups = [60 => [1, 3, 4, 6, 7, 10, 13, 25, 27, 29, 30, 31, 32, 33, 34, 35, 36], 90 =>  [9, 11, 14, 17], 180 =>  [8, 12, 15, 16, 23], 300 => [8, 12, 15, 16, 23]];
+    // if (multiArraySearch($latest_draw_period, $cached_history) !== '') {
+    //     $lottery_id_groups = [60 => [1, 3, 4, 6, 7, 10, 13, 25, 27, 29, 30, 31, 32, 33, 34, 35, 36], 90 =>  [9, 11, 14, 17], 180 =>  [8, 12, 15, 16, 23], 300 => [8, 12, 15, 16, 23]];
    
-        foreach ($lottery_id_groups as $key => $lottery_ids) {
+    //     foreach ($lottery_id_groups as $key => $lottery_ids) {
 
-            if (in_array($lottery_id, $lottery_ids)) {
-                store_history($lottery_ids, $key);
-                break;
-            }
-        }
+    //         if (in_array($lottery_id, $lottery_ids)) {
+    //             store_history($lottery_ids, $key);
+    //             break;
+    //         }
+    //     }
     
-        $cached_history = json_decode($redis->get($cache_key), true);
-    }
+    //     $cached_history = json_decode($redis->get($cache_key), true);
+    // }
     if (!isset($cached_history)) return json_encode([]);
     //$cached_history = $type != null ? $cached_history[$type.'_'.$lottery_id] : $cached_history;
     //return base64_encode(json_encode($cached_history));
@@ -102,3 +102,6 @@ function fetch_cached_history($lottery_id, $type):  mixed
         return json_encode([]);
     }
 }
+
+
+

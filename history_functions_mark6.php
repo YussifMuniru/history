@@ -1197,6 +1197,77 @@ function chart_no_five_elements(array $drawNumbers, int $index): array
     return array_reverse($historyArray);
 }
 
+ function no_layout_stats_mark6(array $drawNumbers): array
+{
+
+       $nums_for_layout = [
+        1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine", 10 => "ten",
+        11 => "eleven", 12 => "twelve", 13 => "thirteen", 14 => "fourteen", 15 => "fifteen",
+        16 => "sixteen", 17 => "seventeen", 18 => "eighteen", 19 => "nineteen", 20 => "twenty",
+        21 => "twenty_one", 22 => "twenty_two", 23 => "twenty_three", 24 => "twenty_four", 25 => "twenty_five",
+        26 => "twenty_six", 27 => "twenty_seven", 28 => "twenty_eight", 29 => "twenty_nine", 30 => "thirty",
+        31 => "thirty_one", 32 => "thirty_two", 33 => "thirty_three", 34 => "thirty_four", 35 => "thirty_five",
+        36 => "thirty_six", 37 => "thirty_seven", 38 => "thirty_eight", 39 => "thirty_nine", 40 => "forty",
+        41 => "forty_one", 42 => "forty_two", 43 => "forty_three", 44 => "forty_four", 45 => "forty_five",
+        46 => "forty_six", 47 => "forty_seven", 48 => "forty_eight", 49 => "forty_nine"
+    ];
+
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count             =  array_fill_keys(array_values($nums_for_layout), 0);
+    $current_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_row_counts = array_fill_keys(array_values($nums_for_layout), 0);
+    $current_lack_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lack_counts = array_fill_keys(array_values($nums_for_layout), 0);
+
+    foreach ($drawNumbers as $key => $item) {
+        $drawNumber   = $item['draw_number'];
+        $draw_period  = $item['period'];
+        $draw_period   = intval($draw_period);
+        
+        try {
+              $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if (in_array($pattern_key,$drawNumber)) {
+                    
+                    $res[$pattern]     = $pattern_key;
+                    $draw_period   = intval($draw_period);
+                    $current_lack_streaks[$pattern] = 0;
+                    $current_streaks[$pattern]++;
+                    $max_row_counts[$pattern]  = max($max_row_counts[$pattern],$current_streaks[$pattern]);
+                    } else {
+                      if (isset($res[$pattern])) { continue;}
+                       else {
+                        $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                    }
+                    $current_lack_streaks[$pattern]++;
+                    $max_lack_counts[$pattern]  = max($max_lack_counts[$pattern],$current_lack_streaks[$pattern]);
+                   // If the pattern is not in the current draw, reset the current streak
+                   $current_streaks[$pattern] = 0;
+                }
+                $counts_nums_for_layout[$pattern_key] = in_array($pattern_key,$drawNumber) ? 0 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+         
+          
+
+           
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+
+     
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lack_counts,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : $max_row_counts[$key] , 'max_lack' =>  $max_lack_counts[$key] ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+}
+
+
 
 
 
@@ -1205,9 +1276,6 @@ function chart_no_five_elements(array $drawNumbers, int $index): array
 // Odd_Even Big_Small
 function render_mark6(array $drawNumber): array
 {
-
-    global $zodiacs;
-    
 
 $zodiacs = [
     "rat"     => generateArray(1),
@@ -1245,7 +1313,7 @@ $zodiacs = [
         "sum"                   => sum_zodiac($drawNumber, $zodiacs),
         "optional"              => winning_number_mark6($drawNumber),
         "mismatch"              => winning_number_mark6($drawNumber),
-        "board_game"            => board_game_mk6($drawNumber),
+        
 
     ];
 
@@ -1260,16 +1328,16 @@ function two_sides_render_mark6(array $drawNumber): array
     global $zodiacs;
 
     $result = [
-        'conv' => winning_number_mark6($drawNumber),
-        'extra_no_2_sides' => ["two_sides" => form_extra_no($drawNumber), "no" => winning_number_mark6($drawNumber), "all_color" => color_balls($drawNumber, 24), "special_zodiac_h_t" => extra_no_head_tail_no($drawNumber), "combo_zodiac" => winning_number_mark6($drawNumber), "five_elements" =>  five_elements($drawNumber)],
-        'ball_no_2_sides' => ["pick_1_ball_no" => winning_number_mark6($drawNumber), "ball_no_1_1" => winning_number_mark6($drawNumber), "one_zodiac_color_balls" => extra_n_ball_color($drawNumber)],
-        'specific_no' => ["fixed_place_ball_1" => winning_number_mark6($drawNumber), "fixed_place_ball_2" => winning_number_mark6($drawNumber), "fixed_place_ball_3" => winning_number_mark6($drawNumber), "fixed_place_ball_4" => winning_number_mark6($drawNumber), "fixed_place_ball_5" => winning_number_mark6($drawNumber), "fixed_place_ball_6" => winning_number_mark6($drawNumber)],
-        'row_zodiac_row_tail' => ["two_consec_zodiac" => winning_number_mark6($drawNumber), "three_consec_zodiac" => winning_number_mark6($drawNumber), "four_consec_zodiac" => winning_number_mark6($drawNumber), "five_consec_zodiac" => winning_number_mark6($drawNumber), "second_consec_tail_no" => two_consec_tail($drawNumber), "third_consec_tail_no" => two_consec_tail($drawNumber), "fourth_consec_tail_no" => two_consec_tail($drawNumber), "five_consec_tail_no" => two_consec_tail($drawNumber)],
-        "row_no" => ["win_2_3" => winning_number_mark6($drawNumber), "win_3_3" => winning_number_mark6($drawNumber), "win_2_2" => winning_number_mark6($drawNumber), "two_no" => winning_number_mark6($drawNumber), "win_extra_no" => winning_number_mark6($drawNumber), "win_4_4" => winning_number_mark6($drawNumber)],
-        "zodiac_and_tail" => sum_zodiac($drawNumber, $zodiacs),
-        "sum" => sum_zodiac($drawNumber, $zodiacs),
-        "optional" => winning_number_mark6($drawNumber),
-        "mismatch" => winning_number_mark6($drawNumber),
+        'conv'                 => winning_number_mark6($drawNumber),
+        'extra_no_2_sides'     => ["two_sides" => form_extra_no($drawNumber), "no" => winning_number_mark6($drawNumber), "all_color" => color_balls($drawNumber, 24), "special_zodiac_h_t" => extra_no_head_tail_no($drawNumber), "combo_zodiac" => winning_number_mark6($drawNumber), "five_elements" =>  five_elements($drawNumber)],
+        'ball_no_2_sides'      => ["pick_1_ball_no" => winning_number_mark6($drawNumber), "ball_no_1_1" => winning_number_mark6($drawNumber), "one_zodiac_color_balls" => extra_n_ball_color($drawNumber)],
+        'specific_no'          => ["fixed_place_ball_1" => winning_number_mark6($drawNumber), "fixed_place_ball_2" => winning_number_mark6($drawNumber), "fixed_place_ball_3" => winning_number_mark6($drawNumber), "fixed_place_ball_4" => winning_number_mark6($drawNumber), "fixed_place_ball_5" => winning_number_mark6($drawNumber), "fixed_place_ball_6" => winning_number_mark6($drawNumber)],
+        'row_zodiac_row_tail'  => ["two_consec_zodiac" => winning_number_mark6($drawNumber), "three_consec_zodiac" => winning_number_mark6($drawNumber), "four_consec_zodiac" => winning_number_mark6($drawNumber), "five_consec_zodiac" => winning_number_mark6($drawNumber), "second_consec_tail_no" => two_consec_tail($drawNumber), "third_consec_tail_no" => two_consec_tail($drawNumber), "fourth_consec_tail_no" => two_consec_tail($drawNumber), "five_consec_tail_no" => two_consec_tail($drawNumber)],
+        "row_no"               => ["win_2_3" => winning_number_mark6($drawNumber), "win_3_3" => winning_number_mark6($drawNumber), "win_2_2" => winning_number_mark6($drawNumber), "two_no" => winning_number_mark6($drawNumber), "win_extra_no" => winning_number_mark6($drawNumber), "win_4_4" => winning_number_mark6($drawNumber)],
+        "zodiac_and_tail"      => sum_zodiac($drawNumber, $zodiacs),
+        "sum"                  => sum_zodiac($drawNumber, $zodiacs),
+        "optional"             => winning_number_mark6($drawNumber),
+        "mismatch"             => winning_number_mark6($drawNumber),
     ];
     return $result;
 }
@@ -1278,8 +1346,6 @@ function two_sides_render_mark6(array $drawNumber): array
 // Odd_Even Big_Small
 function board_games_render_mark6(array $drawNumber): array
 {
-
-
     $result = [
         "board_game" => board_game_mk6($drawNumber),
     ];
@@ -1293,7 +1359,6 @@ function chart_history(array $drawNumber, array $zodiacs)
 {
 
     $result = [
-
         'chart_ball_no_zodiac'          =>  chart_ball_no_zodiac($drawNumber, $zodiacs),
         'chart_ball_no_color'           =>  chart_ball_no_color($drawNumber),
         'chart_ball_no_five_elements'   =>  chart_ball_no_five_elements($drawNumber),
@@ -1318,6 +1383,7 @@ function chart_history(array $drawNumber, array $zodiacs)
         'chart_ball_6_no_zodiac'        =>  chart_no_zodiac($drawNumber, 5, $zodiacs),
         'chart_ball_6_no_color'         =>  chart_no_color($drawNumber, 5),
         'chart_ball_6_no_five_elements' =>  chart_no_five_elements($drawNumber, 5),
+        'no_layout_mark6'               =>  no_layout_stats_mark6($drawNumber, 5),
 
     ];
 

@@ -5,9 +5,6 @@ require_once 'helpers.php';
 require_once 'entry.php';
 
 
-
-
-
 function eleven_5_happy8(Array $draw_numbers)  : Array { 
    
    
@@ -20,7 +17,6 @@ function eleven_5_happy8(Array $draw_numbers)  : Array {
 
     return $results;
 }// return the wnning number:format ["winning"=>"1,2,3,4,5"]
-
 
 
 function odd_even(Array $drawNumbers) : Array{
@@ -73,8 +69,6 @@ function odd_even(Array $drawNumbers) : Array{
     return array_reverse($historyArray);
 
 }// end of odd_even(). return the max category,either min or max 
-
-
 
 
 
@@ -358,8 +352,6 @@ return array_reverse($history_array);
 }
 
 
-
-
 function render_happy8(Array $draw_numbers): array {
     
    
@@ -402,14 +394,6 @@ function board_games_render_happy8(Array $draw_numbers): array {
     return $result;
 
 } // end of render_happy8(). Returns all the history for happy8.
-
-
-
-
-// if(isset($_GET["lottery_id"])){
-//     generate_history_happy8(0);
-// }
-
 
 
 function generate_history_happy8(int $lottery_id,bool $is_board_game){

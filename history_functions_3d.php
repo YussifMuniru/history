@@ -383,6 +383,64 @@ function sum_two_sides_chart(Array $draw_numbers){
 
  }
 
+ function chart_no_stats_3d(array $drawNumbers, $index): array
+{
+    $history_array  = [];
+    $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count  =  array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lacks = [];
+    $max_row_counts         = array_fill_keys(array_values($nums_for_layout), []);
+   foreach ($drawNumbers as $item) {
+        $drawNumber  = $item['draw_number'];
+        $draw_period = $item['period'];
+        $single_draw = $drawNumber[$index];
+        try {
+            $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if ($pattern_key === intval($single_draw)) {
+                     $max_lacks[$pattern][] = $counts_nums_for_layout[$pattern_key];
+                     $res[$pattern]     = $single_draw;
+                     $draw_period   = intval($draw_period);
+                      if(empty($max_row_counts[$pattern])){
+                        $max_row_counts[$pattern][$draw_period] = 1;
+                      }else{
+                        $last_row_count = end($max_row_counts[$pattern]);
+                        $flipped_max_row_counts = array_flip($max_row_counts[$pattern]);
+                        $last_row_key   = end($flipped_max_row_counts);
+                        if(( intval($last_row_key) - $draw_period) == $last_row_count){
+                            $max_row_counts[$pattern][$last_row_key]  = $max_row_counts[$pattern][$last_row_key] + 1;
+                        }else{
+                            $max_row_counts[$pattern][$draw_period]   = 1;
+                        }
+                      }
+                    } else {
+                      if (isset($res[$pattern])) { continue;}
+                       else {
+                        $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                    }
+                    $lack_count[$pattern] = ($lack_count[$pattern] + 1);
+                }
+                $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+         array_push($history_array,$res);
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lacks,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : max($max_row_counts[$key]) , 'max_lack' => array_key_exists($key,$max_lacks) ?  max($max_lacks[$key]) : 30 ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+
+}
 
 
  function no_layout_3d(Array $drawNumbers) : Array {
@@ -437,6 +495,68 @@ function sum_two_sides_chart(Array $draw_numbers){
 
  }
 
+ function no_layout_stats_3d(array $drawNumbers): array
+{
+
+     $nums_for_layout = [
+        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+    ];
+
+    $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
+    $lack_count             =  array_fill_keys(array_values($nums_for_layout), 0);
+    $current_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_row_counts = array_fill_keys(array_values($nums_for_layout), 0);
+    $current_lack_streaks = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lack_counts = array_fill_keys(array_values($nums_for_layout), 0);
+
+    foreach ($drawNumbers as $key => $item) {
+        $drawNumber   = $item['draw_number'];
+        $draw_period  = $item['period'];
+        $draw_period   = intval($draw_period);
+        
+        try {
+              $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            foreach ($nums_for_layout as $pattern_key => $pattern) {
+                if (in_array($pattern_key,$drawNumber)) {
+                    
+                    $res[$pattern]     = $pattern_key;
+                    $draw_period   = intval($draw_period);
+                    $current_lack_streaks[$pattern] = 0;
+                    $current_streaks[$pattern]++;
+                    $max_row_counts[$pattern]  = max($max_row_counts[$pattern],$current_streaks[$pattern]);
+                    } else {
+                      if (isset($res[$pattern])) { continue;}
+                       else {
+                        $res[$pattern] = $counts_nums_for_layout[$pattern_key];
+                    }
+                    $current_lack_streaks[$pattern]++;
+                    $max_lack_counts[$pattern]  = max($max_lack_counts[$pattern],$current_lack_streaks[$pattern]);
+                   // If the pattern is not in the current draw, reset the current streak
+                   $current_streaks[$pattern] = 0;
+                }
+                $counts_nums_for_layout[$pattern_key] = in_array($pattern_key,$drawNumber) ? 0 : ($counts_nums_for_layout[$pattern_key] + 1);
+            }
+         
+          
+
+           
+        } catch (Throwable $th) {
+            echo $th->getMessage();
+            $res[] = [];
+        }
+    }
+
+     
+   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lack_counts,$max_row_counts,){
+              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : $max_row_counts[$key] , 'max_lack' =>  $max_lack_counts[$key] ];
+    },$lack_count,array_keys($lack_count)));
+
+
+
+    return $res;
+}
+
 
 
 
@@ -449,7 +569,9 @@ function render(Array $drawNumber) : Array{
                 'fixedplace'  => winning_number($drawNumber), 
                 'anyplace'    => winning_number($drawNumber),
                 'dragonTiger' => dragonTigerHistory3d($drawNumber),
-                'chart_no'    => ["chart_1" => chart_no_5d($drawNumber,0),"chart_2" => chart_no_5d($drawNumber,1),"chart_3" => chart_no_5d($drawNumber,2),],
+                'chart_no'    => ["chart_1" => chart_no_3d($drawNumber,0),"chart_2" => chart_no_3d($drawNumber,1),"chart_3" => chart_no_3d($drawNumber,2),],
+                'full_chart_stats'            =>    ["chart_1" => chart_no_stats_3d($drawNumber, 0), "chart_2" => chart_no_stats_3d($drawNumber, 1), "chart_3" => chart_no_stats_3d($drawNumber, 2),],
+                'no_layout_chart_stats'            =>    ["chart_1" => no_layout_stats_3d($drawNumber, 0), "chart_2" => no_layout_stats_3d($drawNumber, 1), "chart_3" => no_layout_stats_3d($drawNumber, 2),],
                 'no_layout'   => no_layout_3d($drawNumber),
                 'full_chart_dragon_tiger_tie' => ['threex4' => dragon_tiger_tie_chart_3d($drawNumber,0, 1,),'threex5' => dragon_tiger_tie_chart_3d($drawNumber,0, 2, ), 'fourx5' => dragon_tiger_tie_chart_3d($drawNumber,1, 2, )],
              ];
