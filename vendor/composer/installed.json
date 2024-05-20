@@ -30,7 +30,7 @@
                     "dev-main": "3.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Composer\\Pcre\\": "src"
@@ -103,7 +103,7 @@
                     "dev-main": "3.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Composer\\Semver\\": "src"
@@ -185,7 +185,7 @@
             },
             "time": "2024-05-06T16:37:16+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Composer\\XdebugHandler\\": "src"
@@ -229,17 +229,17 @@
         },
         {
             "name": "flightphp/core",
-            "version": "v3.7.2",
-            "version_normalized": "3.7.2.0",
+            "version": "v3.9.0",
+            "version_normalized": "3.9.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/flightphp/core.git",
-                "reference": "fe2ad0c05e14d1649a9f13299b0b3ad580a0ed0b"
+                "reference": "c3c5c29f7c2dc6e2ae08aad24c2c14ad5b2ac24b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/flightphp/core/zipball/fe2ad0c05e14d1649a9f13299b0b3ad580a0ed0b",
-                "reference": "fe2ad0c05e14d1649a9f13299b0b3ad580a0ed0b",
+                "url": "https://api.github.com/repos/flightphp/core/zipball/c3c5c29f7c2dc6e2ae08aad24c2c14ad5b2ac24b",
+                "reference": "c3c5c29f7c2dc6e2ae08aad24c2c14ad5b2ac24b",
                 "shasum": ""
             },
             "require": {
@@ -251,6 +251,7 @@
             },
             "require-dev": {
                 "ext-pdo_sqlite": "*",
+                "flightphp/runway": "^0.2.0",
                 "league/container": "^4.2",
                 "level-2/dice": "^4.0",
                 "phpstan/extension-installer": "^1.3",
@@ -264,7 +265,7 @@
                 "phpstan/phpstan": "PHP Static Analyzer",
                 "tracy/tracy": "Tracy debugger"
             },
-            "time": "2024-03-30T13:37:34+00:00",
+            "time": "2024-05-09T04:23:39+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -299,7 +300,7 @@
             "homepage": "http://flightphp.com",
             "support": {
                 "issues": "https://github.com/flightphp/core/issues",
-                "source": "https://github.com/flightphp/core/tree/v3.7.2"
+                "source": "https://github.com/flightphp/core/tree/v3.9.0"
             },
             "install-path": "../flightphp/core"
         },
@@ -360,7 +361,7 @@
                 "php-cs-fixer"
             ],
             "type": "application",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "PhpCsFixer\\": "src/"
@@ -488,7 +489,7 @@
                     "dev-master": "2.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Psr\\Container\\": "src/"
@@ -544,7 +545,7 @@
                     "dev-master": "1.0.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Psr\\EventDispatcher\\": "src/"
@@ -597,7 +598,7 @@
                     "dev-master": "3.x-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Psr\\Log\\": "src"
@@ -729,7 +730,7 @@
                     "dev-main": "6.0-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "classmap": [
                     "src/"
@@ -816,7 +817,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Console\\": ""
@@ -895,7 +896,7 @@
                     "url": "https://github.com/symfony/contracts"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "function.php"
@@ -975,7 +976,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\EventDispatcher\\": ""
@@ -1049,7 +1050,7 @@
                     "url": "https://github.com/symfony/contracts"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Contracts\\EventDispatcher\\": ""
@@ -1121,7 +1122,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Filesystem\\": ""
@@ -1188,7 +1189,7 @@
             },
             "time": "2024-04-28T11:44:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Finder\\": ""
@@ -1253,7 +1254,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\OptionsResolver\\": ""
@@ -1334,7 +1335,7 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -1413,7 +1414,7 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -1494,7 +1495,7 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -1581,7 +1582,7 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -1658,7 +1659,7 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -1741,7 +1742,7 @@
                     "url": "https://github.com/symfony/polyfill"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -1814,7 +1815,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Process\\": ""
@@ -1892,7 +1893,7 @@
                     "url": "https://github.com/symfony/contracts"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Contracts\\Service\\": ""
@@ -1965,7 +1966,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\Stopwatch\\": ""
@@ -2043,7 +2044,7 @@
             },
             "time": "2024-04-18T09:29:19+00:00",
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "files": [
                     "Resources/functions.php"

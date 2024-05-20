@@ -28,9 +28,10 @@ function spanPattern5d(array $drawNumbers, int $index, int $slice): int
 
 
 // Function to search for a value in a multi-dimensional array
-function multi_search_array($array, $value) {
+function multi_search_array($array, $value)
+{
     $count = 0;
-    array_walk_recursive($array, function($item) use (&$count, $value) {
+    array_walk_recursive($array, function ($item) use (&$count, $value) {
         if ($item === $value) {
             $count++;
         }
@@ -68,8 +69,6 @@ function determinePattern5d(int $num, $lower_limit = 4): String
     return "not found";
 } // end of determinePattern5d
 
-
-
 function bigSmallOddEvenPattern3($drawNumbers, $start, int $slice, int $index1, int $index2, int $index3): array
 {
     // Slice the drawNumbers array
@@ -94,10 +93,6 @@ function bigSmallOddEvenPattern3($drawNumbers, $start, int $slice, int $index1, 
     // Return the concatenated result
     return ["sum" => $sum, "num1" => $first2, "num2" => $last2, "num3"  => $last3];
 } // end of bigSmallOddEvenPattern3
-
-
-
-
 
 
 function sumAndFindPattern($drawNumbers, $index, $slice, $range, $prefix)
@@ -144,11 +139,6 @@ function sumAndFindPattern1($drawNumber, $index, $slice, $range)
     // Return the sum and pattern as a string
     return ["sum" => $sum, "b_s" =>  $pattern_parts[0], "o_e" => $pattern_parts[1]];
 }
-
-
-
-
-
 
 
 function findStreakPattern($drawNumbers, $index, $slice, $streakCount)
@@ -241,8 +231,6 @@ function calculateBull($digits)
     // If no valid combination was found, return "No Bull"
     return "No Bull";
 }
-
-
 
 
 
@@ -416,35 +404,7 @@ function calculateBullHistory(array $drawNumbers): array
 function threeCardsHistory($drawNumbers, $typeOfModule)
 {
 
-
-    // $historyArray = array();
-    // $objectKeyPrefix = str_replace("threecards", "", $typeOfModule);
-
-    // foreach ($drawNumbers as  $item) {
-    //     // Assuming findPattern and findStreakPattern are defined in PHP
-    //     $startIndex = $objectKeyPrefix == "first3" ? 0 : ($objectKeyPrefix == "mid3" ? 1 : 2);
-    //     $sliceLength = $objectKeyPrefix == "first3" ? 3 : ($objectKeyPrefix == "mid3" ? 3 : 5);
-
-    //     $mydata = array(
-    //         'toak' => findPattern(array(3), $item, $startIndex, $sliceLength) ? "Toak" : "",
-    //         'streak' => findStreakPattern($item, $startIndex, $sliceLength, 4) ? "Streak" : "",
-    //         'pair' => findPattern(array(2, 1), $item, $startIndex, $sliceLength) ? "Pair" : "",
-    //         'mixed' => findPattern(array(1, 1, 1), $item, $startIndex, $sliceLength) ? "Mixed" : "",
-    //         'halfStreak' => findStreakPattern($item, $startIndex, $sliceLength, 3) ? "Half Streak" : "",
-    //     );
-
-    //     $mydata["winning"] = implode(",",$item);
-    //     $mydata["draw_period"] = $draw_periods[$key];
-    //     array_push($historyArray, $mydata);
-    // }
-
-    // return $historyArray;
-
-
-
-
     $historyArray = array();
-
     foreach ($drawNumbers as  $item) {
         $mydata = [];
         $chunck_result = [];
@@ -457,17 +417,6 @@ function threeCardsHistory($drawNumbers, $typeOfModule)
             // Assuming findPattern and findStreakPattern are defined in PHP
             $startIndex =  $draw_chunck_name == "first3" ? 0 : ($draw_chunck_name == "mid3" ? 1 : 2);
             $sliceLength = $draw_chunck_name == "first3" ? 3 : ($draw_chunck_name == "mid3" ? 3 : 5);
-
-
-
-            // $mydata = array(
-            //     'toak' => findPattern(array(3), $item, $startIndex, $sliceLength) ? "Toak" : "",
-            //     'streak' => findStreakPattern($item, $startIndex, $sliceLength, 2) ? "Straight" : "",
-            //     'pair' => findPattern(array(2, 1), $item, $startIndex, $sliceLength) ? "Pair" : "",
-            //     'mixed' => findPattern(array(1, 1, 1), $item, $startIndex, $sliceLength) ? "Mixed" : "",
-            //     'halfStreak' => findStreakPattern($item, $startIndex, $sliceLength, 1) ? "Half Streak" : "",
-            // );
-
             $is_toak        = findPattern(array(3), $draw_number, $startIndex, $sliceLength);
             $is_streak      = findStreakPattern($draw_number, $startIndex, $sliceLength, 2);
             $is_pair        = findPattern(array(2, 1), $draw_number, $startIndex, $sliceLength);
@@ -655,119 +604,65 @@ function bsoeHistory($drawNumbers, $typeOfModule)
 
 
 
-
 function all2History5d(array $drawNumbers, String $typeOfModule): array
 {
 
     $historyArray = [];
-
-
     $drawNumbers = array_reverse($drawNumbers);
-
     foreach ($drawNumbers as  $draw_obj) {
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj["period"];
-
-        // Assuming sumPattern and spanPattern5d functions are defined in PHP
         $objectKeyPrefix = str_replace("all2", "", $typeOfModule);
         $startIndex = $typeOfModule === "all2first2" ? 0 : 3;
         $length = $typeOfModule === "all2first2" ? 2 : 4;
-
         $sum = sumPattern($draw_number, $startIndex, $length);
-
         $mydata = array(
             $objectKeyPrefix . "sum" => sumPattern($draw_number, $startIndex, $length),
             $objectKeyPrefix . "span" => spanPattern5d($draw_number, $startIndex, $length)
         );
-
         $splitted_sum = str_split("$sum");
-
         $mydata["sum_tails"] = count($splitted_sum) == 1 ? $sum : intval($splitted_sum[1]);
-
         $mydata["winning"] = implode(",", $draw_number);
         $mydata["draw_period"] = $draw_period;
+        $draw_number   = array_slice($draw_number, $startIndex, $length);
+        $mydata['dup'] = count(array_unique($draw_number)) !== count($draw_number) ? findDuplicates($draw_number) : '';
         array_push($historyArray, $mydata);
     }
-
-
-
     return array_reverse($historyArray);
 } // end of all2History5d: ["sum"..."span"]
 
 
-
-// function all2History5d(Array $draw_periods,Array $drawNumbers,String $typeOfModule) : Array{
-
-//     $historyArray = [];
-
-//     foreach ($drawNumbers as  $item) {
-//         // Assuming sumPattern and spanPattern5d functions are defined in PHP
-//         $objectKeyPrefix = str_replace("all2", "", $typeOfModule);
-//         $startIndex = $typeOfModule === "all2first2" ? 0 : 3;
-//         $length = $typeOfModule === "all2first2" ? 2 : 4;
-
-//         $mydata = array(
-//             $objectKeyPrefix . "sum" => sumPattern($item, $startIndex, $length),
-//             $objectKeyPrefix . "span" => spanPattern5d($item, $startIndex, $length)
-//         );
-//         $mydata["winning"] = implode(",",$item);
-//         $mydata["draw_period"] = $draw_periods[$key];
-//         array_push($historyArray, $mydata);
-//     }
-
-//     return $historyArray;
-// }// end of all2History5d: ["sum"..."span"]
-
-
-
 function all3History5d(array $drawNumbers, String $typeOf3): array
 {
+
     $group3 = 1;
     $group6 = 1;
-
     $historyArray = [];
-
     $drawNumbers = array_reverse($drawNumbers);
     foreach ($drawNumbers as  $draw_obj) {
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj["period"];
-        // Assuming sumPattern, spanPattern5d, and findPattern are functions you've defined elsewhere
-        // and they need to be converted to PHP as well.
         $objectKeyPrefix = str_replace("all3", "", $typeOf3);
-
         $group3Key = $objectKeyPrefix . "group3";
         $group6Key = $objectKeyPrefix . "group6";
-
         $startingIndex = $typeOf3 === "all3first3" ? 0 : ($typeOf3 === "all3mid3" ? 1 : 2);
         $endIndex      = $typeOf3 === "all3first3" ? 3 : ($typeOf3 === "all3mid3" ? 3 : 3);
-
-
         $group3Condition = findPattern([2, 1], $draw_number, $startingIndex, $endIndex) ? "group3" : $group3;
-
-
         $group6Condition = findPattern([1, 1, 1], $draw_number, $startingIndex, $endIndex) ? "group6" : $group6;
-
-
         $sum = sumPattern($draw_number, $startingIndex, $endIndex);
-
         $mydata = [
             $objectKeyPrefix . "sum" => sumPattern($draw_number, $startingIndex, $endIndex),
             $objectKeyPrefix . "span" => spanPattern5d($draw_number,  $startingIndex, $endIndex),
             $group3Key => $group3Condition,
             $group6Key => $group6Condition,
         ];
-
         $splitted_sum = str_split("$sum");
-
         $mydata["sum_tails"] = count($splitted_sum) == 1 ? $sum : intval($splitted_sum[1]);
-
         $mydata["winning"] = implode(",", $draw_number);
         $mydata["draw_period"] = $draw_period;
-
+        $draw_number   = array_slice($draw_number, $startingIndex, $endIndex);
+        $mydata['dup'] = count(array_unique($draw_number)) !== count($draw_number) ? findDuplicates($draw_number) : '';
         array_push($historyArray, $mydata);
-
-
-
         $currentPattern = array_values($mydata);
         sort($currentPattern);
         $currentPattern = $currentPattern[6];
@@ -787,13 +682,10 @@ function all4History(array $drawNumbers, String $isFirst): array
     $group4 = 1;
 
     $historyArray = array();
-
     $drawNumbers = array_reverse($drawNumbers);
     foreach ($drawNumbers as $draw_obj) {
         $draw_number = $draw_obj['draw_number'];
         $draw_period = $draw_obj["period"];
-        // Assuming findPattern() is a function you've defined elsewhere
-        // and it has been converted to PHP as well.
         $mydata = array(
             'group24' => findPattern(array(1, 1, 1, 1), $draw_number, $isFirst == "all4first4" ? 0 : -4, 4) ? "group24" : $group24,
             'group12' => findPattern(array(2, 1, 1), $draw_number,    $isFirst == "all4first4" ? 0 : -4, 4) ? "group12" : $group12,
@@ -803,16 +695,13 @@ function all4History(array $drawNumbers, String $isFirst): array
 
         $mydata["winning"] = implode(",", $draw_number);
         $mydata["draw_period"] = $draw_period;
+        $draw_number   = array_slice($draw_number, $isFirst == "all4first4" ? 0 : -4, 4);
+        $mydata['dup'] = count(array_unique($draw_number)) !== count($draw_number) ? findDuplicates($draw_number) : '';
 
         array_push($historyArray, $mydata);
         $currentPattern = array_values($mydata);
         sort($currentPattern);
         $currentPattern = $currentPattern[5];
-
-
-        // $currentPattern = $mydata[array_keys($mydata)[count($mydata) - 1]]; // Adjusted to PHP logic
-        // Note: Adjust this logic if it doesn't match your JavaScript function's intent
-
         $group24 = $currentPattern == "group24" ? 1 : $group24 += 1;
         $group12 = $currentPattern == "group12" ? 1 : $group12 += 1;
         $group6  = $currentPattern == "group6" ? 1  : $group6 += 1;
@@ -824,11 +713,6 @@ function all4History(array $drawNumbers, String $isFirst): array
 
 function all5History(array $drawNumbers): array
 {
-
-
-
-
-
     $patterns = ['g120' => [1, 1, 1, 1, 1], 'g60' => [2, 1, 1, 1], 'g30' => [2, 2, 1], 'g20' => [3, 1, 1], 'g10' => [3, 2], 'g5' => [4, 1]];
     $counts = array_fill_keys(array_keys($patterns), 1);
     $historyArray = [];
@@ -841,60 +725,10 @@ function all5History(array $drawNumbers): array
         }
         $mydata["winning"]      = implode(",", $item["draw_number"]);
         $mydata["draw_period"]  =  $item["period"];
-
-
         array_push($historyArray, $mydata);
     }
 
     return array_reverse($historyArray);
-
-
-
-
-    // $g120 = 1;
-    // $g60 = 1;
-    // $g30 = 1;
-    // $g20 = 1;
-    // $g10 = 1;
-    // $g5 = 1;
-    // $historyArray = [];
-
-    // foreach ($drawNumbers as   $item) {
-
-    //     // Assuming findPattern() is defined with similar logic in PHP
-    //     $mydata = array(
-    //         'g120' => findPattern([1, 1, 1, 1, 1], $item, 0, 5) ? "g120" : $g120,
-    //         'g60' => findPattern([2, 1, 1, 1], $item, 0, 5) ? "g60" : $g60,
-    //         'g30' => findPattern([2, 2, 1], $item, 0, 5) ? "g30" : $g30,
-    //         'g20' => findPattern([3, 1, 1], $item, 0, 5) ? "g20" : $g20, // 1 triple, 2 diff 
-    //         'g10' => findPattern([3, 2], $item, 0, 5) ? "g10" : $g10, // 1 triple, 1 pair 
-    //         'g5' => findPattern([4, 1], $item, 0, 5) ? "g5" : $g5 // 1 quad, 1 diff 
-    //     );
-
-    //     $mydata["winning"] = implode(",",$item);
-    //     $mydata["draw_period"] = $draw_periods[$key];
-
-
-
-    //     array_push($historyArray, $mydata);
-
-
-    //     $currentPattern = array_values($mydata);
-    //     sort($currentPattern);
-    //     $currentPattern = $currentPattern[7];
-
-    //     // Update counts
-    //     $g120 = ($currentPattern == "g120")  ? 1 : ($g120 += 1);
-    //     $g60 = ($currentPattern == "g60") ? 1 : ($g60 += 1);
-    //     $g30 = ($currentPattern == "g30") ? 1 : ($g30 += 1);
-    //     $g20 = ($currentPattern == "g20") ? 1 : ($g20 += 1);
-    //     $g10 = ($currentPattern == "g10") ? 1 : ($g10 += 1);
-    //     $g5 =  ($currentPattern == "g5")  ? 1 : ($g5 += 1);
-
-
-    // }
-
-    // return $historyArray;
 } // end of all5History: ["g120"..."g5"]
 
 
@@ -902,78 +736,21 @@ function all5History(array $drawNumbers): array
 function dragon_tiger_tie_chart(array $drawNumbers, $start_index, $end_index): array
 {
 
-
-
-
-
     $patterns = ['D' => 'Dragon', 'T' => 'Tiger', 'Tie' => 'Tie'];
     $counts = array_fill_keys(array_values($patterns), 1);
-
     $historyArray = [];
     $drawNumbers  = array_reverse($drawNumbers);
     foreach ($drawNumbers as  $item) {
         $mydata = [];
-        //  'onex2' => dragonTigerTiePattern(0, 1, $draw_number),
         foreach ($patterns as $patternKey => $pattern) {
             $mydata[$pattern] = dragonTigerTiePattern($start_index, $end_index, $item["draw_number"]) ===  $patternKey  ? $pattern : $counts[$pattern];
             $counts[$pattern] = ($mydata[$pattern] === $patterns[dragonTigerTiePattern($start_index, $end_index, $item["draw_number"])]) ? 1 : ($counts[$pattern] + 1);
         }
         $mydata["winning"]      = implode(",", $item["draw_number"]);
         $mydata["draw_period"]  =  $item["period"];
-
-
         array_push($historyArray, $mydata);
     }
-
     return array_reverse($historyArray);
-
-
-
-
-    // $g120 = 1;
-    // $g60 = 1;
-    // $g30 = 1;
-    // $g20 = 1;
-    // $g10 = 1;
-    // $g5 = 1;
-    // $historyArray = [];
-
-    // foreach ($drawNumbers as   $item) {
-
-    //     // Assuming findPattern() is defined with similar logic in PHP
-    //     $mydata = array(
-    //         'g120' => findPattern([1, 1, 1, 1, 1], $item, 0, 5) ? "g120" : $g120,
-    //         'g60' => findPattern([2, 1, 1, 1], $item, 0, 5) ? "g60" : $g60,
-    //         'g30' => findPattern([2, 2, 1], $item, 0, 5) ? "g30" : $g30,
-    //         'g20' => findPattern([3, 1, 1], $item, 0, 5) ? "g20" : $g20, // 1 triple, 2 diff 
-    //         'g10' => findPattern([3, 2], $item, 0, 5) ? "g10" : $g10, // 1 triple, 1 pair 
-    //         'g5' => findPattern([4, 1], $item, 0, 5) ? "g5" : $g5 // 1 quad, 1 diff 
-    //     );
-
-    //     $mydata["winning"] = implode(",",$item);
-    //     $mydata["draw_period"] = $draw_periods[$key];
-
-
-
-    //     array_push($historyArray, $mydata);
-
-
-    //     $currentPattern = array_values($mydata);
-    //     sort($currentPattern);
-    //     $currentPattern = $currentPattern[7];
-
-    //     // Update counts
-    //     $g120 = ($currentPattern == "g120")  ? 1 : ($g120 += 1);
-    //     $g60 = ($currentPattern == "g60") ? 1 : ($g60 += 1);
-    //     $g30 = ($currentPattern == "g30") ? 1 : ($g30 += 1);
-    //     $g20 = ($currentPattern == "g20") ? 1 : ($g20 += 1);
-    //     $g10 = ($currentPattern == "g10") ? 1 : ($g10 += 1);
-    //     $g5 =  ($currentPattern == "g5")  ? 1 : ($g5 += 1);
-
-
-    // }
-
-    // return $historyArray;
 } // end of all5History: ["g120"..."g5"]
 
 
@@ -993,18 +770,16 @@ function winning_number5d(array $draw_numbers): array
 
 
 
-function chart_no_5d(array $drawNumbers, $index): array
+function chart_no_5d(array $drawNumbers, $index, int $count): array
 {
 
     $history_array = [];
-
     $nums_for_layout = [
         0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
         6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
     ];
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
-
-
+    $drawNumbers = array_slice($drawNumbers, 0, $count);
     $drawNumbers = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
@@ -1025,23 +800,23 @@ function chart_no_5d(array $drawNumbers, $index): array
                         $res[$pattern] = $counts_nums_for_layout[$pattern_key];
                     }
                 }
-             
+
                 $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
             }
 
-           
+
             array_push($history_array, $res);
         } catch (Throwable $th) {
             echo $th->getMessage();
             $res[] = [];
         }
     }
-   
+
     return array_reverse($history_array);
 }
 
 
-function chart_no_stats(array $drawNumbers, $index): array
+function chart_no_stats(array $drawNumbers, $index, $count): array
 {
     $history_array  = [];
     $nums_for_layout = [
@@ -1052,7 +827,8 @@ function chart_no_stats(array $drawNumbers, $index): array
     $lack_count  =  array_fill_keys(array_values($nums_for_layout), 0);
     $max_lacks = [];
     $max_row_counts         = array_fill_keys(array_values($nums_for_layout), []);
-   foreach ($drawNumbers as $item) {
+    $drawNumbers = array_slice($drawNumbers, 0, $count);
+    foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
         $draw_period = $item['period'];
         $single_draw = $drawNumber[$index];
@@ -1060,44 +836,44 @@ function chart_no_stats(array $drawNumbers, $index): array
             $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
             foreach ($nums_for_layout as $pattern_key => $pattern) {
                 if ($pattern_key === intval($single_draw)) {
-                     $max_lacks[$pattern][] = $counts_nums_for_layout[$pattern_key];
-                     $res[$pattern]     = $single_draw;
-                     $draw_period   = intval($draw_period);
-                      if(empty($max_row_counts[$pattern])){
+                    $max_lacks[$pattern][] = $counts_nums_for_layout[$pattern_key];
+                    $res[$pattern]     = $single_draw;
+                    $draw_period   = intval($draw_period);
+                    if (empty($max_row_counts[$pattern])) {
                         $max_row_counts[$pattern][$draw_period] = 1;
-                      }else{
+                    } else {
                         $last_row_count = end($max_row_counts[$pattern]);
                         $flipped_max_row_counts = array_flip($max_row_counts[$pattern]);
                         $last_row_key   = end($flipped_max_row_counts);
-                        if(( intval($last_row_key) - $draw_period) == $last_row_count){
+                        if ((intval($last_row_key) - $draw_period) == $last_row_count) {
                             $max_row_counts[$pattern][$last_row_key]  = $max_row_counts[$pattern][$last_row_key] + 1;
-                        }else{
+                        } else {
                             $max_row_counts[$pattern][$draw_period]   = 1;
                         }
-                      }
+                    }
+                } else {
+                    if (isset($res[$pattern])) {
+                        continue;
                     } else {
-                      if (isset($res[$pattern])) { continue;}
-                       else {
                         $res[$pattern] = $counts_nums_for_layout[$pattern_key];
                     }
                     $lack_count[$pattern] = ($lack_count[$pattern] + 1);
                 }
                 $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
             }
-         array_push($history_array,$res);
+            array_push($history_array, $res);
         } catch (Throwable $th) {
             echo $th->getMessage();
             $res[] = [];
         }
     }
-   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lacks,$max_row_counts,){
-              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : max($max_row_counts[$key]) , 'max_lack' => array_key_exists($key,$max_lacks) ?  max($max_lacks[$key]) : 30 ];
-    },$lack_count,array_keys($lack_count)));
+    $res = array_combine(array_keys($lack_count), array_map(function ($value, $key) use ($max_lacks, $count, $max_row_counts,) {
+        return ['average_lack' => ceil(($value  / (($count - $value) + 1))), 'occurrence' => ($count - $value), 'max_row' => empty($max_row_counts[$key]) ? 0 : max($max_row_counts[$key]), 'max_lack' => array_key_exists($key, $max_lacks) ?  max($max_lacks[$key]) : $count];
+    }, $lack_count, array_keys($lack_count)));
 
 
 
     return $res;
-
 }
 
 
@@ -1118,18 +894,16 @@ function findDuplicates($numbers)
 
 
 
-function no_layout_5d(array $drawNumbers): array
+function no_layout_5d(array $drawNumbers, int $count): array
 {
 
     $history_array = [];
-
     $nums_for_layout = [
         0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
         6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
     ];
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
-
-
+    $drawNumbers = array_slice($drawNumbers, 0, $count);
     $drawNumbers = array_reverse($drawNumbers);
     foreach ($drawNumbers as $item) {
         $drawNumber  = $item['draw_number'];
@@ -1137,7 +911,6 @@ function no_layout_5d(array $drawNumbers): array
 
         try {
 
-            $values_counts =   array_count_values($drawNumber);
             $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber), 'dup' => count(array_unique($drawNumber)) !== count($drawNumber) ? findDuplicates($drawNumber) : ''];
 
             foreach ($drawNumber as $key => $single_draw) {
@@ -1166,62 +939,59 @@ function no_layout_5d(array $drawNumbers): array
 }
 
 
-function no_layout_stats(array $drawNumbers): array
+function no_layout_stats(array $drawNumbers, int $count): array
 {
 
-     $nums_for_layout = [
+    $nums_for_layout = [
         0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
         6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
     ];
-
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
-    $lack_count             =  array_fill_keys(array_values($nums_for_layout), 0);
-    $current_streaks = array_fill_keys(array_values($nums_for_layout), 0);
-    $max_row_counts = array_fill_keys(array_values($nums_for_layout), 0);
-    $current_lack_streaks = array_fill_keys(array_values($nums_for_layout), 0);
-    $max_lack_counts = array_fill_keys(array_values($nums_for_layout), 0);
-
-    foreach ($drawNumbers as $key => $item) {
+    $lack_count             = array_fill_keys(array_values($nums_for_layout), 0);
+    $current_streaks        = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_row_counts         = array_fill_keys(array_values($nums_for_layout), 0);
+    $current_lack_streaks   = array_fill_keys(array_values($nums_for_layout), 0);
+    $max_lack_counts        = array_fill_keys(array_values($nums_for_layout), 0);
+    $drawNumbers            = array_slice($drawNumbers, 0, $count);
+    foreach ($drawNumbers as $item) {
         $drawNumber   = $item['draw_number'];
         $draw_period  = $item['period'];
         $draw_period   = intval($draw_period);
-        
+
         try {
-              $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
+            $res = ["draw_period" => $draw_period, 'winning' => implode(',', $drawNumber)];
             foreach ($nums_for_layout as $pattern_key => $pattern) {
-                if (in_array($pattern_key,$drawNumber)) {
-                    
+                if (in_array($pattern_key, $drawNumber)) {
+
                     $res[$pattern]     = $pattern_key;
-                    $draw_period   = intval($draw_period);
+                    $draw_period       = intval($draw_period);
                     $current_lack_streaks[$pattern] = 0;
                     $current_streaks[$pattern]++;
-                    $max_row_counts[$pattern]  = max($max_row_counts[$pattern],$current_streaks[$pattern]);
+                    $max_row_counts[$pattern]  = max($max_row_counts[$pattern], $current_streaks[$pattern]);
+                } else {
+                    if (isset($res[$pattern])) {
+                        continue;
                     } else {
-                      if (isset($res[$pattern])) { continue;}
-                       else {
                         $res[$pattern] = $counts_nums_for_layout[$pattern_key];
                     }
+                    $lack_count[$pattern] = ($lack_count[$pattern] + 1);
                     $current_lack_streaks[$pattern]++;
-                    $max_lack_counts[$pattern]  = max($max_lack_counts[$pattern],$current_lack_streaks[$pattern]);
-                   // If the pattern is not in the current draw, reset the current streak
-                   $current_streaks[$pattern] = 0;
+                    $max_lack_counts[$pattern]  = max($max_lack_counts[$pattern], $current_lack_streaks[$pattern]);
+                    // If the pattern is not in the current draw, reset the current streak
+                    $current_streaks[$pattern] = 0;
                 }
-                $counts_nums_for_layout[$pattern_key] = in_array($pattern_key,$drawNumber) ? 0 : ($counts_nums_for_layout[$pattern_key] + 1);
+                $counts_nums_for_layout[$pattern_key] = in_array($pattern_key, $drawNumber) ? 0 : ($counts_nums_for_layout[$pattern_key] + 1);
             }
-         
-          
-
-           
         } catch (Throwable $th) {
             echo $th->getMessage();
             $res[] = [];
         }
     }
 
-     
-   $res = array_combine(array_keys($lack_count),array_map(function ($value,$key) use ($max_lack_counts,$max_row_counts,){
-              return ['average_lack'=> ceil(($value  / ((30 - $value) + 1))), 'occurrence'=> (30 - $value),'max_row'=> empty($max_row_counts[$key]) ? 0 : $max_row_counts[$key] , 'max_lack' =>  $max_lack_counts[$key] ];
-    },$lack_count,array_keys($lack_count)));
+
+    $res = array_combine(array_keys($lack_count), array_map(function ($value, $key) use ($max_lack_counts, $count, $max_row_counts,) {
+        return ['average_lack' => ceil(($value  / (($count - $value) + 1))), 'occurrence' => ($count - $value), 'max_row' => empty($max_row_counts[$key]) ? 0 : $max_row_counts[$key], 'max_lack' =>  $max_lack_counts[$key]];
+    }, $lack_count, array_keys($lack_count)));
 
 
 
@@ -1232,7 +1002,7 @@ function no_layout_stats(array $drawNumbers): array
 
 // --------------------------------------TWO SIDES---------------------------------------------------
 
-function two_sides_rapido(array $draw_numbers)
+function two_sides_rapido(array $draw_numbers): array
 {
 
     $historyArray = array();
@@ -1247,46 +1017,44 @@ function two_sides_rapido(array $draw_numbers)
         foreach (["first3", "mid3", "last3"] as $draw_chunck_name) {
 
             // Assuming findPattern and findStreakPattern are defined in PHP
-            $startIndex =  $draw_chunck_name == "first3" ? 0 : ($draw_chunck_name == "mid3" ? 1 : 2);
-            $sliceLength = $draw_chunck_name == "first3" ? 3 : ($draw_chunck_name == "mid3" ? 3 : 5);
+            $startIndex  =  $draw_chunck_name == "first3" ? 0 : ($draw_chunck_name == "mid3" ? 1 : 2);
+            $sliceLength = $draw_chunck_name  == "first3" ? 3 : ($draw_chunck_name == "mid3" ? 3 : 5);
 
-            $is_toak = findPattern(array(3), $draw_number, $startIndex, $sliceLength);
-            $is_streak = findStreakPattern($draw_number, $startIndex, $sliceLength, 2);
-            $is_pair = findPattern(array(2, 1), $draw_number, $startIndex, $sliceLength);
+            $is_toak        = findPattern(array(3), $draw_number, $startIndex, $sliceLength);
+            $is_streak      = findStreakPattern($draw_number, $startIndex, $sliceLength, 2);
+            $is_pair        = findPattern(array(2, 1), $draw_number, $startIndex, $sliceLength);
             $is_half_streak = findStreakPattern($draw_number, $startIndex, $sliceLength, 1);
-            $is_mixed = !$is_toak && !$is_streak && !$is_pair && !$is_half_streak;
+            $is_mixed       = !$is_toak && !$is_streak && !$is_pair && !$is_half_streak;
 
             $mydata = array(
-                'toak'       => $is_toak ? "Toak" : "",
+                'toak'       => $is_toak        ? "Toak"        : "",
                 'halfStreak' => $is_half_streak ? "Half Streak" : "",
-                'streak'     => $is_streak  ? "Straight" : "",
-                'pair'       => $is_pair ? "Pair" : "",
-                'mixed'      => $is_mixed ? "Mixed" : "",
+                'streak'     => $is_streak      ? "Straight"    : "",
+                'pair'       => $is_pair        ? "Pair"        : "",
+                'mixed'      => $is_mixed       ? "Mixed"       : "",
             );
-
-
             $mydata = array_values($mydata);
             sort($mydata);
             $chunck_result[$draw_chunck_name] = $mydata[4];
         }
         $b_s_o_e = "";
-        $sum = array_sum($draw_number);
+        $sum     = array_sum($draw_number);
         $b_s_o_e = determinePattern5d($sum, 22);
-        $keys = array_keys($chunck_result);
+        $keys    = array_keys($chunck_result);
 
         $final_results = [
-            "sum" => $sum . " " . $b_s_o_e,
+            "sum"              => $sum . " " . $b_s_o_e,
             "dragon_tiger_tie" => ["D" => "Dragon", "Tie" => "Tie", "T" => "Tiger"][dragonTigerTiePattern(0, 4, $draw_number)],
-            $keys[0]   => $chunck_result[$keys[0]],
-            $keys[1]   => $chunck_result[$keys[1]],
-            $keys[2]   => $chunck_result[$keys[2]],
-            "first"    => ['b_s' => $draw_number[0] > 4 ? 'B' : 'S', 'o_e' => $draw_number[0] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[0])],
-            "second"   => ['b_s' => $draw_number[1] > 4 ? 'B' : 'S', 'o_e' => $draw_number[1] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[1])],
-            "third"    => ['b_s' => $draw_number[2] > 4 ? 'B' : 'S', 'o_e' => $draw_number[2] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[2])],
-            "fourth"   => ['b_s' => $draw_number[3] > 4 ? 'B' : 'S', 'o_e' => $draw_number[3] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[3])],
-            "fifth"    => ['b_s' => $draw_number[4] > 4 ? 'B' : 'S', 'o_e' => $draw_number[4] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[4])],
-            "winning"  => implode(",", $draw_number),
-            "draw_period" => $draw_period
+            $keys[0]           => $chunck_result[$keys[0]],
+            $keys[1]           => $chunck_result[$keys[1]],
+            $keys[2]           => $chunck_result[$keys[2]],
+            "first"            => ['b_s' => $draw_number[0] > 4 ? 'B' : 'S', 'o_e' => $draw_number[0] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[0])],
+            "second"           => ['b_s' => $draw_number[1] > 4 ? 'B' : 'S', 'o_e' => $draw_number[1] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[1])],
+            "third"            => ['b_s' => $draw_number[2] > 4 ? 'B' : 'S', 'o_e' => $draw_number[2] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[2])],
+            "fourth"           => ['b_s' => $draw_number[3] > 4 ? 'B' : 'S', 'o_e' => $draw_number[3] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[3])],
+            "fifth"            => ['b_s' => $draw_number[4] > 4 ? 'B' : 'S', 'o_e' => $draw_number[4] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[4])],
+            "winning"          => implode(",", $draw_number),
+            "draw_period"      => $draw_period
 
         ];
 
@@ -1301,7 +1069,7 @@ function two_sides_rapido(array $draw_numbers)
 function render5d(array $drawNumber): array
 {
 
-    $result = [
+    return [
         'all5'                   =>  all5History($drawNumber),
         'all4'                   =>  ["first4" => all4History($drawNumber, "all4first4"), "last4" =>  all4History($drawNumber, "all4last4")],
         'all3'                   =>  ["first3" => all3History5d($drawNumber, "all3first3"), "mid3" => all3History5d($drawNumber, "all3mid3"), "last3" => all3History5d($drawNumber, "all3last3")],
@@ -1318,16 +1086,28 @@ function render5d(array $drawNumber): array
         'stud'                   =>  studHistory($drawNumber),
         'threecards'             =>  threeCardsHistory($drawNumber, "threecardsfirst3"),
         'bulls'                  =>  calculateBullHistory($drawNumber),
-        'bulls_chart'            =>  calculateBullChartHistory($drawNumber),
-        'chart_no_5d'            =>  ["chart_1" => chart_no_5d($drawNumber, 0), "chart_2" => chart_no_5d($drawNumber, 1), "chart_3" => chart_no_5d($drawNumber, 2), "chart_4" => chart_no_5d($drawNumber, 3), "chart_5"  => chart_no_5d($drawNumber, 4)],
-        'no_layout_5d'           =>  no_layout_5d($drawNumber),
-        'no_layout_5d_stats'     =>  no_layout_stats($drawNumber),
-        'full_chart_stats'       =>  ["chart_1" => chart_no_stats($drawNumber, 0), "chart_2" => chart_no_stats($drawNumber, 1), "chart_3" => chart_no_stats($drawNumber, 2), "chart_4" => chart_no_stats($drawNumber, 3), "chart_5" => chart_no_stats($drawNumber, 4)]
-
     ];
-
-    return false ? [] : $result;
 } // end of render5d. Returns all the history for 5D.
+
+function full_chart_render_5d(array $drawNumber): array
+{
+
+    return [
+        'all5'                   =>  all5History($drawNumber),
+        'all4'                   =>  ["first4" => all4History($drawNumber, "all4first4"), "last4" =>  all4History($drawNumber, "all4last4")],
+        'all3'                   =>  ["first3" => all3History5d($drawNumber, "all3first3"), "mid3" => all3History5d($drawNumber, "all3mid3"), "last3" => all3History5d($drawNumber, "all3last3")],
+        'all2'                   =>  ["first2" => all2History5d($drawNumber, "all2first2"), "last2" => all2History5d($drawNumber, "all2last2")],
+        'dragon_tiger_tie_chart' =>  ['one_x_2' =>   dragon_tiger_tie_chart($drawNumber, 0, 1), 'one_x_3' => dragon_tiger_tie_chart($drawNumber, 0, 2), 'one_x_4' => dragon_tiger_tie_chart($drawNumber, 0, 3), 'one_x_5' => dragon_tiger_tie_chart($drawNumber, 0, 4), 'two_x_3' => dragon_tiger_tie_chart($drawNumber, 1, 2), 'two_x_4' => dragon_tiger_tie_chart($drawNumber, 1, 3), 'two_x_5' => dragon_tiger_tie_chart($drawNumber, 1, 4), 'three_x_4' => dragon_tiger_tie_chart($drawNumber, 2, 3), 'three_x_5' => dragon_tiger_tie_chart($drawNumber, 2, 4), 'four_x_5' => dragon_tiger_tie_chart($drawNumber, 3, 4)],
+        'stud'                   =>  studHistory($drawNumber),
+        'threecards'             =>  threeCardsHistory($drawNumber, "threecardsfirst3"),
+        'bulls'                  =>  calculateBullHistory($drawNumber),
+        'bulls_chart'            =>  calculateBullChartHistory($drawNumber),
+        'chart_no_5d'            =>  ['thirty' => ["chart_1" => chart_no_5d($drawNumber, 0, 30), "chart_2" => chart_no_5d($drawNumber, 1, 30), "chart_3" => chart_no_5d($drawNumber, 2, 30), "chart_4" => chart_no_5d($drawNumber, 3, 30), "chart_5"  => chart_no_5d($drawNumber, 4, 30)], 'fifty' => ["chart_1" => chart_no_5d($drawNumber, 0, 50), "chart_2" => chart_no_5d($drawNumber, 1, 50), "chart_3" => chart_no_5d($drawNumber, 2, 50), "chart_4" => chart_no_5d($drawNumber, 3, 50), "chart_5"  => chart_no_5d($drawNumber, 4, 50)], 'hundred' => ["chart_1" => chart_no_5d($drawNumber, 0, 100), "chart_2" => chart_no_5d($drawNumber, 1, 100), "chart_3" => chart_no_5d($drawNumber, 2, 100), "chart_4" => chart_no_5d($drawNumber, 3, 100), "chart_5"  => chart_no_5d($drawNumber, 4, 100)]],
+        'no_layout_5d'           =>  ['thirty' => no_layout_5d($drawNumber, 30), 'fifty' => no_layout_5d($drawNumber, 50), 'hundred' => no_layout_5d($drawNumber, 50)],
+        'all_kinds'              =>  two_sides_rapido($drawNumber),
+        'full_chart_stats'       =>  ['thirty' => ["chart_1" => chart_no_stats($drawNumber, 0, 30), "chart_2" => chart_no_stats($drawNumber, 1, 30), "chart_3" => chart_no_stats($drawNumber, 2, 30), "chart_4" => chart_no_stats($drawNumber, 3, 30), "chart_5" => chart_no_stats($drawNumber, 4, 30), 'no_layout' =>  no_layout_stats($drawNumber, 30)], 'fifty' => ["chart_1" => chart_no_stats($drawNumber, 0, 50), "chart_2" => chart_no_stats($drawNumber, 1, 50), "chart_3" => chart_no_stats($drawNumber, 2, 50), "chart_4" => chart_no_stats($drawNumber, 3, 50), "chart_5" => chart_no_stats($drawNumber, 4, 50), 'no_layout' =>  no_layout_stats($drawNumber, 50)], 'hundred' => ["chart_1" => chart_no_stats($drawNumber, 0, 100), "chart_2" => chart_no_stats($drawNumber, 1, 100), "chart_3" => chart_no_stats($drawNumber, 2, 100), "chart_4" => chart_no_stats($drawNumber, 3, 100), "chart_5" => chart_no_stats($drawNumber, 4, 100), 'no_layout' =>  no_layout_stats($drawNumber, 100)]]
+    ];
+} // end of full_chart_render_5d. Returns all the history for 5D.
 
 
 function two_sides_render_5d(array $drawNumber): array
@@ -1335,17 +1115,13 @@ function two_sides_render_5d(array $drawNumber): array
     return [
         'rapido'       =>  two_sides_rapido($drawNumber),
         'all_kinds'    =>  two_sides_rapido($drawNumber),
-        'chart_no_5d'  =>  ["chart_1" => chart_no_5d($drawNumber, 0), "chart_2" => chart_no_5d($drawNumber, 1), "chart_3" => chart_no_5d($drawNumber, 2), "chart_4" => chart_no_5d($drawNumber, 3), "chart_5" => chart_no_5d($drawNumber, 4)],
-        'no_layout_5d' =>  no_layout_5d($drawNumber),
     ];
-
 } // end of render5d. Returns all the history for 5D.
 
 
 function board_games_render_5d(array $drawNumber): array
 {
-    return ['board_game' =>  board_game($drawNumber),];
-
+    return ['board_game' => board_game($drawNumber),];
 } // end of render5d. Returns all the history for 5D.
 
 
@@ -1359,10 +1135,8 @@ function generate_history_5d(int $lottery_id, $is_board_game)
                 array_splice($draw_data, $key, 1);
             }
         }
-
-
         if (!$is_board_game) {
-            return ['std' => render5d($draw_data), 'two_sides' => two_sides_render_5d($draw_data)];
+            return ['std' => render5d($draw_data), 'two_sides' => two_sides_render_5d($draw_data), 'full_chart' => full_chart_render_5d($draw_data)];
         } else {
             return ['board_games' => board_games_render_5d($draw_data)];
         }

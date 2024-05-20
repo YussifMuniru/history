@@ -172,9 +172,6 @@ $r = two_sides_2sides(
 // echo json_encode($r);
 
 
-
-
-
 // $r = [];
 
 
@@ -189,7 +186,8 @@ $redis = new Predis\Client();
 //   lottery_id_board_games_34
 
 // try {
-//     $cache = json_decode($redis->get("lottery_id_std_1"), true);
+$cache = json_decode($redis->get("lottery_id_std_1"), true);
+// echo json_encode(extractObjects($cache, 1));
 //     $latest_draw_period = substr(json_decode($redis->get('currentDraw{$lottery_id}'), true)['draw_period'], -4, 4);
 
 //     if (multiArraySearch($latest_draw_period, $cache) !== '') {
@@ -218,17 +216,19 @@ $redis = new Predis\Client();
 // }
 
 
-  $nums_for_layout = [
-        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
-        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
-    ];
+$nums_for_layout = [
+    0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
+];
 
 
-    array_walk($nums_for_layout, function($key,$value){
-        $nums_for_layout[$key] = $value + 1;
-    });
+// array_walk($nums_for_layout, function ($key, $value) {
+//     $nums_for_layout[$key] = $value + 1;
+// });
 
-    print_r($nums_for_layout);
+print_r(range(0, 10));
+
+// print_r($nums_for_layout);
 
 // $values_counts = array_count_values([1,2,3,4,5]);
 

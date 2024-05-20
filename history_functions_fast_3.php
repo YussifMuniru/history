@@ -272,22 +272,36 @@ function no_layout_fast3(Array $drawNumbers) : Array {
     return $res;
 }
 
+
 function render_fast3(Array $draw_numbers) : Array{
-    $result = [
-                'b_s_o_e_sum'     => b_s_o_e_sum($draw_numbers), 
-                'sum'             => sum($draw_numbers), 
-                'three_of_a_kind' => three_of_a_kind($draw_numbers), 
-                'three_no'        => three_of_a_kind($draw_numbers), 
-                'one_pair'        => three_of_a_kind($draw_numbers), 
-                'two_no'          => three_of_a_kind($draw_numbers), 
-                'guess_a_number'  => winning($draw_numbers), 
-                'no_layout'       => no_layout_fast3($draw_numbers),
-                'no_layout_stats' => no_layout_stats_fast3($draw_numbers),
-                'fish_prawn_crab' => full_chart_fish_prawn_crab($draw_numbers),
+    return [
+            'b_s_o_e_sum'     => b_s_o_e_sum($draw_numbers), 
+            'sum'             => sum($draw_numbers), 
+            'three_of_a_kind' => three_of_a_kind($draw_numbers), 
+            'three_no'        => three_of_a_kind($draw_numbers), 
+            'one_pair'        => three_of_a_kind($draw_numbers), 
+            'two_no'          => three_of_a_kind($draw_numbers), 
+            'guess_a_number'  => winning($draw_numbers), 
+            'no_layout'       => no_layout_fast3($draw_numbers),
+            'no_layout_stats' => no_layout_stats_fast3($draw_numbers),
+            'fish_prawn_crab' => full_chart_fish_prawn_crab($draw_numbers),
               ];
-    return $result;
+}// end of render_fast3(). return the full history for fast3.
 
 
+function full_chart_render_fast3(Array $draw_numbers) : Array{
+    return [
+            'b_s_o_e_sum'     => b_s_o_e_sum($draw_numbers), 
+            'sum'             => sum($draw_numbers), 
+            'three_of_a_kind' => three_of_a_kind($draw_numbers), 
+            'three_no'        => three_of_a_kind($draw_numbers), 
+            'one_pair'        => three_of_a_kind($draw_numbers), 
+            'two_no'          => three_of_a_kind($draw_numbers), 
+            'guess_a_number'  => winning($draw_numbers), 
+            'no_layout'       => no_layout_fast3($draw_numbers),
+            'no_layout_stats' => no_layout_stats_fast3($draw_numbers),
+            'fish_prawn_crab' => full_chart_fish_prawn_crab($draw_numbers),
+              ];
 }// end of render_fast3(). return the full history for fast3.
 
 
@@ -305,16 +319,7 @@ function two_sides_render_fast3(Array $draw_numbers) : Array{
 }// end of render_fast3(). return the full history for fast3.
 
 
-function board_games_render_fast3(Array $draw_numbers) : Array{
-    
-  
-    
-    $result = ['board_game' => board_game_fst3($draw_numbers),];
-
-    return $result;
-
-
-}// end of render_fast3(). return the full history for fast3.
+function board_games_render_fast3(Array $draw_numbers) : Array{ return ['board_game' => board_game_fst3($draw_numbers),]; }// end of render_fast3(). return the full history for fast3.
 
 
 // echo json_encode(render_fast3([["draw_number" => ["6",'6','4'],'period'=>'1,2,3,4,5']]));
@@ -341,7 +346,7 @@ if ($lottery_id > 0) {
 
 
     if(!$is_board_game){
-        $history_results = ['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]) ]; 
+        $history_results = ['std' => render_fast3($db_results["data"]) , 'two_sides' => two_sides_render_fast3($db_results["data"]), 'full_chart' => full_chart_render_fast3($db_results["data"]) ]; 
      }else{
          $history_results = ['board_games' => board_games_render_fast3($db_results["data"])];
     }

@@ -5,8 +5,7 @@ require_once 'db_utils.php';
 require_once 'helpers.php';
 require_once 'entry.php';
 
-function eleven_5(array $draw_numbers): array
-{
+function eleven_5(array $draw_numbers): array {
 
 
 
@@ -417,15 +416,10 @@ function no_layout_11x5(array $drawNumbers): array
 
 
 
-function two_sides_chart(array $draw_numbers): array
-{
+function two_sides_chart(array $draw_numbers): array {
 
 
     $history_array = [];
-
-
-
-
     foreach ($draw_numbers as  $item) {
         $mydata = [];
 
@@ -489,6 +483,24 @@ function render_11x5(array $draw_numbers): array
     return $result;
 }
 
+function full_chart_render_11x5(array $draw_numbers): array
+{
+    $result = [
+            'first_three'           => eleven_5($draw_numbers),
+            'first_two'             => eleven_5($draw_numbers),
+            'pick'                  => eleven_5($draw_numbers),
+            'fun'                   => eleven_5($draw_numbers),
+            'fun_chart'             => fun_chart($draw_numbers),
+            'two_sides_chart'       => two_sides_chart($draw_numbers),
+            'chart_no_11x5'         => ["chart_1" => chart_no_11x5($draw_numbers, 0),"chart_2" => chart_no_11x5($draw_numbers, 1),"chart_3" => chart_no_11x5($draw_numbers, 2),"chart_4" => chart_no_11x5($draw_numbers, 3),"chart_5" => chart_no_11x5($draw_numbers, 4)],
+            'full_chart_stats'      => ["chart_1" => chart_no_stats_11x5($draw_numbers, 0),"chart_2" => chart_no_stats_11x5($draw_numbers, 1),"chart_3" => chart_no_stats_11x5($draw_numbers, 2),"chart_4" => chart_no_stats_11x5($draw_numbers, 3),"chart_5" => chart_no_stats_11x5($draw_numbers, 4)],
+            'no_layout_11x5'        => no_layout_11x5($draw_numbers),
+            "two_sides_chart_sum"   => two_sides_2sides_chart($draw_numbers),
+         ];
+
+    return $result;
+}
+
 
 function two_sides_render_11x5(array $draw_numbers): array
 {
@@ -506,12 +518,7 @@ function two_sides_render_11x5(array $draw_numbers): array
 }
 
 
-function board_games_render_11x5(array $draw_numbers): array
-{
-
-
-   return ['board_game' => board_game($draw_numbers, 30)];
-}
+function board_games_render_11x5(array $draw_numbers): array { return ['board_game' => board_game($draw_numbers, 30)]; }
 
 
 
@@ -535,7 +542,7 @@ function generate_history_11x5(int $lottery_id, $is_board_game)
         $history_results = [];
 
         if(!$is_board_game) {
-            $history_results = ['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]) ];
+            $history_results = ['std' => render_11x5($db_results["data"]) , 'two_sides' => two_sides_render_11x5($db_results["data"]),'full_chart_render_11x5' => full_chart_render_11x5($db_results['data']) ];
         } else {
             $history_results = ['board_games' => board_games_render_11x5($db_results["data"])];
         }

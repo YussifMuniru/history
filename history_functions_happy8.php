@@ -369,31 +369,22 @@ function render_happy8(Array $draw_numbers): array {
 
 } // end of render_happy8(). Returns all the history for happy8.
 
-
-function two_sides_render_happy8(Array $draw_numbers): array {
-    
-   
-    $result = array(
-                'two_sides' => two_sides($draw_numbers),
-                'ball_no'   => ball_no($draw_numbers),
-               
-                );
-
-    return $result;
-
+function full_chart_render_happy8(Array $draw_numbers): array {
+    return [
+        'pick'=> eleven_5_happy8($draw_numbers), 
+        'fun'=> over_under($draw_numbers),
+        'odd_even'=> odd_even($draw_numbers),
+        'b_s_o_e_sum_happy8'=> b_s_o_e_sum_happy8($draw_numbers),
+        'two_sides' => two_sides($draw_numbers),
+        'ball_no'   => ball_no($draw_numbers),
+    ];
 } // end of render_happy8(). Returns all the history for happy8.
 
 
-function board_games_render_happy8(Array $draw_numbers): array {
-    
-   
-    $result = array(
-                'board_game' =>    board_game_happy8($draw_numbers),
-                );
+function two_sides_render_happy8(Array $draw_numbers): array { return ['two_sides' => two_sides($draw_numbers), 'ball_no' => ball_no($draw_numbers), ]; } // end of render_happy8(). Returns all the history for happy8.
 
-    return $result;
 
-} // end of render_happy8(). Returns all the history for happy8.
+function board_games_render_happy8(Array $draw_numbers): array { return ['board_game' => board_game_happy8($draw_numbers)]; } // end of render_happy8(). Returns all the history for happy8.
 
 
 function generate_history_happy8(int $lottery_id,bool $is_board_game){
@@ -409,12 +400,10 @@ if ($lottery_id > 0) {
              array_splice($draw_data,$key,1);
         }
      }
-
-
      $history_results = [];
 
       if(!$is_board_game){
-         $history_results = ['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]) ]; 
+         $history_results = ['std' => render_happy8($db_results["data"]) , 'two_sides' => two_sides_render_happy8($db_results["data"]), 'full_chart' =>  full_chart_render_happy8($db_results['data'])]; 
         
       }else{
          $history_results = ['board_games' => board_games_render_happy8($db_results["data"])];
