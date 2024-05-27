@@ -121,7 +121,7 @@ function fetch_cached_history($lottery_id, $type, $count): mixed
         // echo "entering here";
         // echo "This error occurred: " . $e->getMessage();
         // echo json_last_error_msg();
-        // echo $e->getMessage();
+         echo $e->getMessage();
         return json_encode([]);
     }
 }

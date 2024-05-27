@@ -108,9 +108,11 @@ function sumAndFindPattern($drawNumbers, $index, $slice, $range,$prefix)
     } else {
         $pattern = "not found";
     }
+
+    $pattern = explode(' ', $pattern);
 //  echo "Sum {$sum}, form =>$pattern";
     // Return the sum and pattern as a string
-    return ["{$prefix}sum"=>$sum , "{$prefix}form"=>$pattern];
+    return ["sum"=>$sum ,'big_small' => $pattern[0],'odd_even' => $pattern[1]];
 }
 
 function sumAndFindPattern1($drawNumber, $index, $slice, $range)

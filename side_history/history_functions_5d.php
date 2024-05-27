@@ -480,23 +480,26 @@ function studHistory(array $drawNumbers): array
 
         // Assuming findPattern and findStreakPattern are defined in PHP
         $mydata = array(
-            'highcard' => findPattern(array(1, 1, 1, 1, 1), $draw_number, 0, 5) && findStreakPattern($draw_number, 0, 5, 4) == false ? "High Card" : $highCard,
-            'onepair' => findPattern(array(2, 1, 1, 1), $draw_number, 0, 5) ? "One Pair" : $onePair,
-            'twopair' => findPattern(array(2, 2, 1), $draw_number, 0, 5) ? "Two Pair" : $twoPair,
-            'threeofakind' => findPattern(array(3, 1, 1), $draw_number, 0, 5) ? "Three of a Kind" : $threeofakind,
-            'fourofakind' => findPattern(array(4, 1), $draw_number, 0, 5) ? "Four of A Kind" : $threeofakind,
-            'streak' => findStreakPattern($draw_number, 0, 5, 4) ? "Streak" : $streak,
-            'gourd' => findPattern(array(3, 2), $draw_number, 0, 5) ? "Gourd" : $gourd
+            'highcard'      => findPattern(array(1, 1, 1, 1, 1), $draw_number, 0, 5) && findStreakPattern($draw_number, 0, 5, 4) == false ? "High Card" : $highCard,
+            'onepair'       => findPattern(array(2, 1, 1, 1), $draw_number, 0, 5) ? "One Pair" : $onePair,
+            'twopair'       => findPattern(array(2, 2, 1), $draw_number, 0, 5) ? "Two Pair" : $twoPair,
+            'threeofakind'  => findPattern(array(3, 1, 1), $draw_number, 0, 5) ? "Three of a Kind" : $threeofakind,
+            'fourofakind'   => findPattern(array(4, 1), $draw_number, 0, 5) ? "Four of A Kind" : $threeofakind,
+            'streak'        => findStreakPattern($draw_number, 0, 5, 4) ? "Streak" : $streak,
+            'gourd'         => findPattern(array(3, 2), $draw_number, 0, 5) ? "Gourd" : $gourd
         );
 
         $mydata["winning"] = implode(",", $draw_number);
         $mydata["draw_period"] = $draw_period;
-        array_push($historyArray, $mydata);
-
-
+       
         $currentPattern = array_values($mydata);
         sort($currentPattern);
         $currentPattern = $currentPattern[8];
+        $mydata         = [];
+        $mydata["winning"] = implode(",", $draw_number);
+        $mydata["draw_period"] = $draw_period;
+        $mydata['stud'] = $currentPattern;
+        array_push($historyArray, $mydata);
 
         // Update counts
         $highCard     =   ($currentPattern == "High Card")  ? 1 : ($highCard += 1);

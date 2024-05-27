@@ -40,7 +40,7 @@ $stmt->bindParam(":id", $lottery_id, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if(!$row) return ["draw_periods"=>[],"draw_numbers"=>[]]; 
+if(!$row) return ["draw_periods"=>[],"draw_numberss"=>[]]; 
  $tableName = $row['draw_table'];
 
 
@@ -52,11 +52,12 @@ $limit = 100;
 $stmt->bindParam(":limit", $limit, PDO::PARAM_INT);
 $stmt->execute();
 $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $item = [];
     $res = [];
     foreach ($results as &$item) {
-        // Convert draw_number from string to array of numbers
-        $item['draw_number'] = json_decode($item['draw_number']);
-        
+        // Convert draw_numbers from string to array of numbers
+        $item['draw_number'] = $res['draw_numbers'][] = json_decode($item['draw_number']);
+         
         $item['draw_number'] = array_map(function ($num) {
             // return intval(trim($num));
             return trim($num);
@@ -64,18 +65,20 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Split last 4 digits from the period and separate with hyphen
         $period = $item['period'];
-        $item['period'] =  substr($period, -4);
+        $item['period'] = $res['draw_periods'][] =  substr($period, -4);
     }
 
-    $neededFields = ['draw_number', 'period'];
-    $result = array_map(function ($item) use ($neededFields) {
-        return array_intersect_key($item, array_flip($neededFields));
-    }, $results);
+    // $neededFields = ['draw_numbers', 'period'];
+    // $result = array_map(function ($item) use ($neededFields) {
+    //     return array_intersect_key($item, array_flip($neededFields));
+    // }, $results);
+
+    
 
     return [
         'type' => 'success',
         'message' => 'Recent Lottery Issue List',
-        'data' => $result
+        'data' => $res
     ];
 }
 
@@ -97,7 +100,7 @@ $stmt->bindParam(":id", $lottery_id, PDO::PARAM_INT);
 $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if(!$row) return ["draw_periods"=>[],"draw_numbers"=>[]]; 
+if(!$row) return ["draw_periods"=>[],"draw_numberss"=>[]]; 
  $tableName = $row['draw_table'];
 
 
@@ -116,7 +119,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     // Use $results as needed
     foreach ($results as $key=> $row) {
         // Process each row
-        $res["draw_numbers"][$key] = true  ? json_decode($row["draw_number"]) : explode(",",$row["draw_number"]);
+        $res["draw_numberss"][$key] = true  ? json_decode($row["draw_numbers"]) : explode(",",$row["draw_numbers"]);
         $res["draw_periods"][$key] = implode("",array_slice(str_split($row["draw_id"]),-4,));
     }
     Database::closeConnection();
@@ -133,15 +136,15 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-function board_game(Array $draw_numbers,$lower_limit = 22){
+function board_game(Array $draw_numberss,$lower_limit = 22){
 
     $history_array = [];
 
-    foreach($draw_numbers as $draw_obj){
-        $draw_number = $draw_obj['draw_number'];
+    foreach($draw_numberss as $draw_obj){
+        $draw_numbers = $draw_obj['draw_numbers'];
         $draw_period = $draw_obj['period'];
-        $sum = array_sum($draw_number);
-        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_number),"b_s" =>  $sum <= $lower_limit ? 'Small' : 'Big', 'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum ]);
+        $sum = array_sum($draw_numbers);
+        array_push($history_array, ["draw_period" => $draw_period,"winning"=>implode(",",$draw_numbers),"b_s" =>  $sum <= $lower_limit ? 'Small' : 'Big', 'o_e' => ($sum % 2 == 0)  ? 'Even' : 'Odd','sum' => $sum ]);
     }
 
 

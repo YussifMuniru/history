@@ -7,7 +7,7 @@
 function findPattern(Array $pattern,Array $drawNumbers,int $index, int $slice) : bool{
    $count = array_count_values(array_slice($drawNumbers, $index, $slice));
    sort($count); sort($pattern);
-    return $count == $pattern;
+   return $count == $pattern;
 }// end of findPattern.
 
 
