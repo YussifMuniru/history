@@ -854,13 +854,19 @@ function all5group(array $args): array
 
 
 
-function dragon_tiger_tie_chart(array $drawNumbers, $start_index, $end_index, $count): array
+function dragon_tiger_tie_chart(array $args): array
 {
+
+
+    $draw_array  = $args[0];
+    $start_index = $args[1];
+    $end_index   = $args[2];
+    $count       = $args[3];
 
     $patterns = ['D' => 'Dragon', 'T' => 'Tiger', 'Tie' => 'Tie'];
     $counts = array_fill_keys(array_values($patterns), 1);
     $historyArray = [];
-    $drawNumbers  = array_slice($drawNumbers, 0, $count);
+    $drawNumbers  = array_slice($draw_array['draw_numbers'], 0, $count);
     foreach ($drawNumbers as  $item) {
         $mydata = [];
         foreach ($patterns as $patternKey => $pattern) {
