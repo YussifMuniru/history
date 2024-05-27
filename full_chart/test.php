@@ -226,7 +226,16 @@ $nums_for_layout = [
 //     $nums_for_layout[$key] = $value + 1;
 // });
 
-print_r(range(0, 10));
+function my_test_function (...$args){
+
+    foreach ($args as $val){
+        echo $val.PHP_EOL;
+    }
+}
+
+$my_string_function_name = 'my_test_function';
+
+echo $my_string_function_name(...[10,11,12]);
 
 // print_r($nums_for_layout);
 
