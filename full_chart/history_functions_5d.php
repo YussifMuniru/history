@@ -278,7 +278,7 @@ function calculateBullChartHistory(array $args): array
             'bull_7' => $bullResult == 'Bull 7' ? 'Bull 7' : $bull_7,
             'bull_8' => $bullResult == 'Bull 8' ? 'Bull 8' : $bull_8,
             'bull_9' => $bullResult == 'Bull 9' ? 'Bull 9' : $bull_9,
-            'bull_big_small' => (($is_num && $parsedNumber > 5) || $bullResult == "Bull Bull") ? "Bull Big" : ((($is_num && $parsedNumber <= 5) && $parsedNumber > 0 ) ? "Bull Small" : $bull_big_small),
+            'bull_big_small' => (($is_num && $parsedNumber > 5) || $bullResult == "Bull Bull")  ? "Bull Big" : ((($is_num && $parsedNumber <= 5) && $parsedNumber > 0 ) ? "Bull Small" : $bull_big_small),
             'bull_odd_even' => (($is_num && $parsedNumber % 2 === 1) && $parsedNumber > 0)      ? "Bull Odd" : ((($is_num && $parsedNumber % 2 === 0)  && $parsedNumber > 0) ? "Bull Even" :  $bull_odd_even),
         ];
 
@@ -296,7 +296,7 @@ function calculateBullChartHistory(array $args): array
         $bull_4 = ($bullResult === "Bull 4") ? 1 : ($bull_4 += 1);
         $bull_5 = ($bullResult === "Bull 5") ? 1 : ($bull_5 += 1);
         $bull_6 = ($bullResult === "Bull 6") ? 1 : ($bull_6 += 1);
-        $bull_7 = ($bullResult === "Bull 7") ? 1 : ($bull_7 += 1);
+        $bull_7 = ($bullResult === "Bull 7") ? 1 : ($bull_7 += 1); 
         $bull_8 = ($bullResult === "Bull 8") ? 1 : ($bull_8 += 1);
         $bull_9 = ($bullResult === "Bull 9") ? 1 : ($bull_9 += 1);
     }
