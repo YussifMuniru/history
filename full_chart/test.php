@@ -233,9 +233,10 @@ function my_test_function (...$args){
     }
 }
 
-$my_string_function_name = 'my_test_function';
+$arr1 = ['one'=> [1, 2, 3, 4, 5], 'two' => [1, 2, 3, 4, 5], 'three' => [1, 2, 3, 4, 5], 'four' => [1,2,3,4,5], 'five' => [1,2,3,4,5]];
+$arr1 = ['six'=> [1, 2, 3, 4, 5], 'seven' => [1, 2, 3, 4, 5], 'eight' => [1, 2, 3, 4, 5], 'nine' => [1,2,3,4,5], 'ten' => [1,2,3,4,5]];
 
-echo $my_string_function_name(...[10,11,12]);
+// array
 
 // print_r($nums_for_layout);
 
