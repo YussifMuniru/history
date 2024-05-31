@@ -4,33 +4,36 @@
 
 
 
-function findPattern(Array $pattern,Array $drawNumbers,int $index, int $slice) : bool{
-   $count = array_count_values(array_slice($drawNumbers, $index, $slice));
-   sort($count); sort($pattern);
-   return $count == $pattern;
-}// end of findPattern.
+function findPattern(array $pattern, array $drawNumbers, int $index, int $slice): bool
+{
+    $count = array_count_values(array_slice($drawNumbers, $index, $slice));
+    sort($count);
+    sort($pattern);
+    return $count == $pattern;
+} // end of findPattern.
 
 
-function spanPattern(Array $drawNumbers, int $index, int $slice) : int  {
-    
+function spanPattern(array $drawNumbers, int $index, int $slice): int
+{
+
     // Slicing the array from index for the length of slice
     $slicedNumbers = array_slice($drawNumbers, $index, $slice);
-   
+
     // Sorting the sliced array
     sort($slicedNumbers);
 
-    
+
     // Getting the max and min values in the sliced array
-   $maxValue = max($slicedNumbers);
-   $minValue = min($slicedNumbers);
+    $maxValue = max($slicedNumbers);
+    $minValue = min($slicedNumbers);
 
     // Returning the difference between max and min values
     return $maxValue - $minValue;
+} // end of spanPattern. Returns the difference btn the max and min values of the draw number
 
-}// end of spanPattern. Returns the difference btn the max and min values of the draw number
 
-
-function sumPattern(Array $drawNumbers, int $index,int $slice) : int {
+function sumPattern(array $drawNumbers, int $index, int $slice): int
+{
     // Slicing the array from index for the length of slice
     $slicedArray = array_slice($drawNumbers, $index, $slice);
 
@@ -41,24 +44,26 @@ function sumPattern(Array $drawNumbers, int $index,int $slice) : int {
 } // end of sumPattern. Sum the array chunk.
 
 
-function dragonTigerTiePattern(int $idx1,int $idx2,Array $drawNumbers) : string{
+function dragonTigerTiePattern(int $idx1, int $idx2, array $drawNumbers): string
+{
     $v1 = $drawNumbers[$idx1];
     $v2 = $drawNumbers[$idx2];
 
     if ($v1 > $v2) {
-      
+
         return "D";
     } elseif ($v1 === $v2) {
-       
+
         return "Tie";
     } else {
-       
+
         return "T";
     }
-}// end of dragonTigerTiePattern. returns the dragon tiger tie relationship btn the numbers
+} // end of dragonTigerTiePattern. returns the dragon tiger tie relationship btn the numbers
 
-function isPrime($number) {
-    
+function isPrime($number)
+{
+
     if ($number == 0) return false;
 
     if ($number <= 3) {

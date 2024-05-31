@@ -255,7 +255,7 @@ function calculateBullChartHistory(array $args): array
 
     $drawNumbers = array_slice($draw_array['draw_numbers'], 0, $count);
     $history_array = ['no_bull' => [], 'bull_bull' => [], 'bull_1' => [], 'bull_2' => [], 'bull_3' => [], 'bull_4' => [], 'bull_5' => [], 'bull_6' => [], 'bull_7' => [], 'bull_8' => [], 'bull_9' => [], 'bull_big_small' => [], 'bull_odd_even' => []];
-
+    $drawNumbers = array_reverse($drawNumbers);
     foreach ($drawNumbers as  $draw_number) {
 
         // Assuming calculateBull is a function you have defined in PHP
@@ -455,8 +455,9 @@ function studHistory(array $args): array
 
 
     $drawNumbers = array_slice($draw_array['draw_numbers'], 0, $count);
+    $drawNumbers = array_reverse($drawNumbers);
     $final_res   = ['highcard' => [], 'onepair' => [], 'twopair' => [], 'threeofakind' => [], 'fourofakind' => [], 'streak' => [], 'gourd' => []];
-
+    
     foreach ($drawNumbers as  $draw_number) {
 
         // Assuming findPattern and findStreakPattern are defined in PHP
@@ -542,8 +543,8 @@ function bsoeHistory(array $args)
     $sum          = [];
     $big_small    = [];
     $odd_even     = [];
-    for ($x = 0; $x < $count; $x++) {
-        $draw_number = $draw_array["draw_numbers"][$x];
+    $draw_numbers  = array_slice($draw_array['draw_numbers'],0, $count);
+    foreach ($draw_numbers as $draw_number) {
         $results = "";
         switch ($typeOfModule) {
             case "bsoefirst3":
@@ -1220,10 +1221,9 @@ function two_sides_rapido(array $args): array
 
     $draw_array       = $args[0];
     $count            = $args[1];
-
-    $historyArray = array();
     $draw_numbers = array_slice($draw_array['draw_numbers'], 0, $count);
-
+    $final_res = ['sum_dragon_tiger_tie' => [],'first3' => [],'mid3' => [],'last3' => [], 'first' => [], 'second' => [], 'third' => [], 'fourth' => [], 'fifth' => []];
+    $draw_numbers = array_reverse($draw_numbers);
     foreach ($draw_numbers as  $draw_number) {
         $mydata = [];
         $chunck_result = [];
@@ -1252,29 +1252,41 @@ function two_sides_rapido(array $args): array
             sort($mydata);
             $chunck_result[$draw_chunck_name] = $mydata[4];
         }
-
-        $sum     = array_sum($draw_number);
         // $b_s_o_e = determinePattern5d($sum, 22);
         $keys    = array_keys($chunck_result);
+        $sum     = array_sum($draw_number);
+        array_unshift($final_res['sum_dragon_tiger_tie'], ['dragon_tiger_tie' =>["D" => "Dragon", "Tie" => "Tie", "T" => "Tiger"][dragonTigerTiePattern(0, 4, $draw_number)],'big_small' => $sum >= 23 ? 'B' : 'S' , 'odd_even' => $sum % 2 == 1 ? 'O' : 'E']);
 
-        $final_results = [
-            'sum_dragon_tiger_tie' => ["D" => "Dragon", "Tie" => "Tie", "T" => "Tiger"][dragonTigerTiePattern(0, 4, $draw_number)],
-            $keys[0]           => $chunck_result[$keys[0]],
-            $keys[1]           => $chunck_result[$keys[1]],
-            $keys[2]           => $chunck_result[$keys[2]],
-            "first"            => ['b_s' => $draw_number[0] > 4 ? 'B' : 'S', 'o_e' => $draw_number[0] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[0])],
-            "second"           => ['b_s' => $draw_number[1] > 4 ? 'B' : 'S', 'o_e' => $draw_number[1] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[1])],
-            "third"            => ['b_s' => $draw_number[2] > 4 ? 'B' : 'S', 'o_e' => $draw_number[2] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[2])],
-            "fourth"           => ['b_s' => $draw_number[3] > 4 ? 'B' : 'S', 'o_e' => $draw_number[3] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[3])],
-            "fifth"            => ['b_s' => $draw_number[4] > 4 ? 'B' : 'S', 'o_e' => $draw_number[4] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[4])],
+        array_unshift($final_res['first3'], $chunck_result[$keys[0]]); 
+        array_unshift($final_res['mid3'], $chunck_result[$keys[1]]); 
+        array_unshift($final_res['last3'], $chunck_result[$keys[1]]); 
 
-        ];
+        array_unshift($final_res['first'], ['b_s' => $draw_number[0] > 4 ? 'B' : 'S', 'o_e' => $draw_number[0] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[0])]); 
+
+        array_unshift($final_res['second'], ['b_s' => $draw_number[1] > 4 ? 'B' : 'S', 'o_e' => $draw_number[1] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[1])]); 
+        
+        array_unshift($final_res['third'],['b_s' => $draw_number[2] > 4 ? 'B' : 'S', 'o_e' => $draw_number[2] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[2])]); 
+        array_unshift($final_res['fourth'], ['b_s' => $draw_number[3] > 4 ? 'B' : 'S', 'o_e' => $draw_number[3] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[3])]); 
+        array_unshift($final_res['fifth'], ['b_s' => $draw_number[4] > 4 ? 'B' : 'S', 'o_e' => $draw_number[4] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[4])]); 
+
+        // $final_results = [
+        //     'sum_dragon_tiger_tie' => ["D" => "Dragon", "Tie" => "Tie", "T" => "Tiger"][dragonTigerTiePattern(0, 4, $draw_number)],
+        //     $keys[0]           => $chunck_result[$keys[0]],
+        //     $keys[1]           => $chunck_result[$keys[1]],
+        //     $keys[2]           => $chunck_result[$keys[2]],
+        //     "first"            => ['b_s' => $draw_number[0] > 4 ? 'B' : 'S', 'o_e' => $draw_number[0] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[0])],
+        //     "second"           => ['b_s' => $draw_number[1] > 4 ? 'B' : 'S', 'o_e' => $draw_number[1] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[1])],
+        //     "third"            => ['b_s' => $draw_number[2] > 4 ? 'B' : 'S', 'o_e' => $draw_number[2] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[2])],
+        //     "fourth"           => ['b_s' => $draw_number[3] > 4 ? 'B' : 'S', 'o_e' => $draw_number[3] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[3])],
+        //     "fifth"            => ['b_s' => $draw_number[4] > 4 ? 'B' : 'S', 'o_e' => $draw_number[4] % 2 == 1 ? 'O' : 'E', 'p_c' => checkPrimeOrComposite($draw_number[4])],
+
+        // ];
 
 
-        array_push($historyArray, $final_results);
+        // array_push($historyArray, $final_results);
     }
 
-    return $historyArray;
+    return $final_res;
 }
 
 
@@ -1296,75 +1308,13 @@ function winning_and_draw_periods(array $args): array
 }
 
 
-function streamline_segments(array $callables): array
-{
-
-    $periods = [30, 50, 100]; // Define the periods for which you want to generate the data
-    $results = [];
-
-    foreach ($periods as $period) {
-
-        foreach ($callables as $column_title => $callable) {
-            //get the function name from the callables
-            $function_name = $callable[0];
-            // add the appropriate count to the array of params for the function
-            array_push($callable[1], $period);
-            if (!str_starts_with($function_name, '_')) {
-
-                $results[$period][$column_title] = $function_name($callable[1]);
-            } else {
-                $function_name = substr($function_name, 1);
-                $func_results  = $function_name($callable[1]);
-                $results[$period] = array_merge($results[$period], $func_results);
-            }
-        }
-
-        // $results[$period] = [
-        //     'draw_period' => winning_and_draw_periods([$drawNumber, 'd', $period]),
-        //     'winning'     => winning_and_draw_periods($drawNumber, 'w', $period),
-        //     'all5group'   => all5group($drawNumber, $period),
-        //     "sumofall5"   => bsoeHistory($drawNumber, "bsoesumofall5", $period),
-        //     "sumfirst3"   => bsoeHistory($drawNumber, "bsoefirst3", $period),
-        //     'sumofmiddle3' => bsoeHistory($drawNumber, "bsoemid3", $period),
-        //     'bsoesumofall3' => bsoeHistory($drawNumber, "bsoesumofall3", $period),
-        //     'sumoflast3' => bsoeHistory($drawNumber, "bsoelast3", $period),
-        //     "chart_1" => chart_no_5d($drawNumber, 0, $period),
-        //     "chart_2" => chart_no_5d($drawNumber, 1, $period),
-        //     "chart_3" => chart_no_5d($drawNumber, 2, $period),
-        //     "chart_4" => chart_no_5d($drawNumber, 3, $period),
-        //     "chart_5" => chart_no_5d($drawNumber, 4, $period),
-        //     'no_layout' => no_layout_5d($drawNumber, $period)
-        // ];
-    }
-    // foreach ($periods as $period) {
-    //     $results[$period] = [
-    //         'draw_period' => winning_and_draw_periods($drawNumber, 'd', $period),
-    //         'winning'     => winning_and_draw_periods($drawNumber, 'w', $period),
-    //         'all5group'   => all5group($drawNumber, $period),
-    //         "sumofall5"   => bsoeHistory($drawNumber, "bsoesumofall5", $period),
-    //         "sumfirst3"   => bsoeHistory($drawNumber, "bsoefirst3", $period),
-    //         'sumofmiddle3' => bsoeHistory($drawNumber, "bsoemid3", $period),
-    //         'bsoesumofall3' => bsoeHistory($drawNumber, "bsoesumofall3", $period),
-    //         'sumoflast3' => bsoeHistory($drawNumber, "bsoelast3", $period),
-    //         "chart_1" => chart_no_5d($drawNumber, 0, $period),
-    //         "chart_2" => chart_no_5d($drawNumber, 1, $period),
-    //         "chart_3" => chart_no_5d($drawNumber, 2, $period),
-    //         "chart_4" => chart_no_5d($drawNumber, 3, $period),
-    //         "chart_5" => chart_no_5d($drawNumber, 4, $period),
-    //         'no_layout' => no_layout_5d($drawNumber, $period)
-    //     ];
-    // }
-    // $draw_array, int $count,$dup_params = [0,5]
-
-    return $results;
-}
 
 function render5d(array $drawNumber): array
 {
 
     return [
 
-        'all5'   => streamline_segments([
+        'all5'   => streamline_segments_5d([
             'draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning'     => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all5group'   => ['all5group', [$drawNumber]], "sumofall5"   => ['bsoeHistory', [$drawNumber, "bsoesumofall5"]], "sumfirst3"   => ['bsoeHistory', [$drawNumber, "bsoefirst3"]], 'sumofmiddle3' => ['bsoeHistory', [$drawNumber, "bsoemid3"]],
             'bsoesumofall3' => ['bsoeHistory', [$drawNumber, "bsoesumofall3"]],
             'sumoflast3' => ['bsoeHistory', [$drawNumber, "bsoelast3"]],
@@ -1375,20 +1325,20 @@ function render5d(array $drawNumber): array
             "chart_5" => ['chart_no_5d', [$drawNumber, 4]],
             'no_layout' => ['no_layout_5d', [$drawNumber, [0, 5]]],
         ]),
-        'first4'           => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'first4group' => ['all4History', [$drawNumber, "all4first4",]], "chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]],   'no_layout' => ['no_layout_5d', [$drawNumber, [0, 4]]]]),
-        'last4'            => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'last4group' => ['all4History', [$drawNumber, "all4first4",]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], "chart_5" => ['chart_no_5d', [$drawNumber, 4]],   'no_layout' => ['no_layout_5d', [$drawNumber, [1, 4]]]]),
-        'first3'           => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all3group' => ['all3group', [$drawNumber, "all3first3",]], 'sum_span_sum_tails' => ['_sum_span_sum_tails', [$drawNumber, "all3first3",]], "chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], 'no_layout' => ['no_layout_5d', [$drawNumber, [0, 3]]]]),
-        'middle3'          => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all3group' => ['all3group', [$drawNumber, "all3mid3",]], 'sum_span_sum_tails' => ['_sum_span_sum_tails', [$drawNumber, "all3mid3",]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 1]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], 'no_layout' => ['no_layout_5d', [$drawNumber, [1, 3]]]]),
-        'last3'            => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all3group' => ['all3group', [$drawNumber, "all3last3",]], 'sum_span_sum_tails' => ['_sum_span_sum_tails', [$drawNumber, "all3last3",]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], "chart_5" => ['chart_no_5d', [$drawNumber, 4]], 'no_layout' => ['no_layout_5d', [$drawNumber, [2, 3]]]]),
-        'first2'           => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], '_sum_span_sum_tails_first2' => ['_sum_span_sum_tails_first2', [$drawNumber, "all2first2",]], "chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], 'no_layout' => ['no_layout_5d', [$drawNumber, [0, 2]]]]),
-        'last2'            => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'sum_span_sum_tails_last2' => ['_sum_span_sum_tails_first2', [$drawNumber, "all2last2",]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], "chart_5" => ['chart_no_5d', [$drawNumber, 4]], 'no_layout' => ['no_layout_5d', [$drawNumber, [3, 2]]]]),
-        'dragon_tiger_tie' => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'one_x_2' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 1]], 'one_x_3' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 2]], 'one_x_4' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 3]], 'one_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 4]], 'two_x_3' => ['dragon_tiger_tie_chart', [$drawNumber, 1, 2]], 'two_x_4' => ['dragon_tiger_tie_chart', [$drawNumber, 1, 3]], 'two_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 1, 4]], 'three_x_4' => ['dragon_tiger_tie_chart', [$drawNumber, 2, 3]], 'three_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 2, 4]], 'four_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 3, 4]],]),
-        'bullbull'         => streamline_segments(
-            ['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'bullbull' => ['calculateBullChartHistory', [$drawNumber, 30]]]
+        'first4'           => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'first4group' => ['all4History', [$drawNumber, "all4first4",]], "chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]],   'no_layout' => ['no_layout_5d', [$drawNumber, [0, 4]]]]),
+        'last4'            => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'last4group' => ['all4History', [$drawNumber, "all4first4",]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], "chart_5" => ['chart_no_5d', [$drawNumber, 4]],   'no_layout' => ['no_layout_5d', [$drawNumber, [1, 4]]]]),
+        'first3'           => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all3group' => ['all3group', [$drawNumber, "all3first3",]], 'sum_span_sum_tails' => ['_sum_span_sum_tails', [$drawNumber, "all3first3",]], "chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], 'no_layout' => ['no_layout_5d', [$drawNumber, [0, 3]]]]),
+        'middle3'          => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all3group' => ['all3group', [$drawNumber, "all3mid3",]], 'sum_span_sum_tails' => ['_sum_span_sum_tails', [$drawNumber, "all3mid3",]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 1]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], 'no_layout' => ['no_layout_5d', [$drawNumber, [1, 3]]]]),
+        'last3'            => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'all3group' => ['all3group', [$drawNumber, "all3last3",]], 'sum_span_sum_tails' => ['_sum_span_sum_tails', [$drawNumber, "all3last3",]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], "chart_5" => ['chart_no_5d', [$drawNumber, 4]], 'no_layout' => ['no_layout_5d', [$drawNumber, [2, 3]]]]),
+        'first2'           => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], '_sum_span_sum_tails_first2' => ['_sum_span_sum_tails_first2', [$drawNumber, "all2first2",]], "chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], 'no_layout' => ['no_layout_5d', [$drawNumber, [0, 2]]]]),
+        'last2'            => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'sum_span_sum_tails_last2' => ['_sum_span_sum_tails_first2', [$drawNumber, "all2last2",]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]], "chart_5" => ['chart_no_5d', [$drawNumber, 4]], 'no_layout' => ['no_layout_5d', [$drawNumber, [3, 2]]]]),
+        'dragon_tiger_tie' => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'one_x_2' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 1]], 'one_x_3' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 2]], 'one_x_4' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 3]], 'one_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 0, 4]], 'two_x_3' => ['dragon_tiger_tie_chart', [$drawNumber, 1, 2]], 'two_x_4' => ['dragon_tiger_tie_chart', [$drawNumber, 1, 3]], 'two_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 1, 4]], 'three_x_4' => ['dragon_tiger_tie_chart', [$drawNumber, 2, 3]], 'three_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 2, 4]], 'four_x_5' => ['dragon_tiger_tie_chart', [$drawNumber, 3, 4]],]),
+        'bullbull'         => streamline_segments_5d(
+            ['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'bullbull' => ['calculateBullChartHistory', [$drawNumber,]]]
         ),
-        'stud'             => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'stud' => ['studHistory', [$drawNumber, [0, 5]]]]),
-        'threecards'       => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w'],], 'first3' => ['studHistory', [$drawNumber, [0, 3]]], 'middle3' => ['studHistory', [$drawNumber, [1, 3]]], 'last3' => ['studHistory', [$drawNumber, [2, 3]]]]),
-        'integrate'        => streamline_segments(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w'],], 'two_sides_rapido' => ['_two_sides_rapido', [$drawNumber]]]),
+        'stud'             => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w']], 'stud' => ['studHistory', [$drawNumber, [0, 5]]]]),
+        'threecards'       => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w'],], 'first3' => ['studHistory', [$drawNumber, [0, 3]]], 'middle3' => ['studHistory', [$drawNumber, [1, 3]]], 'last3' => ['studHistory', [$drawNumber, [2, 3]]]]),
+        'integrate'        => streamline_segments_5d(['draw_period' => ['winning_and_draw_periods', [$drawNumber, 'd']], 'winning' => ['winning_and_draw_periods', [$drawNumber, 'w'],], 'two_sides_rapido' => ['_two_sides_rapido', [$drawNumber]],"chart_1" => ['chart_no_5d', [$drawNumber, 0]], "chart_2" => ['chart_no_5d', [$drawNumber, 1]], "chart_3" => ['chart_no_5d', [$drawNumber, 2]], "chart_4" => ['chart_no_5d', [$drawNumber, 3]],"chart_5" => ['chart_no_5d', [$drawNumber, 4]],  'no_layout' => ['no_layout_5d', [$drawNumber, [0, 4]]]]),
 
         //  'integrate' => ['30' => ['draw_period' => winning_and_draw_periods($drawNumber, 'd', 30), 'winning' => winning_and_draw_periods($drawNumber, 'w', 30), ...two_sides_rapido($drawNumber,30)]]
         // ['30' => ['draw_period' => winning_and_draw_periods($drawNumber, 'd', 30), 'winning' => winning_and_draw_periods($drawNumber, 'w', 30), 'bullbull' => calculateBullChartHistory($drawNumber, 30)]
@@ -1498,8 +1448,35 @@ function generate_history_5d(int $lottery_id, $is_board_game)
     }
 }
 
+function streamline_segments_5d(array $callables): array
+{
 
-function new_format()
+    $periods = [30, 50, 100]; // Define the periods for which you want to generate the data
+    $results = [];
+
+    foreach ($periods as $period) {
+
+        foreach ($callables as $column_title => $callable) {
+            //get the function name from the callables
+            $function_name = $callable[0];
+            // add the appropriate count to the array of params for the function
+            array_push($callable[1], $period);
+            if (!str_starts_with($function_name, '_')) {
+
+                $results[$period][$column_title] = $function_name($callable[1]);
+            } else {
+                $function_name = substr($function_name, 1);
+                $func_results  = $function_name($callable[1]);
+                $results[$period] = array_merge($results[$period], $func_results);
+            }
+        }
+    }
+
+
+    return $results;
+}
+
+function new_format_5d()
 {
     $lottery_id = $_GET['lottery_id'];
     $db_results = recenLotteryIsue($lottery_id);
@@ -1513,4 +1490,4 @@ function new_format()
 }
 
 
-new_format();
+new_format_5d();
