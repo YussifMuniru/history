@@ -6,10 +6,6 @@ require_once 'helpers.php';
 require_once 'entry.php';
 
 
-require_once 'cos.php';
-require_once 'db_utils.php';
-require_once 'helpers.php';
-
 
 
 function determinePattern(int $num, $small_category, $check_prime = false): String
