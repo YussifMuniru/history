@@ -1255,10 +1255,9 @@ function chart_no_11x5(array $args): array
     $count      = $args[2];
 
     $history_array['draw_numbers'] = [];
-    $nums_for_layout = [
-        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
-        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
-    ];
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",10 => "ten", 11 => "eleven",
+   ];
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
     $draw_numbers = array_slice($draw_array['draw_numbers'], 0, $count);
     $draw_numbers = array_reverse($draw_numbers);
@@ -1521,10 +1520,9 @@ function chart_no_stats_11x5(array $draw_array, $index, $count): array
 
 
     $history_array  = [];
-    $nums_for_layout = [
-        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
-        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
-    ];
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",10 => "ten", 11 => "eleven",
+   ];
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
     $lack_count  =  array_fill_keys(array_values($nums_for_layout), 0);
     $max_lacks = [];
@@ -1597,10 +1595,9 @@ function no_layout_11x5(array $args): array
 
     $history_array['draw_numbers'] = [];
     $history_array['dup']          = [];
-    $nums_for_layout = [
-        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
-        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
-    ];
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",10 => "ten", 11 => "eleven",
+   ];
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
     $draw_numbers = array_slice($draw_array['draw_numbers'], 0, $count);
     $draw_numbers = array_reverse($draw_numbers);
@@ -1651,10 +1648,9 @@ function no_layout_stats_11x5(array $draw_array, int $count): array
 {
 
 
-    $nums_for_layout = [
-        0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
-        6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",
-    ];
+    $nums_for_layout = [ 0 => "zero", 1 => "one", 2 => "two", 3 => "three", 4 => "four", 5 => "five",
+    6 => "six", 7 => "seven", 8 => "eight", 9 => "nine",10 => "ten", 11 => "eleven",
+   ];
     $counts_nums_for_layout = array_fill_keys(array_keys($nums_for_layout), 1);
     $lack_count             = array_fill_keys(array_values($nums_for_layout), 0);
     $current_streaks        = array_fill_keys(array_values($nums_for_layout), 0);
@@ -1812,7 +1808,19 @@ function new_render_11x5(array $draw_numbers): array
             'draw_period' => ['winning_and_draw_periods', [$draw_numbers, 'd']], 'winning' => ['winning_and_draw_periods', [$draw_numbers, 'w']],"sum" => ['two_sides_2sides_chart', [$draw_numbers]],
             "first" => ['two_sides_chart', [$draw_numbers,0]],"second" => ['two_sides_chart', [$draw_numbers,1]],"third" => ['two_sides_chart', [$draw_numbers,2]],"fourth" => ['two_sides_chart', [$draw_numbers,3]],"fifth" => ['two_sides_chart', [$draw_numbers,4]],
         ]),
-        // 'first_two'             => eleven_5($draw_numbers),
+        'pick'         => streamline_segments_3d([
+            'draw_period' => ['winning_and_draw_periods', [$draw_numbers, 'd']], 'winning' => ['winning_and_draw_periods', [$draw_numbers, 'w']],
+            "first" => ['two_sides_chart', [$draw_numbers,0]],"second" => ['two_sides_chart', [$draw_numbers,1]],"third" => ['two_sides_chart', [$draw_numbers,2]],"fourth" => ['two_sides_chart', [$draw_numbers,3]],"fifth" => ['two_sides_chart', [$draw_numbers,4]],
+        ]),
+        'first_two'         => streamline_segments_3d([
+            'draw_period' => ['winning_and_draw_periods', [$draw_numbers, 'd']], 'winning' => ['winning_and_draw_periods', [$draw_numbers, 'w']],"distribute_first_2" =>  ['no_layout_11x5', [$draw_numbers, [0, 2]]],
+            "first" => ['two_sides_chart', [$draw_numbers,0]],"second" => ['two_sides_chart', [$draw_numbers,1]],"third" => ['two_sides_chart', [$draw_numbers,2]],"fourth" => ['two_sides_chart', [$draw_numbers,3]],"fifth" => ['two_sides_chart', [$draw_numbers,4]],
+        ]),
+        'first_three'         => streamline_segments_3d([
+            'draw_period' => ['winning_and_draw_periods', [$draw_numbers, 'd']], 'winning' => ['winning_and_draw_periods', [$draw_numbers, 'w']],"distribute_first_2" =>  ['no_layout_11x5', [$draw_numbers, [0, 3]]],
+            "first" => ['two_sides_chart', [$draw_numbers,0]],"second" => ['two_sides_chart', [$draw_numbers,1]],"third" => ['two_sides_chart', [$draw_numbers,2]],"fourth" => ['two_sides_chart', [$draw_numbers,3]],"fifth" => ['two_sides_chart', [$draw_numbers,4]],
+        ]),
+         //'first_two'             => eleven_5($draw_numbers),
         // 'pick'                  => eleven_5($draw_numbers),
         // 'fun_chart'             => fun_chart($draw_numbers),
         // 'two_sides_chart'       => two_sides_chart($draw_numbers),
