@@ -1000,11 +1000,13 @@ function generate_history_3d(int $lottery_id, bool $is_board_game)
 
         $db_results = recenLotteryIsue($lottery_id);
         $draw_data = $db_results['data'];
-        foreach ($draw_data as $key => $value) {
-            if (count($value['draw_number']) !== 3) {
-                array_splice($draw_data, $key, 1);
+        foreach ($draw_data['draw_numbers'] as $key => $value) {
+            if (count($value) !== 5) {
+                array_splice($draw_data['draw_numbers'], $key, 1);
             }
         }
+
+        return ['full_chart' => render($draw_data)];
         $history_results = [];
 
         if (!$is_board_game) {
@@ -1023,21 +1025,20 @@ function generate_history_3d(int $lottery_id, bool $is_board_game)
 
 
 
-function new_format_3d()
-{
-    $lottery_id = $_GET['lottery_id'];
-    $db_results = recenLotteryIsue($lottery_id);
-    $draw_data = $db_results['data'];
-    foreach ($draw_data['draw_numbers'] as $key => $value) {
-        if (count($value) !== 3) {
-            array_splice($draw_data['draw_numbers'], $key, 1);
-        }
-    }
+// function new_format_3d($lottery_id)
+// {
+//     $db_results = recenLotteryIsue($lottery_id);
+//     $draw_data = $db_results['data'];
+//     foreach ($draw_data['draw_numbers'] as $key => $value) {
+//         if (count($value) !== 3) {
+//             array_splice($draw_data['draw_numbers'], $key, 1);
+//         }
+//     }
 
-    echo json_encode(render($draw_data));
-}
+//     echo json_encode(render($draw_data));
+// }
 
-new_format_3d();
+// new_format_3d();
 
 
 

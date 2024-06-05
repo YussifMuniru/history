@@ -397,15 +397,16 @@ function generate_history_happy8(int $lottery_id, bool $is_board_game)
     if ($lottery_id > 0) {
 
         $db_results = recenLotteryIsue($lottery_id);
-        $history_results = "";
         $draw_data = $db_results['data'];
-        foreach ($draw_data as $key => $value) {
-            if (count($value['draw_number']) !== 20) {
-                array_splice($draw_data, $key, 1);
+        foreach ($draw_data['draw_numbers'] as $key => $value) {
+            if (count($value) !== 5) {
+                array_splice($draw_data['draw_numbers'], $key, 1);
             }
         }
-        $history_results = [];
 
+
+        return ['full_chart' => new_render_happy8($draw_data)];
+        $history_results = [];
         if (!$is_board_game) {
             $history_results = ['std' => render_happy8($db_results["data"]), 'two_sides' => two_sides_render_happy8($db_results["data"]), 'full_chart' =>  full_chart_render_happy8($db_results['data'])];
         } else {
@@ -422,18 +423,18 @@ function generate_history_happy8(int $lottery_id, bool $is_board_game)
 
 
 
-function new_format_happy8()
-{
-    $lottery_id = $_GET['lottery_id'];
-    $db_results = recenLotteryIsue($lottery_id);
-    $draw_data = $db_results['data'];
-    foreach ($draw_data['draw_numbers'] as $key => $value) {
-        if (count($value) !== 20) {
-            array_splice($draw_data['draw_numbers'], $key, 1);
-        }
-    }
-    echo json_encode(new_render_happy8($draw_data));
-}
+// function new_format_happy8()
+// {
+//     $lottery_id = $_GET['lottery_id'];
+//     $db_results = recenLotteryIsue($lottery_id);
+//     $draw_data = $db_results['data'];
+//     foreach ($draw_data['draw_numbers'] as $key => $value) {
+//         if (count($value) !== 20) {
+//             array_splice($draw_data['draw_numbers'], $key, 1);
+//         }
+//     }
+//     echo json_encode(new_render_happy8($draw_data));
+// }
 
 
-new_format_happy8();
+// new_format_happy8();

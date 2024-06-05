@@ -1,8 +1,9 @@
 <?php
 require_once('utils.php');
-
 function get_history() {
+
     if (isset($_SERVER) && isset($_SERVER['REQUEST_METHOD'])) {
+
         if ($_SERVER['REQUEST_METHOD'] == 'GET') {
             try {
                 $lottery_id = $_GET['lottery_id'];
