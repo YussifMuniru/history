@@ -2,8 +2,67 @@
 
 
 
+function streamline_segments(array $callables): array
+{
+
+    $periods = [30, 50, 100]; // Define the periods for which you want to generate the data
+    $results = [];
+
+    foreach ($periods as $period) {
+
+        foreach ($callables as $column_title => $callable) {
+
+            if (count($callable[1][0]['draw_numbers']) < $period) {
+                $results[$period] = [];
+                break;
+            }
+            //get the function name from the callables
+            $function_name = $callable[0];
+            // add the appropriate count to the array of params for the function
+            array_push($callable[1], $period);
+            if (!str_starts_with($function_name, '_')) {
+
+                $results[$period][$column_title] = $function_name($callable[1]);
+            } else {
+                $function_name = substr($function_name, 1);
+                $func_results  = $function_name($callable[1]);
+                $results[$period] = array_merge($results[$period], $func_results);
+            }
+        }
+    }
+
+    return $results;
+}
+function winning_and_draw_periods(array $args): array
+{
+
+    $results = [];
+
+    $draw_numbers = $args[0];
+    $flag         = $args[1];
+    $count        = $args[2];
 
 
+    for ($x = 0; $x < $count; $x++) {
+        $results['w'][] = $draw_numbers['draw_numbers'][$x];
+        $results['d'][] = $draw_numbers['draw_periods'][$x];
+    }
+    return $results[$flag];
+}
+
+function findDuplicates($numbers)
+{
+    // Count the occurrences of each number
+    $count = array_count_values($numbers);
+
+    // Filter the counts to find duplicates
+    $duplicates = array_filter($count, function ($value) {
+        return $value > 1;
+    });
+
+    // Return the keys of duplicates (which are the duplicate numbers)
+    return array_map('strval', array_keys($duplicates));
+}
 function findPattern(array $pattern, array $drawNumbers, int $index, int $slice): bool
 {
     $count = array_count_values(array_slice($drawNumbers, $index, $slice));
