@@ -464,7 +464,7 @@ function generate_history_fast3(int $lottery_id, bool $is_board_game)
         $db_results = recenLotteryIsue($lottery_id);
         $draw_data = $db_results['data'];
         foreach ($draw_data['draw_numbers'] as $key => $value) {
-            if (count($value) !== 5) {
+            if (count($value) !== 3) {
                 array_splice($draw_data['draw_numbers'], $key, 1);
             }
         }

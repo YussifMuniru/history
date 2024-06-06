@@ -44,8 +44,11 @@ function winning_and_draw_periods(array $args): array
 
 
     for ($x = 0; $x < $count; $x++) {
-        $results['w'][] = $draw_numbers['draw_numbers'][$x];
-        $results['d'][] = $draw_numbers['draw_periods'][$x];
+        if(isset($draw_numbers['draw_numbers'][$x])){
+            $results['w'][] = $draw_numbers['draw_numbers'][$x];
+            $results['d'][] = $draw_numbers['draw_periods'][$x];
+        }
+      
     }
     return $results[$flag];
 }
