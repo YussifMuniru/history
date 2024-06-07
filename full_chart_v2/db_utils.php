@@ -31,6 +31,9 @@ function recenLotteryIsue($lottery_id){
 
      
     $db = Database::openConnection();
+   
+
+    
     // Step 1: Fetch the table name from `gamestable_map` where `dtb_id` = 1
 $stmt = $db->prepare("SELECT draw_table FROM gamestable_map WHERE game_type = :id LIMIT 1");
 $stmt->bindParam(":id", $lottery_id, PDO::PARAM_INT);
@@ -64,7 +67,14 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $period = $item['period'];
         $item['period'] = $res['draw_periods'][] =  substr($period, -4);
     }
-  
+
+    // $neededFields = ['draw_numbers', 'period'];
+    // $result = array_map(function ($item) use ($neededFields) {
+    //     return array_intersect_key($item, array_flip($neededFields));
+    // }, $results);
+
+    
+
     return [
         'type' => 'success',
         'message' => 'Recent Lottery Issue List',

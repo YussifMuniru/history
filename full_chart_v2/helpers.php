@@ -5,7 +5,7 @@
 function streamline_segments(array $callables): array
 {
 
-    $periods = [2,30, 50, 100]; // Define the periods for which you want to generate the data
+    $periods = [30, 50, 100]; // Define the periods for which you want to generate the data
     $results = [];
 
     foreach ($periods as $period) {
@@ -44,11 +44,8 @@ function winning_and_draw_periods(array $args): array
 
 
     for ($x = 0; $x < $count; $x++) {
-        if(isset($draw_numbers['draw_numbers'][$x])){
-            $results['w'][] = $draw_numbers['draw_numbers'][$x];
-            $results['d'][] = $draw_numbers['draw_periods'][$x];
-        }
-      
+        $results['w'][] = $draw_numbers['draw_numbers'][$x];
+        $results['d'][] = $draw_numbers['draw_periods'][$x];
     }
     return $results[$flag];
 }
