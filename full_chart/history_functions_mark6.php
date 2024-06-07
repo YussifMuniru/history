@@ -114,7 +114,7 @@ function five_elements(array $drawNumber): array
 {
 
 
-    $gold =  ["01", "02", "09", "10", "23", "24", "31", "32", "39", "40"];
+    $metal =  ["01", "02", "09", "10", "23", "24", "31", "32", "39", "40"];
     $wood =  ["05", "06", "13", "14", "27", "28", "35", "36", "43", "44"];
     $water = ["11", "12", "19", "20", "33", "34", "41", "42", "49"];
     $fire =  ["07", "08", "15", "16", "29", "30", "37", "38", "45"];
@@ -128,8 +128,8 @@ function five_elements(array $drawNumber): array
 
             $value1 = $value[count($value) - 1];
             $res = "";
-            if (in_array($value1, $gold)) {
-                $res = "gold";
+            if (in_array($value1, $metal)) {
+                $res = "metal";
             } elseif (in_array($value1, $wood)) {
                 $res = "wood";
             } elseif (in_array($value1, $water)) {
@@ -662,9 +662,9 @@ function chart_ball_no_zodiac(array $args): array
 
                         $res[$key]    =   $key;
                         $res["count_" . $key] =  isset($res["count_" . $key])  ? ($res["count_" . $key]  + 1) : 1;
-                        array_unshift($history_array["count_" . $key],$res["count_" . $key]);
+                        array_unshift($history_array["count_" . $key], $res["count_" . $key]);
                     } else {
-                       
+
                         if (isset($res[$key])) {
                             continue;
                         } else {
@@ -672,12 +672,11 @@ function chart_ball_no_zodiac(array $args): array
                         }
                     }
                     $counts[$key] =  in_array($single_draw, $value) ? 1 : ($counts[$key] + 1);
-                   if((count($history_array[$key]) > $index) && $history_array[$key][0] = $key) continue;
-                     array_unshift($history_array[$key], $res[$key]);
-                   
+                    if ((count($history_array[$key]) > $index) && $history_array[$key][0] = $key) continue;
+                    array_unshift($history_array[$key], $res[$key]);
                 }
 
-               
+
                 foreach ($nums_for_layout as $pattern_key => $pattern) {
                     if ($pattern_key === intval($single_draw)) {
                         $res[$pattern]    =   $single_draw;
@@ -698,7 +697,6 @@ function chart_ball_no_zodiac(array $args): array
                     }
                     $counts_nums_for_layout[$pattern_key] =   $pattern_key === intval($single_draw) ? 1 : ($counts_nums_for_layout[$pattern_key] + 1);
                 }
-              
             }
         } catch (Throwable $th) {
 
@@ -770,7 +768,6 @@ function chart_ball_no_color(array $args): array
                 $counts[$key] =  in_array($single_draw, $value) ? 1 : ($counts[$key] + 1);
                 if ((count($history_array[$key]) > $index) && $history_array[$key][0] = $key) continue;
                 array_unshift($history_array[$key], $res[$key]);
-               
             }
 
             foreach ($nums_for_layout as $pattern_key => $pattern) {
@@ -810,7 +807,10 @@ function chart_ball_no_five_elements(array $args): array
 {
     $draw_array = $args[0];
     $count      = $args[1];
-    $elements = ["gold" => ["01", "02", "09", "10", "23", "24", "31", "32", "39", "40"], "wood" => ["05", "06", "13", "14", "27", "28", "35", "36", "43", "44"], "water" =>  ["11", "12", "19", "20", "33", "34", "41", "42", "49"], "fire" =>  ["07", "08", "15", "16", "29", "30", "37", "38", "45"], "earth" => ["03", "04", "17", "18", "25", "26", "29", "30", "37", "38"]];
+    $elements = ["metal" =>
+    ["01", "02", "09", "10", "23", "24", "31", "32", "39", "40"], "wood" => ["05", "06", "13", "14", "27", "28", "35", "36", "43", "44"], "water" =>  ["11", "12", "19", "20", "33", "34", "41", "42", "49"], "fire" =>  ["07", "08", "15", "16", "29", "30", "37", "38", "45"], "earth" => ["03", "04", "17", "18", "25", "26", "29", "30", "37", "38"]];
+    $elements = ["metal" =>
+    ["02", "03", '10', '11', '24', '25', '32', '33', '40', '41'], "wood" => ['06', '07', '14', '15', '22', '23', '36', '37', '44', '45'], "water" =>  ['12', '13', '20', '21', '28', '29', '42', '43'], "fire" =>  ['01', '08', '09', '16', '17', '30', '31', '38', '39', '46', '47'], "earth" => ['04', '05', '18', '19', '26', '27', '34', '35', '48', '49']];
     $counts = array_fill_keys(array_keys($elements), 1);
 
     $nums_for_layout = [
@@ -857,10 +857,9 @@ function chart_ball_no_five_elements(array $args): array
                             $res[$key] = $counts[$key];
                         }
                     }
-                   $counts[$key] =  in_array($single_draw, $value) ? 1 : ($counts[$key] + 1);
+                    $counts[$key] =  in_array($single_draw, $value) ? 1 : ($counts[$key] + 1);
                     if ((count($history_array[$key]) > $index) && $history_array[$key][0] = $key) continue;
                     array_unshift($history_array[$key], $res[$key]);
-                   
                 }
 
 
@@ -1288,7 +1287,9 @@ function chart_no_five_elements(array $args): array
     $index      = $args[1];
     $count      = $args[2];
 
-    $elements = ["gold" => ["01", "02", "09", "10", "23", "24", "31", "32", "39", "40"], "wood" => ["05", "06", "13", "14", "27", "28", "35", "36", "43", "44"], "water" =>  ["11", "12", "19", "20", "33", "34", "41", "42", "49"], "fire" =>  ["07", "08", "15", "16", "29", "30", "37", "38", "45"], "earth" => ["03", "04", "17", "18", "25", "26", "29", "30", "37", "38"]];
+    $elements = ["metal" => ["01", "02", "09", "10", "23", "24", "31", "32", "39", "40"], "wood" => ["05", "06", "13", "14", "27", "28", "35", "36", "43", "44"], "water" =>  ["11", "12", "19", "20", "33", "34", "41", "42", "49"], "fire" =>  ["07", "08", "15", "16", "29", "30", "37", "38", "45"], "earth" => ["03", "04", "17", "18", "25", "26", "29", "30", "37", "38"]];
+    $elements = ["metal" =>
+    ["02", "03", '10', '11', '24', '25', '32', '33', '40', '41'], "wood" => ['06', '07', '14', '15', '22', '23', '36', '37', '44', '45'], "water" =>  ['12', '13', '20', '21', '28', '29', '42', '43'], "fire" =>  ['01', '08', '09', '16', '17', '30', '31', '38', '39', '46', '47'], "earth" => ['04', '05', '18', '19', '26', '27', '34', '35', '48', '49']];
     $counts = array_fill_keys(array_keys($elements), 1);
 
     $nums_for_layout = [
@@ -1715,8 +1716,8 @@ function generate_history_mark6(int $lottery_id, bool $is_board_game = false): a
             }
         }
 
-       // echo json_encode(new_render_mark6($draw_data));
-         return ['full_chart' => new_render_mark6($draw_data)];
+        // echo json_encode(new_render_mark6($draw_data));
+        return ['full_chart' => new_render_mark6($draw_data)];
         // $history_results = [];
         // if (!$is_board_game) {
         //     $history_results = ['std' => render_mark6($db_results["data"]), 'two_sides' => two_sides_render_mark6($db_results["data"]), 'full_chart' => chart_history($db_results["data"], $zodiacs)];
